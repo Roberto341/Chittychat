@@ -1,0 +1,305 @@
+* { box-sizing:border-box;}html { margin: 0em; padding: 0; height:100%;width:100%; }a { outline:none; }
+body { margin:0; padding: 0;  font-family: sans-serif,'trebuchet ms','lucida grande','lucida sans unicode',arial,helvetica; font-size:14px; width:100%; height:100%; }
+input:focus, select:focus, textarea:focus, button:focus { outline:0; }p { padding:0; margin:0; }img {border:0px;}h1, h2, h3{  margin: 0;  padding: 0; }h2 { font-size:1.5em; margin-bottom:5px; }
+ul { margin: 0; padding: 0; list-style:none; }li { list-style:none; }button {  border:none; outline: none !important; cursor:pointer; }
+textarea, input{ resize:none; font-size:14px; font-family:sans-serif,"trebuchet ms","lucida grande","lucida sans unicode",arial,helvetica,sans-serif; }
+input { font-family: 'FontAwesome', sans-serif,'trebuchet ms','lucida grande','lucida sans unicode',arial,helvetica,sans-serif; }
+img{border: 0px;}
+.label{margin: 5px 0; font-size: 12px; font-weight: bold;}
+.wali_form{padding: 0 0 10px 0;}
+.privhide { display:none !important; }
+.hidden{display: none;}
+/* Vars */
+.pad10{padding: 10px;}
+.pad15{padding: 15px;}
+.pad20{padding: 20px;}
+.pad25{padding: 25px;}
+.pad30{padding: 30px;}
+.bpad5{padding-bottom: 5px;}
+.bpad15{padding-bottom: 15px;}
+.bpad25{padding-bottom: 25px;}
+.vpad5{padding-top: 5px; padding-bottom: 5px;}
+.vpad15{padding-top: 15px; padding-bottom: 15px;}
+.clearbox{overflow-y: auto;}
+.hpad10{padding-left: 10px;padding-right: 10px;}
+.rtable{display: table;table-layout: fixed;width: 100%;}
+.rrow{display: table-row;}
+.rcell_mid{display: table-cell;vertical-align: middle;}
+.rcell{display: table-cell;}
+.brow{display: table-row;}
+.bcell_mid{display: table-cell;vertical-align: middle;}
+.bcell_bottom{display: table-cell; vertical-align: bottom;}
+.bcell{display: table-cell;}
+.btable_auto{display: table; table-layout: auto;}
+.btable{display: table; table-layout: fixed; width: 100%;}
+.bellips{text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+.i_btm{font-size: 20px;}
+.bblock{display: block;}
+.bellips{text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+.wccheck{font-size: 20px; color: #fff; margin-top: 9px;}
+.large_spinner { width:50px; height:50px; position:absolute; display:block; top:50%; left:50%; margin-left:-25px; margin-top:-25px; font-size:50px; }
+.boom_spinner { width:100%; }
+.cleft, .clef2{width: 150px;}
+.cleft, .clef2{width: 260px;}
+.cleft{border-radius: 0; overflow: hidden; padding: 0; display: table-cell; vertical-align: top;}
+.cright{border-radius: 0; overflow: hidden; padding: 0; display: table-cell; vertical-align: top; max-width: 100% !important;}
+.clear{width: 100%; height: 1px; clear: both;}
+/* Footer */
+#wrap_footer{height: auto;width: 100%;position: fixed;bottom: 0;left: 0;z-index: 200;}
+#menu_container_inside{margin: 0 auto;}
+#my_menu{ width: 100%; height: 46px; display: table; table-layout: fixed;}
+.chat_footer_item{width: 45px; height: 100%; text-align: center; cursor: pointer; display: table-cell; max-width: 16.66666666%; vertical-align: middle; position: relative;}
+/* Chat */
+#avatar_prof{width: 40px; height: 40px; border-radius: 100%;}
+#chat_head{  height: 50px; padding: 0 6px;width: 100%;display: table;table-layout: fixed;}
+.head_option{display: table-cell;width: 40px;vertical-align: middle;font-size: 16px;text-align: center;position: relative;cursor: pointer;}
+.head_logo, .chat_head_logo{display: table-cell;vertical-align: middle;width: 152px;white-space: nowrap;}
+.head_logo img, .chat_head_logo img{height: 40px;width: auto;display: block;}
+#global_chat{display: table;width: 100%;overflow: hidden;}
+#chat_center{display: table-cell; vertical-align: top; overflow: hidden;}
+#wrap_chat{height: 100%;width: 100%;}
+#wrap_show_chat{height: 78%; overflow: hidden;}
+#container_show_chat{width: 100%; height: 100%; position: relative;}
+#inside_wrap_chat{height: 100%; overflow: hidden;}
+#show_chat{width: 100%; height: 100%; overflow: auto; overflow-x: hidden;}
+#show_chat ul{position: absolute; bottom: 0; max-height: 100%;overflow-y: auto;}
+#show_chat li{position: relative;}
+.ch_logs{padding: 8px; word-wrap: break-word; display: table; width: 100%;table-layout: fixed;max-width: 100%;overflow: hidden; cursor: pointer;}
+.chat_input_container{width: 100%;}
+#container_input{padding: 4px;}
+#main_input{height: 38px; width: 100%;}
+.input_table{overflow: hidden; display: table; table-layout: fixed; width: 100%; height: 100%;}
+.main_item{width: 38px; height: 100%; text-align: center; font-size: 24px;z-index: 1; display: table-cell; vertical-align: middle; position: relative;}
+.td_input{height: 100%; display: table-cell; padding: 0 3px;}
+#content, #message_content{width: 100%; height: 100%; padding: 0; padding: 0 12px; float: left; font-size: 16px; border-radius: 100px;}
+#submit_button{width: 100%; float: right; height: 100% !important; font-weight: bold; box-shadow: none; padding: 0; border: none !important; font-size: 16px;}
+#chat_left{height: 100%;border-radius: 0px;overflow: hidden;overflow-y: auto;}
+#chat_left_menu{width: 100%; overflow: hidden; overflow-y: auto;}
+.status_zone{display: table-cell; vertical-align: middle; text-align: center; width: 28px;}
+.icon_status, .status_icon{width: 16px; height: 16px; display: block; margin: 0px auto; border-radius: 50%; padding: 1px;}
+.status_text{display: table-cell; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle;}
+.left_item{display: table; width: 100%; table-layout: fixed; padding: 15px 5px; cursor: pointer;}
+.left_item_icon{display: table-cell; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; text-align: center; width: 26px;}
+.panel_bar_item, .panel_option, .side_bar_item{display: table-cell; vertical-align: middle; width: 40px;text-align: center;font-size: 18px; cursor: pointer;}
+#chat_right{height: 100%;}
+#chat_right_content{width: 100%;}
+.panel_bar, .side_bar{display: table; width: 100%; table-layout: fixed; height: 40px;}
+.panel_bar_item, .panel_option, .side_bar_item{display: table-cell; vertical-align: middle; width: 40px; text-align: center; font-size: 18px; cursor: pointer;}
+#chat_right_data{overflow: hidden; overflow-y: auto; position: relative; width: 100%;}
+.user_count{display: table; table-layout: fixed; width: 100%; padding: 10px; font-size: 13px; font-weight: normal; font-weight: bold;}
+.ucount{border-radius: 50px; padding: 4px 7px; font-size: 11px;}
+.chat_avatar{display: table-cell; width: 40px; vertical-align: top; position: relative;}
+.cavatar{height: 40px; width: 40px; border-radius: 50%; overflow: hidden; cursor: pointer;}
+.avsex{border: 2px solid;}
+.my_text{display: table-cell; vertical-align: top; padding: 0 0 0 6px; position: relative;}
+.chat_message{line-height: 1.4em; display: inline-block; max-width: 100%;}
+.cname{display: table-cell; vertical-align: middle;}
+.cclear, .spclear{display: table-cell; width: 24px; font-size: 10px; vertical-align: middle; text-align: center; cursor: pointer;}
+.chat_rank{display: inline-block; width: auto; height: 14px; margin: 0 3px 0 0;}
+.my_text .username{font-size: 12px;}
+.username{font-weight: bold; cursor: pointer; display: inline-block;}
+.small_modal_out, .large_modal_out{display: none; position: fixed; z-index: 1000;left: 0; top: 0; width: 100%; height: 100%; cursor: pointer;cursor: pointer;}
+.small_modal_in{border-radius: 3px; margin: 5% auto; max-width: 400px; width: 98%;}
+.modal_top{width: 100%; display: table; table-layout: fixed;}
+.modal_top_empty{display: table-cell; vertical-align: middle; font-size: 15px; padding: 0 5px;}
+.modal_top_element{display: table-cell; width: 40px; height: 40px; text-align: center; vertical-align: middle; font-size: 20px;}
+.status_option{display: table; width: 100%; table-layout: fixed; padding: 15px 10px; margin-bottom: 3px; border: 3px; cursor: pointer;}
+.zone_status{display: table-cell; vertical-align: middle; text-align: center; width: 28px;}
+.icon_status{border-radius: 50%; padding: 1px;}
+.icon_text{display: table-cell; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle;}
+#main_mob_menu{display: table-cell; vertical-align: middle; width: 42px; position: relative; cursor: pointer;}
+.avatar_menu{width: 36px; height: 36px; border-radius: 50%; display: block; cursor: pointer; margin: 0 auto;}
+.avatar_top_mod{display: table-cell; text-align: center; vertical-align: middle; width: 40px; height: 50px; padding: 5px;}
+.avatar_top_mod img{display: block; margin: 0 auto; width: 100%; border-radius: 50%;}
+.avatar_top_name{display: table-cell; padding: 0 5px 0 2px; font-size: 14px; vertical-align: middle; font-weight: bold;}
+#mobile_main_menu{right: 0; top: 100%; z-index: 161; width: 200px;}
+.list_element:last-child, .listing_reg:last-child, .left_list:last-child, .user_item:last-child, .user_item_custom:last-child, .ulist_item:last-child, .panel_list:last-child, .post_element:last-child, .sub_list:last-child, .sub_menu_item:last-child, .fmenu_item:last-child, .page_drop_item:last-child, .listing_element:last-child, .listing_half_element:last-child, .reply_item:last-child, .avitem:last-child, .sub_list_item:last-child, .elem_in:last-child, .aclist:last-child, .list_hover_item:last-child {border-top: none !important;}
+.sub_list_item{display: table; table-layout: fixed; width: 100%; padding: 10px; cursor: pointer; margin-bottom: 3px; border-radius: 3px;}
+.sub_list_icon{display: table-cell; vertical-align: middle; width: 30px; text-align: center; font-size: 16px;}
+.sub_list_content{display: table-cell; vertical-align: middle;}
+.fmenu{position: absolute; border-radius: 5px; overflow: hidden; display: none;}
+.fmenu_item{padding: 12px 10px; display: table; table-layout: fixed; width: 100%; cursor: pointer; font-size: 14px; text-shadow: none; border-radius: 5px;}
+.fmenu_icon{width: 30px; text-align: center; display: table-cell; vertical-align: middle; font-size: 16px;}
+.fmenu_icon img{width: 18px; height: 18px; margin: 0 auto; display: block;}
+.fmenu_text{display: table-cell; vertical-align: middle; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: initial; padding: 0 5px;}
+.large_modal_in{border-radius: 3px; margin: 5% auto; max-width: 500px; width: 98%;}
+.menu_top_menu{display: table; width: 100%; table-layout: fixed; margin: 5px 0 5px 0; padding: 0 5px;}
+.cover_menu{display: table-cell; vertical-align: middle; width: 80px;}
+.cover_item_wrap{display: table; border-radius: 50px; overflow: hidden;}
+.cover_item{width: 40px; height: 30px; display: table-cell; vertical-align: middle; text-align: center;}
+.add_cover{position: relative;}
+.modal_top_menu_empty{display: table-cell;vertical-align: middle;width: 10px;}
+.modal_top_item{display: table-cell; width: 40px; height: 40px; vertical-align: middle; font-size: 20px;text-align: center;cursor: pointer;position: relative;}
+.modal_top_menu{display: table; width: 100%; table-layout: fixed; margin: 5px 0 5px 0; padding: 0 5px;}
+.up_input{-webkit-appearance: none; position: absolute; top: 0; left: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; padding: 0px !important; overflow: hidden;}
+.profile_top{padding: 0 15px 15px 15px; position: relative; height: 100%;}
+.profile_avatar{display: table-cell; width: 130px; vertical-align: bottom; position: relative; border-radius: 5px; text-align: center;}
+.avatar_spin{border-radius: 10px; overflow: hidden; position: relative; z-index: 30;}
+.avatar_profile{width: 130px; height: 130px; cursor: pointer; display: block; border-radius: 5px;}
+.avatar_control{position: absolute; display: table; table-layout: fixed;width: 100%; z-index: 40; width: 80px; left: 27px; border-radius: 50px; bottom: 10px;}
+.avatar_button{display: table-cell; vertical-align: middle; text-align: center; padding: 8px 0; position: relative;}
+.profile_tinfo{display: table-cell; vertical-align: bottom; padding: 0 10px; position: relative;}
+.pdetails{display: table; table-layout: fixed; width: 100%;}
+.pro_name{font-size: 25px; font-weight: bolld; width: 100%; overflow: hidden; white-space: nowrap;}
+.pro_mood{font-size: 12px; font-weight: bold;}
+.pdetails_text{display: table-cell; vertical-align: middle; overflow: hidden; white-space: nowrap;}
+.modal_menu, .tab_menu{font-size: 0px;}
+.modal_menu ul li, .tab_menu ul li{display: inline-block; padding: 10px 15px; cursor: pointer; font-size: 14px;}
+.listing_half_element{padding: 15px 10px; width: calc(50% - 10px); float: left; margin: 0 5px;}
+.listing_icon{width: 24px;}
+.user_item, .user_item_custom{position: relative; display: table; table-layout: fixed; width: 100%; cursor: pointer; padding: 6px 8px;}
+.user_item_avatar{display: table-cell; vertical-align: middle; width: 36px; position: relative;}
+.user_item_avatar .acav{width: 36px; height: 36px; border-radius: 50%; display: block; cursor: pointer;}
+.list_status { position: absolute; left: 0; bottom: 0; width: 14px; height: 14px; border-radius: 50%; background: #fff; padding: 2px;}
+.user_item_data, .user_item_name{display: table-cell; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 5px;}
+.username{font-weight: bold; cursor: pointer; display: inline-block;}
+.user_item_icon{display: table-cell; vertical-align: middle; width: 24px; text-align: center; font-size: 15px;}
+.in_room_element{display: table; table-layout: auto; width: 100%; padding: 10px; cursor: pointer;}
+.in_room_count{display: table-cell; vertical-align: middle; width: 1%; white-space: nowrap;}
+.in_room_name{display: table-cell; vertical-align: middle; padding: 0 5px;}
+.in_room_icon{display: table-cell; width: 26px; vertical-align: middle; position: relative;}
+.in_room_img{width: 26px; height: 26px; border-radius: 50%; display: block;}
+.text_reg{font-size: 14px;}
+#av_menu{width: 240px; height: auto; position: absolute; bottom: 0; left: -5000px; z-index: 99; border-radius: 5px; overflow: hidden; cursor: pointer;}
+.avcontent{width: 100%; display: block; position: relative;}
+.avbackground{background-size: cover !important; background-position: 50% 50% !important;}
+.topcard{padding: 10px; min-height: 90px;}
+.avavpart{text-align: center;}
+.avavatar{width: 48px; height: 48px; border-radius: 50%; display: block; margin: 0 auto;}
+.avdetails{text-align: center;}
+.avusername{font-weight: bold; font-size: 18px; width: 100%;}
+.avgender{font-size: 12px;}
+.avflag{height: 14px; display: block; border-radius: 2px; margin: 0 auto; margin-top: 3px;}
+.getinfo{cursor: pointer;}
+.avitem{padding: 12px 10px; text-align: center; cursor: pointer;}
+.avtopmenu{min-height: 15px; margin-bottom: -10px;}
+.avavpart{text-align: center;}
+.hiden{display: none;}
+.over_modal_out, .over_emodal_out{display: none;position: fixed; z-index: 1001;left: 0; top: 0; width: 100%; height: 100%; overflow: auto; cursor: pointer;}
+.over_emodal_in{border-radius: 3px; margin: 6% auto; max-width: 500px; width: 98%;}
+.list_rank{height: 15px; width: auto; display: inline-block;}
+.over_modal_in{border-radius: 3px; margin: 6% auto; max-width: 500px; width: 98%;}
+.setting_element{padding: 8px 0;}
+.label{margin: 5px 0; font-size: 12px; font-weight: bold;}
+.selectbixit-container{width: 100%;}
+#set_user_theme{width: 100%; height: 42px; font-size: 15px; color: #333;}
+.rounded_button{border-radius: 100px;}
+.thin_button{padding: 5px 10px; min-width: 100px;}
+#small_modal input[type="text"]{width: 100%; height: 40px; font-size: 20px;}
+#small_modal select{width: 100%; height: 40px; background-color: rgb(242,242, 242);}
+.reg_button{padding: 10px; min-width: 100px;}
+.full_input{padding: 12px 10px; width: 100%; min-width: 100%; max-width: 100%; border: none; border-radius: 2px;}
+.profile_background{background-size: cover !important; background-position: 50% 50% !important;}
+.cover_size{height: 250px;}
+.avatar_spin{border-radius: 10px; overflow: hidden; position: relative; z-index: 30;}
+.pro_rank{font-size: 14px; margin-bottom: -3px; font-weight: bold; display: block;}
+.state_profile{width: 16px; height: 16px; position: absolute; bottom: 5px; right: 5px; z-index: 30; border: 2px solid #fff; border-radius: 50px;}
+#main_input_extra{width: auto; position: absolute; bottom: 0; left: 0; z-index: 100; padding: 3px; display: none; border-radius: 5px; max-width: 240px;}
+.sub_options{width: 40px; height: 40px; padding: 5px; margin: 3px; float: left; position: relative; cursor: pointer;}
+.sub_options img{width: 100%; height: auto;}
+.pad_box{padding: 15px;}
+.preview_zone{padding: 5px 0 20px 0; margin-bottom: 20px;}
+#preview_text{line-height: 1.4em; display: inline-block;}
+.reg_menu_container{position: relative;}
+.reg_menu{font-size: 0px;}
+.reg_menu ul li{display: inline-block; padding: 8px 10px; border-radius: 3px; cursor: pointer; font-size: 13px; font-weight: bold;}
+.hide_zone{display: none;}
+.ital{font-style: italic;}
+.private_opt{width: 40px; text-align: center; font-size: 18px; cursor: pointer; display: table-cell; vertical-align: middle; position: relative;}
+#private_menu{right: 0; top: 100%; width: 170px; z-index: 40;}
+#pro_menu{right:  0; top: 100%; width: 170px; z-index: 40;}
+#private_box{width: 400px; max-width: 100%; position: absolute; bottom: 47px; right: 0; height: 366px; z-index: 160; display: none;}
+#private_top{width: 100%; display: table; height: 50px; padding: 0 8px;}
+#private_av{cursor: pointer; width: 40px; height: 40px; display: block; border-radius: 50%;}
+#private_av_wrap{width: 40px;}
+#private_name{cursor: pointer; font-size: 18px; padding: 0 8px;}
+#dpriv { position:relative; }
+#dpriv_av{width: 30px; height: 30px; display: block; margin: 0 auto; border-radius: 50%;}
+.selectboxit-container span, .selectboxit-container .selectboxit-options a {height: 44px; line-height: 44px;}
+#header2{width: 100%; height: 50px; margin: 0 auto; position: fixed; z-index: 4;}
+#wrap_main_header{max-width: 1100px !important; margin: 0 auto; height: 100%;}
+#main_header{display: table; table-layout: fixed; width: 100%; height: 100%;}
+.empty_subhead{width: 100%; height: 50px;}
+.boy{border: 2px solid #03add8;}
+.girl{border: 2px solid #f9f;}
+.other{border: 2px solid #666;}
+#page_content{width: 100%; max-width: 1100px; margin: 0 auto; height: auto; padding: 20px 0;}
+#page_global{display: table; table-layout: fixed; width: 100%;}
+.page_indata{display: table-cell; vertical-align: top;}
+#page_wrapper{display: table; table-layout: fixed; width: 100%; position: relative; z-index: 1;}
+.room_options{width: 100%; padding: 0 5px 15px;}
+.room_element{display: table; padding: 20px 15px; border-radius: 3px; margin: 5px; table-layout: fixed; width: calc(33% - 10px); float: left; cursor: pointer;}
+.room_icon{display: table-cell; width: 50px; vertical-align: top; position: relative;}
+.room_name{font-size: 18px; font-weight: 700; padding: 5px 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+.room_description{height: 45px; max-height: 60px; overflow: hidden; font-size: 12px; margin-bottom: 10px;}
+.room_img{width: 50px; height: 50px; border-radius: 50%; display: block;}
+.centered_element{text-align: center;}
+#add_room_list{display: none;}
+.large_button_rounded{padding: 12px 20px; border-radius: 25px; font-size: 25px; min-width: 200px; margin-top: 5px;}
+.text_jumbo{font-size: 35px;}
+.text_med{font-size: 18px;}
+.bold{font-weight: bold;}
+.bclick{cursor: pointer;}
+.large_button{padding: 10px 20px; border-radius: 3px; min-width: 200px; font-size: 16px;}
+.full_button{width: 100%; text-align: center;}
+.tmargin10{margin-top: 10px;}
+.not_member{padding: 10px 15px; font-size: 12px; margin-top: 5px;}
+.text_small{font-size: 13px;}
+.lang_flag_box{width: 40px;}
+.lang_flag{width: 26px; height: auto; display: block; margin: 0 auto; border-radius: 3px;}
+.lang_lang{padding: 10px 5px;}
+.intro_lang{width: 26px; height: auto; display: block; margin: 0 auto; border-radius: 3px;}
+#open_login_menu{width: 50px; font-size: 24px; position: relative;}
+.bcell_mid_center{display: table-cell; vertical-align: middle; text-align: center;}
+.listing_title{font-weight: bold; padding-bottom: 3px;}
+.listing_text{font-size: 13px; word-wrap: break-word; min-height: 20px;}
+#log_menu{width: 130px; height: auto; position: absolute; bottom: 0; left: -5000px; z-index: 99; border-radius: 3px; overflow: hidden;}
+.logmenu { width:100%; display:block; position:relative; }
+.top_status{width: 12px; height: 12px; border-radius: 50%; display: block; position: absolute; bottom: 8px; left: 3px; border: 1px solid #fff; background: #fff;}
+#chat_main_menu{width: 300px; position: absolute; right: 0; z-index: 202; top: 50px; display: none; text-align: initial;}
+.float_top, .float_ctop{display: table; padding: 5px; height: 30px; table-layout: auto; width: 100%; max-width: 100%; cursor: pointer;}
+.avmmenu{width: 40px;}
+.avmmenu img{width: 40px; height: 40px; border-radius: 8px; display: block;}
+.float_menu{border-radius: 5px; overflow: hidden; overflow-y: auto; max-width: calc(100% - 10px); margin: 5px;}
+.menuranktxt{font-size: 11px;}
+.menuname{font-size: 16px; font-weight: bold;}
+.menuranking{height: 11px; width: auto;}
+.editstatus{width: 36px;}
+.stat_icon{width: 18px; height: 18px; border-radius: 50%; background: #fff; display: block; margin: 0 auto;}
+.ftop_opt_btn, .ftop_opt_icon{width: 30px; height: 30px; text-align: center; display: table-cell; vertical-align: middle;}
+.ftop_opt_text{height: 30px; display: table-cell; vertical-align: middle; font-weight: bold;}
+.float_content{overflow-y: auto; padding: 10px;}
+.float_section{padding: 10px 0;}
+.tpad0{padding-top: 0px;}
+.bpad0{padding-bottom: 0px;}
+.fa { cursor:pointer; }
+.saved_data{padding: 15px; font-size: 24px; text-align: center; position: fixed; top: 0; left: 0; width: 100%; display: none; z-index: 1002;}
+/* side box css */
+#side_content { width:480px; max-width:100%; height:100%; position:fixed; right:0; top:0; z-index:500; display:none; }
+#side_close { width:100%; height:46px; }
+.side_close_btn { width:40px; height:100%;  font-size:22px; text-align:center; cursor:pointer; }
+#side_inside { overflow:hidden; overflow-y:auto; }
+#container_stream{width: auot; height: auto; z-index: 999; position: fixed; top: 50%; left: 50%; margin-left: -320px; margin-top: -195px; display: none;}
+#main_emoticon{width: 456px; max-width: 100%; height: 222px; position: absolute; bottom: 0; left: 0; z-index: 100; display: none;}
+#private_send{width: 100%; height: 100% !important; cursor: pointer;}
+#private_emoticon{width: 100%; height: 200px; position: absolute; bottom: 100%; left: 0; z-index: 100; display: none;}
+#priv_input_extra{width: auto; position: absolute; bottom: 0; left: 0; z-index: 100; padding: 3px; display: none; border-radius: 5px; max-width: 240px;}
+#private_input{width: 100%; padding: 3px 4px; position: relative;}
+#private_wrap_content{position: relative;}
+#private_content{width: 100%; overflow: hidden; overflow-y: auto; padding: 5px 10px; height: 270px;}
+#message_form{height: 40px; width: 100%;}
+.private_logs{display: table; table-layout: fixed; width: 100%;}
+.private_avatar{display: table-cell; width: 36px; vertical-align: top; padding: 0 5px;}
+.get_info{cursor: pointer;}
+.avatar_private{display: block; width: 26px; height: 26px; border-radius: 18px; overflow: hidden;}
+.private_content{display: table-cell; vertical-align: top;}
+.user_item_flag{width: 24px; text-align: center; vertical-align: middle; display: table-cell;}
+.user_item_flag img{width: 18px; height: auto; display: inline-block; margin: 0px auto; border-radius: 2px;}
+/* opaque color */
+.offline:hover { opacity:1; }
+.cdate{display: table-cell; width: 65px; font-size: 10px; vertical-align: middle; text-align: center;}
+.pdate{font-size: 11px; margin-top: 3px;}
+.ptdate{font-size: 11px; float: right; clear: both; margin-top: 3px;}
+.hunter_private{border-radius: 0 10px 10px;}
+.target_private{float: right; border-radius: 10px 0 10px 10px;}
+.hunter_private, .target_private{padding: 10px; max-width: 220px; display: inline-block; margin-top: 5px; word-wrap: break-word;}

@@ -1,0 +1,63 @@
+body {background:#111; color:#fff;}
+
+.chat_head, .chat_footer, .modal_top, .top_background{background: #111;color: #fff;}
+.background_chat{background: #191919;}
+.input_wrap{background: #191919;}
+.input_item{color: #666;}
+input, textarea, .post_input_container {background: #151515; color: #fff;border: 1px solid #222 !important;}
+.default_btn{background: #333; color: rgb(255, 255, 255);}
+.csend{border-radius: 100px;}
+.chat_panel{background: #191919;}
+.border_bottom,.panel_bar,.left_list,.listing_half_element, .list_element{border-bottom: 1px solid #222;}
+.border_right, #chat_left{border-right: 1px solid #222;}
+.panel_bar, .user_item, .user_item_custom{border-bottom: 1px solid #222;}
+.sub_menu_icon, .menui, .menuo, .menup{color: #03add8;}
+.sub_menu_item, .fmenu_item, .avitem { border-bottom:1px solid #222; background:#191919; color:#fff;  }
+.sub_menu_item:hover, .sub_menu_item:hover > .sub_menu_icon, .fmenu_item:hover, .avitem:hover { background:#222; color:#fff; }
+.panel_selected{background: #111;}
+.border_left, #chat_right{border-left: 1px solid #222;}
+.male{border: 2px solid #03add8;}
+.female{border: 2px solid pink;}
+.other{border: 2px solid #666;}
+.log2{background: #161616;}
+.user{color: #666;}
+.modal_back{background-color: rgba(0, 0, 0, 0.6);}
+.element_color,#private_box,.modal_in{background: #191919; color: #fff;}
+.sub_list_item, .sub_item{background: #222; color: #fff;}
+.fmenu, .add_shadow, #private_box{box-shadow: 0 0 1px 1px #000;}
+.avitem{border-bottom: 1px solid #222; background: #191919; color: #fff;}
+.modal_menu, .tab_menu{background: #333;}
+.modal_selected, .tab_selected{background: #111;}
+.user_count{color: #666;}
+.back_theme{background: #03add8; color: #fff;}
+.noview{background: #292929;}
+.background_box{background: #151515; color: #fff;}
+/* .default_color{color: #012832;} */
+.theme_color{color: #03add8;}
+.back_theme, .theme_btn{background: #007399; color: #fff;}
+.success {color: #74b20e;}
+.error{color: red;}
+.warn{color: orange;}
+.default_color{color: #333;}
+/* select box color */
+.selectboxit-list, .selectboxit-btn {background-color: #151515;border:1px solid #222;color:#fff;} /* background of select box */
+.selectboxit-list .selectboxit-focus .selectboxit-option-anchor { background-color: #333; color:#fff; } /* color of sub menu hover */
+.selectboxit-default-arrow { border-top: 4px solid #666; }
+.selectboxit-btn.selectboxit-enabled:hover, .selectboxit-btn.selectboxit-enabled:focus, .selectboxit-btn.selectboxit-enabled:active { background:#151515; color:#fff; } /* background selected hover */
+.selectboxit-options {background:#222;color:#fff;} /* background color of the options */
+.selectboxit-list .selectboxit-option-anchor { color:#666; } /* color of sub menu item */
+
+.sub_text{color: #888;}
+.reg_menu { color:#666; }
+.reg_selected {  background:#333; color:#fff; }
+.listing_text, .sub_text, .date, .docu_description{color: #888;}
+.back_menu{background: #242424;}
+.float_menu{box-shadow:  1px 3px rgb(0, 0, 0, 0.4);}
+.float_ctop, .float_top{border-bottom: 1px solid rgb(255, 255, 255, 0.05);}
+.bhover:hover{background:rgb(255,255,255,0.05);}
+.bborder{border-bottom: 1px solid rgb(255,255,255,0.05);}
+.offline{opacity: 0.4;}
+.input_text, .logs_date, .pdate, .ptdate, .cclear, .cdate{color: #ccc;}
+
+.hunter_private{color: #fff; background: #007399;}
+.target_private{color: #fff; background: #333;}

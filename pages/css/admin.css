@@ -1,0 +1,50 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: rgb(0, 0, 0);
+}
+
+.admin_panel{
+    color: white;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); 
+    box-shadow: 2px 2px 2px 3px #333;
+}
+.admin_panel .box{
+    width: 550px;
+    height: 400px;
+    margin-left: 750px;
+    margin-top: 200px;
+    background-color: #161616;
+}
+.admin_panel .box form label{
+display: block;
+}
+.admin_panel .box form select{
+    width: 100px;
+    height: 20px;
+}
+.admin_panel .box form button{
+    width: 80px;
+    height: 30px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: 2px solid #000;
+}
+
+.admin_panel .box form button:hover{
+    background-color: #888;
+}
+.admin_panel .closeBox .x{
+    position: absolute;
+    margin-left: 500px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 23px;
+    color: white;
+}

@@ -1,0 +1,59 @@
+body {background:#ededed; color:#444;}
+
+.chat_head, .chat_footer, .modal_top, .top_background,.background_header{background: #012832;color: #fff;}
+.background_chat{background: rgb(255, 255, 255);}
+.input_wrap{background: rgb(255, 255, 255);border-top: 1px solid rgb(237, 237, 237);}
+.input_item{color: rgb(153, 153,153);}
+input, textarea, .post_input_container {background: rgb(242, 242, 242);color: rgb(102, 102, 102);border: 1px solid rgb(230, 230, 230) !important;}
+.default_btn{background: rgb(1, 40, 50); color: rgb(255, 255, 255);}
+.csend{border-radius: 100px;}
+.chat_panel{background: #fff;}
+.panel_bar,.left_list,.listing_half_element,.border_bottom,.list_element{border-bottom: 1px solid #ededed;}
+.border_right, #chat_left{border-right: 1px solid #ededed;}
+.panel_bar, .user_item, .user_item_custom{border-bottom: 1px solid #ededed;}
+.sub_menu_icon, .menui, .menuo, .menup{color: #03add8;}
+.panel_selected{background: #ededed;}
+.border_left, #chat_right{border-left: 1px solid #ededed;}
+.male{border: 2px solid #03add8;}
+.female{border: 2px solid pink;}
+.other{border: 2px solid #666;}
+.log2{background: #f8f8f8;}
+.user{color: #666;}
+.modal_back{background-color: rgba(0, 0, 0, 0.6);}
+.modal_in{background: #fff; color: #444;}
+.sub_item{background: #f3f3f3; color: #666;}
+.fmenu, .add_shadow{box-shadow: 0 0 1px 1px #ddd;}
+.fmenu_item, .avitem{border-bottom: 1px solid #ededed; background: #fff; color: #666;}
+.modal_menu, .tab_menu{background: #f3f3f3; color: #555;}
+.modal_selected, .tab_selected{background: #012832; color: #fff;}
+.user_count{color: #03add8;}
+.back_theme, .theme_btn{background: #03add8; color: #fff;}
+.noview{background: #f1f1f1; border-bottom: 1px solid #fff;}
+.background_box{background: #fff; color: #666;}
+.default_color{color: #012832;}
+.default_bgcolor{background-color: #012832; color: white;}
+.theme_color{color: #03add8;}
+.user{color: #333; font-weight: 900;}
+.reg_menu{color: #444;}
+.reg_selected{background: #ededed; color: #444;}
+.success {color: #74b20e;}
+.error{color: red;}
+.ok_btn{background: #74b20e; color: #fff;}
+.login_sub_text, .login_title_text, .login_register_text{text-shadow: 1px 1px 1px #666;}
+.not_member{background: #ededed; color: #666;}
+.listing_text, .sub_text, .date, .docu_description{color: #888;}
+
+.back_menu{background: #fff;}
+.float_menu{box-shadow: 0 1px 3px rgb(0, 0, 0, 0.2);}
+.float_top { border-bottom:1px solid rgb(0,0,0,0.08); }
+.float_ctop {border-bottom:1px solid rgb(0,0,0,0.08);}
+.bborder{border-bottom: 1px solid rgb(0, 0, 0, 0, 0.8);}
+.bhover:hover, .bhoverr:hover { background:rgb(0,0,0,0.05); }
+/* select box color */
+.selectboxit-list, .selectboxit-btn { background-color: #f2f2f2; color:#666;  border:1px solid #e6e6e6 !important; } /* background of select box */
+.selectboxit-list .selectboxit-focus .selectboxit-option-anchor { background-color: #ededed; color:#666; } /* color of sub menu hover */
+.selectboxit-default-arrow { border-top: 4px solid #666; }
+.selectboxit-btn.selectboxit-enabled:hover, .selectboxit-btn.selectboxit-enabled:focus, .selectboxit-btn.selectboxit-enabled:active { background:#f2f2f2; color:#666; } /* background selected hover */
+.selectboxit-options { background:#fff; border:1px solid #ccc; } /* background color of the options */
+.selectboxit-list .selectboxit-option-anchor { color:#666; } /* color of sub menu item */
+ 

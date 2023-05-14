@@ -1,0 +1,122 @@
+.primary {
+  background-color: #3464eb;
+  color: #fff;
+}
+
+.success {
+  background-color: #246638;
+  color: #000;
+}
+
+.error {
+  background-color: #F00;
+  color: #fff;
+}
+
+.white {
+  background-color: #fff;
+  color: #000;
+}
+
+.gray {
+  background-color: darkgray;
+  color: #000;
+}
+
+.orange_grade {
+  background: -webkit-gradient(linear, left top, right top, color-stop(25%, orange), color-stop(goldenrod), to(gold));
+  background: linear-gradient(to right, orange 25%, goldenrod, gold);
+  color: #3d3d3d;
+}
+
+.orange_grade:hover {
+  background: -webkit-gradient(linear, right top, left top, color-stop(25%, orange), color-stop(goldenrod), to(gold));
+  background: linear-gradient(to left, orange 25%, goldenrod, gold);
+}
+
+.pink_grade {
+  background: -webkit-gradient(linear, left top, right top, color-stop(25%, pink), color-stop(indigo), to(purple));
+  background: linear-gradient(to right, pink 25%, indigo, purple);
+  color: #fff;
+}
+
+.pink_grade:hover {
+  background: -webkit-gradient(linear, right top, left top, color-stop(25%, pink), color-stop(indigo), to(purple));
+  background: linear-gradient(to left, pink 25%, indigo, purple);
+}
+
+.purple_grade {
+  background: -webkit-gradient(linear, left top, right top, color-stop(25%, purple), color-stop(#F33A6A), to(pink));
+  background: linear-gradient(to right, purple 25%, #F33A6A, pink);
+  color: #fff;
+}
+
+.purple_grade:hover {
+  background: -webkit-gradient(linear, right top, left top, color-stop(25%, purple), color-stop(#F33A6A), to(pink));
+  background: linear-gradient(to left, purple 25%, #F33A6A, pink);
+}
+
+.btn {
+  width: 80px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn_oval {
+  width: 200px;
+  height: 30px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+}
+
+.pad5 {
+  padding: 5px;
+}
+
+.pad10 {
+  padding: 10px;
+}
+
+.pad15 {
+  padding: 15px;
+}
+
+.pad20 {
+  padding: 20px;
+}
+
+.pad25 {
+  padding: 25px;
+}
+
+.h2 {
+  font-size: 30px;
+  border-radius: 3px;
+}
+
+.text_center {
+  text-align: center;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.bold {
+  font-weight: 900;
+}
+
+.fleft {
+  float: left;
+}
+
+.register {
+  display: none;
+}
+/*# sourceMappingURL=vars.css.map */

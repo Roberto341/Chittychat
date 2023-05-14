@@ -1,0 +1,47 @@
+body {background:#ededed; color:#fff;}
+
+.chat_head, .chat_footer, .modal_top, .top_background{background: black;color: #fff;}
+.background_chat{background: black}
+.input_wrap{background: rgb(255, 255, 255);border-top: 1px solid rgb(237, 237, 237);}
+.input_item{color:#444;}
+input, textarea, .post_input_container {background: rgb(242, 242, 242);color: rgb(102, 102, 102);border: 1px solid rgb(230, 230, 230) !important;}
+.default_btn{background: rgb(1, 40, 50); color: rgb(255, 255, 255);}
+.csend{border-radius: 100px;}
+.chat_panel{background: #191919;}
+.panel_bar,.left_list,.listing_half_element,.list_element{border-bottom: 1px solid #222;}
+.border_right, #chat_left{border-right: 1px solid #ededed;}
+.panel_bar, .user_item, .user_item_custom{border-bottom: 1px solid #222;}
+.sub_menu_icon, .menui, .menuo, .menup{color: #03add8;}
+.panel_selected{background: #000;}
+.border_left, #chat_right{border-left: 1px solid #ededed;}
+.male{border: 2px solid #03add8;}
+.female{border: 2px solid pink;}
+.other{border: 2px solid #666;}
+.log2{background: #f8f8f8;}
+.user{color: #666;}
+.modal_back{background-color: rgba(0, 0, 0, 0.6);}
+.modal_in{background: #191919; color: #fff;}
+.sub_item{background: #191919; color: #fff;}
+.fmenu, .add_shadow{box-shadow: 0 0 1px 1px #000;}
+.fmenu_item, .avitem{border-bottom: 1px solid #000; background: #191919; color: #fff;}
+.modal_menu, .tab_menu{background: #333; color: #555;}
+.modal_selected, .tab_selected{background: #000; color: #fff;}
+.user_count{color: #03add8;}
+.back_theme, .theme_btn{background: #007399; color: #fff;}
+.noview{background: #333; border-bottom: 1px solid #191919;}
+.background_box{background: #fff; color: #666;}
+.default_color{color: #012832;}
+.default_bgcolor{background-color: #012832; color: white;}
+.theme_color{color: #03add8;}
+.default_btn{background: #333; color:#fff;}
+.success {color: #74b20e;}
+.error{color: red;}
+
+.listing_text, .sub_text, .date, .docu_description{color: #888;}
+/* select box color */
+.selectboxit-list, .selectboxit-btn { background-color: #f2f2f2; color:#666;  border:1px solid #e6e6e6 !important; } /* background of select box */
+.selectboxit-list .selectboxit-focus .selectboxit-option-anchor { background-color: #ededed; color:#666; } /* color of sub menu hover */
+.selectboxit-default-arrow { border-top: 4px solid #666; }
+.selectboxit-btn.selectboxit-enabled:hover, .selectboxit-btn.selectboxit-enabled:focus, .selectboxit-btn.selectboxit-enabled:active { background:#f2f2f2; color:#666; } /* background selected hover */
+.selectboxit-options { background:#fff; border:1px solid #ccc; } /* background color of the options */
+.selectboxit-list .selectboxit-option-anchor { color:#666; } /* color of sub menu item */

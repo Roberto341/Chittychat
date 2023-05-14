@@ -1,0 +1,40 @@
+body {background:#FC0FC0; color:rgb(224, 218, 218);}
+
+.chat_head, .chat_footer, .modal_top, .top_background{background: #FF6964;color: rgb(224, 218, 218);}
+.background_chat{background: #810161;}
+.input_wrap{background: #FF66CC;}
+.input_item{color: rgb(224, 218, 218);}
+input, textarea, .post_input_container {background: #DE3163; color: rgb(224, 218, 218);border: 1px solid #ff64e5 !important;}
+.default_btn{background: #DE3163; color: rgb(255, 255, 255);}
+.csend{border-radius: 100px;}
+.chat_panel{background: #DE6FA1;}
+.panel_bar,.left_list,.listing_half_element, .list_element{border-bottom: 1px solid #ff64e5;}
+.border_right, #chat_left{border-right: 1px solid #ff64e5;}
+.panel_bar, .user_item, .user_item_custom{border-bottom: 1px solid #ff64e5;}
+.sub_menu_icon, .menui, .menuo, .menup{color: #03add8;}
+.panel_selected{background: #EC5578;}
+.border_left, #chat_right{border-left: 1px solid #ff64e5;}
+.male{border: 2px solid #03add8;}
+.female{border: 2px solid pink;}
+.other{border: 2px solid #666;}
+.log2{background: #e24fc2;}
+.user{color: #666;}
+.modal_back{background-color: rgba(0, 0, 0, 0.6);}
+.element_color,#private_box,.modal_in{background: #EC5578; color: rgb(224, 218, 218);}
+.sub_item{background: #222; color: rgb(224, 218, 218);}
+.fmenu, .add_shadow, #private_box{box-shadow: 0 0 1px 1px #FF6964;}
+.fmenu_item, .avitem{border-bottom: 1px solid #FF6964; background: #FF0090; color: rgb(224, 218, 218);}
+.modal_menu, .tab_menu{background: #F987C5;}
+.modal_selected, .tab_selected{background: #DE3163;}
+.user_count{color: #03add8;}
+.back_theme{background: #03add8; color: rgb(224, 218, 218);}
+.noview{background: #F81894;}
+.background_box{background: #c20793; color: rgb(224, 218, 218);}
+.default_color{color: #012832;}
+.theme_color{color: #03add8;}
+.back_theme, .theme_btn{background: #FF6964; color: rgb(224, 218, 218);}
+.success {color: #74b20e;}
+.selectboxit-btn {background-color: #151515; border: 1px solid #222; color: rgb(224, 218, 218);}
+.selectboxit-btn.selectboxit-enabled:hover, .selectboxit-btn.selectboxit-btn.selectboxit-enabled:focus{background: #151515; color: #fff;}
+.selectboxit-default-arrow {border-top: 4px solid #666;}
+.sub_text{color: #888;}

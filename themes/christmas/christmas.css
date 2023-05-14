@@ -1,0 +1,36 @@
+body {background:#236D00; color:#fff;}
+
+.chat_head, .chat_footer, .modal_top, .top_background{background: #194703;color: #fff;}
+.background_chat{background: #191919;}
+.input_wrap{background: #103100;}
+.input_item{color: #fff;}
+input, textarea, .post_input_container {background: #163308; color: #fff;border: 1px solid #222 !important;}
+.default_btn{background: #7c0404; color: rgb(255, 255, 255);}
+.csend{border-radius: 100px;}
+.chat_panel{background: #470a0a;}
+.panel_bar,.left_list,.listing_half_element, .list_element{border-bottom: 1px solid #275A0F;}
+.border_right, #chat_left{border-right: 1px solid #0d2103;}
+.panel_bar, .user_item, .user_item_custom{border-bottom: 1px solid #275A0F;}
+.sub_menu_icon, .menui, .menuo, .menup{color: #03add8;}
+.panel_selected{background: #0d2103;}
+.border_left, #chat_right{border-left: 1px solid #0d2103;}
+.male{border: 2px solid #03add8;}
+.female{border: 2px solid pink;}
+.other{border: 2px solid #666;}
+.log2{background: rgba(20, 17, 17, 0.404);}
+.user{color: #666;}
+.modal_back{background-color: rgba(0, 0, 0, 0.6);}
+#private_box,.modal_in{background: #3d0d05; color: #fff;}
+.sub_item{background: #275A0F; color: #fff;}
+.fmenu, .add_shadow, #private_box{box-shadow: 0 0 1px 1px #1E470A;}
+.fmenu_item, .avitem{border-bottom: 1px solid #275A0F; background: #0d2103; color: #fff;}
+.modal_menu, .tab_menu{background: #0d2103;}
+.modal_selected, .tab_selected{background: #236D00;}
+.user_count{color: #03add8;}
+.back_theme{background: #03add8; color: #fff;}
+.noview{background: #275A0F;}
+.background_box{background-image: url("../../imgs/christmas_theme_bg.jpg"); background-repeat: no-repeat; background-size: cover; background-position: 0%;}
+.default_color{color: #012832;}
+.theme_color{color: #03add8;}
+.back_theme, .theme_btn{background: #007399; color: #fff;}
+.success {color: #74b20e;}

@@ -1,0 +1,35 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background-color: black;
+    color: white;
+}
+
+h2{
+    text-align: center;
+}
+
+.banCirc{
+    background-color: red;
+    width: 300px;
+    height: 300px;
+    margin: 0px auto 0;
+    margin-top: 15%;
+    animation: anim 5s infinite ease-in-out;
+}
+
+.banCirc img{
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes anim{
+    50%{
+        transform: rotateZ(180deg);
+    }
+    100%{
+        transform: rotateZ(360deg);
+    }
+}
