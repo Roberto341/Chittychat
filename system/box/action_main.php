@@ -19,9 +19,9 @@ if(mySelf($user['user_id'])){
 $main_actions = '';
 $room_actions = '';
 
-$main_actions = trim(boomTemplate('element/main_actions', $user));
+$main_actions = trim(waliTemplate('element/main_actions', $user));
 if(insideChat($curpage)){
-    $room_actions = trim(boomTemplate('element/room_actions', $user));
+    $room_actions = trim(waliTemplate('element/room_actions', $user));
 }
 ?>
 <div class="modal_top">

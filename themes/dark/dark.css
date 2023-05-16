@@ -3,6 +3,7 @@ body {background:#111; color:#fff;}
 .chat_head, .chat_footer, .modal_top, .top_background{background: #111;color: #fff;}
 .background_chat{background: #191919;}
 .input_wrap{background: #191919;}
+.modal_in{border: 1px solid #222;}
 .input_item{color: #666;}
 input, textarea, .post_input_container {background: #151515; color: #fff;border: 1px solid #222 !important;}
 .default_btn{background: #333; color: rgb(255, 255, 255);}
@@ -61,3 +62,5 @@ input, textarea, .post_input_container {background: #151515; color: #fff;border:
 
 .hunter_private{color: #fff; background: #007399;}
 .target_private{color: #fff; background: #333;}
+
+.my_notice{color: #fff; background: #006699; padding: 3px 10px; display: inline-block; line-height: 1em; margin-top: 2px; border-radius: 20px; font-weight: normal;}

@@ -59,7 +59,7 @@ if(isset($_POST['last'], $_POST['snum'], $_POST['caction'], $_POST['fload'], $_P
 			$d['notify'] = $fetch['notify_count'];
 			$d['news'] = $fetch['news_count'];
 			$d['nnotif'] = $data['naction'];
-			if(boomAllow(8)){
+			if(waliAllow(8)){
 				$d['report'] = $fetch['report_count'];
 			}
 		}

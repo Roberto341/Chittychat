@@ -50,15 +50,15 @@
 <div class="saved_data">
 	<span class="saved_span"></span>
 </div>
-<?php if(boomLogged()){ ?>
-<audio class="hidden" id="private_sound" src="/chat/sounds/private.mp3"></audio>
-<audio class="hidden" id="message_sound" src="/chat/sounds/new_messages.mp3"></audio>
-<audio class="hidden" id="username_sound" src="/chat/sounds/username.mp3"></audio>
-<audio class="hidden" id="whistle_sound" src="/chat/sounds/whistle.mp3"></audio>
-<audio class="hidden" id="notify_sound" src="/chat/sounds/notify.mp3"></audio>
-<audio class="hidden" id="news_sound" src="/chat/sounds/new_news.mp3"></audio>
-<audio class="hidden" id="clear_sound" src="/chat/sounds/clear.mp3"></audio>
-<audio class="hidden" id="join_sound" src="/chat/sounds/join.mp3"></audio>
-<audio class="hidden" id="leave_sound" src="/chat/sounds/leave.mp3"></audio>
-<audio class="hidden" id="action_sound" src="/chat/sounds/action.mp3"></audio>
+<?php if(waliLogged()){ ?>
+<audio class="hidden" id="private_sound" src="/chatsite/sounds/private.mp3"></audio>
+<audio class="hidden" id="message_sound" src="/chatsite/sounds/new_messages.mp3"></audio>
+<audio class="hidden" id="username_sound" src="/chatsite/sounds/username.mp3"></audio>
+<audio class="hidden" id="whistle_sound" src="/chatsite/sounds/whistle.mp3"></audio>
+<audio class="hidden" id="notify_sound" src="/chatsite/sounds/notify.mp3"></audio>
+<audio class="hidden" id="news_sound" src="/chatsite/sounds/new_news.mp3"></audio>
+<audio class="hidden" id="clear_sound" src="/chatsite/sounds/clear.mp3"></audio>
+<audio class="hidden" id="join_sound" src="/chatsite/sounds/join.mp3"></audio>
+<audio class="hidden" id="leave_sound" src="/chatsite/sounds/leave.mp3"></audio>
+<audio class="hidden" id="action_sound" src="/chatsite/sounds/action.mp3"></audio>
 <?php } ?>

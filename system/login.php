@@ -5,31 +5,29 @@
          $uname = validate($_POST['username']);
          $pass = validate($_POST['password']);
          
-         $sql = "SELECT * FROM users WHERE user_name = '$uname' AND user_password = '$pass'";
-         $result = mysqli_query($conn, $sql);
-         if(mysqli_num_rows($result) === 1){
-             $row = mysqli_fetch_assoc($result);
-             if($row['user_name'] === $uname && $row['user_password'] === $pass){
+         $get_login = $mysqli->query("SELECT * FROM wali_users WHERE user_name = '$uname' AND user_password = '$pass'");
+         if($get_login->num_rows > 0){
+            $ldata = $get_login->fetch_assoc();
+            if($ldata['user_name'] === $uname && $ldata['user_password'] === $pass){
+                $log = $mysqli->query("UPDATE wali_users SET user_roomid='0' WHERE user_name='$uname'");
                  setcookie('username', $uname, time() + 259200, '/');
-                 setcookie('rank', $row['user_rank'], time() + 259200, '/');
-                 setcookie('room', $row['user_roomid'], time() + 259200, '/');
-                 $sql2 = "UPDATE users SET user_roomid='$_COOKIE[room]' AND loggedIn='1' WHERE user_name = '$uname'";
-                 $result2 = mysqli_query($conn, $sql2);
-                 if($result2){
-                     echo boomCode(3, array("custom"=>$row['user_roomid']));
-                     setBoomCookie($row['user_id'], $row['user_password']);
-                    //  header("Location: ../index.php");
-                 }
+                 setcookie('rank', $ldata['user_rank'], time() + 259200, '/');
+                 setcookie('room', $ldata['user_roomid'], time() + 259200, '/');
+                 setWaliLang($ldata['user_language']);
+                 setWaliCookie($ldata['user_id'], $ldata['user_password']);
+                 echo waliCode(3);
                  exit();
-                }
-                else{
-                    echo boomCode(2);
-                    exit();
-                }
             }
+            else{
+                echo waliCode(1);
+                exit();
+            }
+         }
         }
         else{
-            echo boomCode(1);
+            echo waliCode(2);
             exit();
         }
 ?>
+
+

@@ -1,7 +1,6 @@
 <?php 
 require('../config.php'); 
 ?>
-<form action="system/signup.php" method="post">
 <div id="registration_form_box" class="pad_box">
 	<div class="boom_form">
 		<p class="label"><?php echo $lang['username']; ?></p>
@@ -37,5 +36,4 @@ require('../config.php');
 	<div class="rules_text_elem tpad10">
 		<p class="rules_text text_xsmall sub_text"><?php echo $lang['i_agree']; ?> <span class="rules_click" onclick="showRules();"><?php echo $lang['rules']; ?></span></p>
 	</div>
-</form>
 </div>

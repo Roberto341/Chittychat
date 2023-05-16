@@ -61,7 +61,7 @@
 	<div class="section intro_footer" id="main_footer">
 		<div class="section_content">
 			<div class="section_inside">
-				<?php boomFooterMenu(); ?>
+				<?php waliFooterMenu(); ?>
 			</div>
 		</div>
 		<div class="clear"></div>

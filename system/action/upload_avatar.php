@@ -17,10 +17,10 @@ if(isset($_POST) == true){
         if(move_uploaded_file($_FILES["avatar_upload"]["tmp_name"], $targetFilePath)){
             // Insert into datatbase
             $filePath = trim($targetFilePath, "\.\./");
-            $sql = "UPDATE users SET user_avatar='$filePath' WHERE user_id='{$data['user_id']}'";
+            $sql = "UPDATE wali_users SET user_avatar='$filePath' WHERE user_id='{$data['user_id']}'";
             $result = mysqli_query($mysqli, $sql);
             if($result){
-                echo boomCode(1, array('avatar'=> getFileName($filePath)));
+                echo waliCode(1, array('avatar'=> getFileName($filePath)));
                 die();
             }
             // ......

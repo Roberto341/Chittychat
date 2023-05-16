@@ -10,7 +10,7 @@ if($page['page'] == 'chat'){
 	$room = roomDetails(1);
 	$page['page_title'] = $room['room_name'];
 }
-if(boomLogged() && !boomAllow($page['page_rank'])){
+if(waliLogged() && !waliAllow($page['page_rank'])){
 	header('location: ' . $data['domain']);
 	die();
 }
@@ -29,7 +29,7 @@ if(boomLogged() && !boomAllow($page['page_rank'])){
 <link rel="stylesheet" type="text/css" href="css/selectboxit.css">
 <link rel="stylesheet" type="text/css" href="scripts/jqueryui/jquery-ui.min.css">
 <link rel="stylesheet" type="text/css" href="css/chat.css">
-<?php if(!boomLogged()){ ?>
+<?php if(!waliLogged()){ ?>
 <link rel="stylesheet" type="text/css" href="control/login/<?php echo getLoginPage(); ?>/login.css">
 <?php } ?>
 <link id="gradient_sheet" rel="stylesheet" type="text/css" href="css/colors.css">
@@ -42,7 +42,7 @@ if(boomLogged() && !boomAllow($page['page_rank'])){
 <script data-cfasync="false" src="scripts/global.min.js"></script>
 <script data-cfasync="false" src="scripts/function_split.js"></script>
 <script data-cfasync="false" src="system/action/upload.js"></script>
-<?php if(boomLogged()){ ?>
+<?php if(waliLogged()){ ?>
 <script data-cfasync="false" src="scripts/logged.js"></script>
 <?php } ?>
 <link rel="stylesheet" type="text/css" href="css/custom.css">
@@ -50,15 +50,16 @@ if(boomLogged() && !boomAllow($page['page_rank'])){
 		var pageRoom = '<?php echo $page['page_room']; ?>';
 		var curPage = '<?php echo $page['page']; ?>';
 		var loadPage = '<?php echo $page['page_load']; ?>';
+		var waliLoggedVar = '<?php echo $wali_access?>';
 	</script>
-<?php if(!boomLogged()){ ?>
+<?php if(!waliLogged()){ ?>
 	<script data-cfasync="false">
 		var logged = 0;
 		var utk = '0';
 		var bbfv = "";
 	</script>
 <?php } ?>
-<?php if(boomLogged()){ ?>
+<?php if(waliLogged()){ ?>
 	<script data-cfasync="false">
 		var user_rank = <?php echo $data["user_rank"]; ?>;
 		var user_id = <?php echo $data["user_id"]; ?>;
@@ -68,7 +69,7 @@ if(boomLogged() && !boomAllow($page['page_rank'])){
 		var systemLoaded = 0;
 	</script>
 <?php } ?>
-<?php if(boomLogged() && $page['page'] == 'chat'){ ?>
+<?php if(waliLogged() && $page['page'] == 'chat'){ ?>
 	<script data-cfasync="false">
 		var user_room = <?php echo $data['user_roomid']; ?>;
 		var sesid = '<?php echo $data['session_id']; ?>';
@@ -102,7 +103,7 @@ if(checkKick()){
 	include('body_end.php');
 	die();
 }
-if(!boomLogged() && $page['page_out'] == 0){
+if(!waliLogged() && $page['page_out'] == 0){
 	include('control/login/' . getLoginPage() . '/login.php');
 	include('body_end.php');
 	die();

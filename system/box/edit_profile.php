@@ -79,7 +79,7 @@ require('../config_session.php');
 				<i class="fa fa-edit listing_icon"></i><?php echo "Edit username" ?>
 			</div>
 			<?php }?>
-			<?php if(canUCol()){?>
+			<?php if(canNameColor()){?>
 			<div onclick="changeColor();" class="listing_half_element">
 				<i class="fa fa-paint-brush listing_icon"></i><?php echo "Edit username color" ?>
 			</div>

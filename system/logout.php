@@ -1,26 +1,22 @@
 <?php 
-// session_start();
-require_once("config.php");
-$sql = "SELECT * FROM users WHERE user_name='$_COOKIE[username]'";
-$result = mysqli_query($conn, $sql);
+require(__DIR__ . "/config_session.php");
 
-if(mysqli_num_rows($result) > 0){
-    $row = mysqli_fetch_assoc($result);
-setcookie('username', $row['username'], time()-259200, '/');
-setcookie('user_id', $row['user_id'], time()-259200, '/');
-setcookie('rank', $row['user_rank'], time()-259200, '/');
-setcookie('loggedin',$row['loggedIn'],  time() - 259200, '/');
-setcookie('room', $row['user_roomid'],time()-259200, '/');
-
-$sql2 = "UPDATE users SET loggedIn='0' AND user_roomid = 1 AND user_role = 0 WHERE user_id='{$data['user_id']}'";
-$result2 = mysqli_query($conn, $sql2);
-if($result2){
-    unsetBoomCookie();
+if(isset($_POST['logout_from_system'])){
+    unsetWaliCookie();
+    setcookie('username', $row['username'], time()-259200, '/');
+    setcookie('rank', $row['user_rank'], time()-259200, '/');
+    setcookie('room', $row['user_roomid'],time()-259200, '/');
+    $mysqli->query("UPDATE `wali_users` SET `user_roomid` = '0', user_role = '0' WHERE `user_id` = '{$data["user_id"]}'");
     leaveRoom();
-    session_unset();
-    session_destroy();
-    header("Location: ../index.php");
+	if(isGuest($data)){
+		softGuestDelete($data);
+	}
+    echo 1;
+    die();
 }
 
+if(isset($_POST['overwrite'])){
+    unsetWaliCookie();
+    die();
 }
 ?>

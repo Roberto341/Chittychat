@@ -1,7 +1,7 @@
 <?php
     //session_start();
     //@author Robert Scharaswak Jr
-    define('BOOM_PATH', dirname(__DIR__));
+    define('WALI_PATH', dirname(__DIR__));
     $check_install = 1;
     $wali['color_count'] = 32;			// number of color used and defined in css
     $wali['gradient_count'] = 40;		// number of gradient used and defined in css
@@ -89,34 +89,29 @@ $wali['clean_delay'] = 5;			// delay for system cleaning in minutes
 
 // cookie and session settings
 
-define('BOOM_PREFIX', 'bc_');
+define('WALI_PREFIX', 'bc_');
 
 // do not edit function below they are very important for the system to work properly
 
-define('BOOM', 1);
+define('WALI', 1);
 
-$DB_HOST= "localhost";
-$DB_USER= "root";
-$DB_PASS = "";
-$DB_NAME = "chat";
+define('WALI_DHOST', $DB_HOST);
+define('WALI_DNAME', $DB_NAME);
+define('WALI_DUSER', $DB_USER);
+define('WALI_DPASS', $DB_PASS);
 
-define('BOOM_DHOST', $DB_HOST);
-define('BOOM_DNAME', $DB_NAME);
-define('BOOM_DUSER', $DB_USER);
-define('BOOM_DPASS', $DB_PASS);
-
-function setBoomCookie($i, $p){
-	setcookie("user_id","$i",time()+ 31556926, '/');
-	setcookie("utk","$p",time()+ 31556926, '/');
+function setWaliCookie($i, $p){
+	setcookie(WALI_PREFIX . "userid","$i",time()+ 31556926, '/');
+	setcookie(WALI_PREFIX . "utk","$p",time()+ 31556926, '/');
 }
-function unsetBoomCookie(){
-	setcookie("user_id","",time() - 1000, '/');
-	setcookie("utk","",time() - 1000, '/');
+function unsetWaliCookie(){
+	setcookie(WALI_PREFIX . "userid","",time() - 1000, '/');
+	setcookie(WALI_PREFIX . "utk","",time() - 1000, '/');
 }
-function setBoomLang($val){
-	setcookie(BOOM_PREFIX . "lang","$val",time()+ 31556926, '/');
+function setWaliLang($val){
+	setcookie(WALI_PREFIX . "lang","$val",time()+ 31556926, '/');
 }
-function setBoomCookieLaw(){
-	setcookie(BOOM_PREFIX . "claw","1",time()+ 31556926, '/');
+function setWaliCookieLaw(){
+	setcookie(WALI_PREFIX . "claw","1",time()+ 31556926, '/');
 }
 ?>

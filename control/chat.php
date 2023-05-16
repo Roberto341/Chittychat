@@ -20,7 +20,7 @@
 		</div>
 		<div id="notify_private" class="head_notify bnotify"></div>
 	</div>
-	<?php if(boomAllow(1)){ ?>
+	<?php if(waliAllow(1)){ ?>
 	<div onclick="friendRequest();" class="head_option">
 		<div class="btable">
 			<div class="bcell_mid">
@@ -73,7 +73,7 @@
 					<?php echo $lang['room_side_settings']; ?>
 				</div>
 			</div>
-			<?php if(boomAllow(4)){ ?>
+			<?php if(waliAllow(4)){ ?>
 			<div class="fmenu_item" onclick="openLinkPage('admin.php');">
 				<div class="fmenu_icon">
 					<i class="fa fa-dashboard menuo"></i>
@@ -112,7 +112,7 @@
 						<?php echo listStatus($data['user_status']); ?>
 					</div>
 				</div>
-				<?php if(useWall() && boomAllow(1)){ ?>
+				<?php if(useWall() && waliAllow(1)){ ?>
 				<div id="wall_menu" class="left_list left_item" onclick="getWall();">
 					<div class="left_item_icon">
 						<i class="fa fa-rss menui"></i>
@@ -216,7 +216,7 @@
 										<input type="text" spellcheck="false" name="content" placeholder="<?php echo $lang['type_something']; ?>" maxlength="<?php echo $data['max_main']?>" id="content" autocomplete="off"/>
 									</div>
 									<div id="inputt_right" class="main_item">
-										<button type="submit"  class="default_btn csend" id="submit_button" onclick="sendMain()"><i class="fa fa-paper-plane"></i></button>
+										<button type="submit"  class="default_btn csend" id="submit_button"><i class="fa fa-paper-plane"></i></button>
 									</div>
 								</div>
 							</form>
@@ -238,7 +238,7 @@
 					<div id="users_option"title="<?php echo $lang['user_list']; ?>" class="panel_selected panel_option" onclick="userReload(1);">
 						<i class="fa fa-users"></i>
 					</div>
-					<?php if(boomAllow(1)){ ?>
+					<?php if(waliAllow(1)){ ?>
 					<div id="friends_option" title="<?php echo $lang['friend_list']; ?>" class="panel_option" onclick="myFriends(1);">
 						<i class="fa fa-user-plus"></i>
 					</div>
@@ -394,13 +394,13 @@
 </div>
 
 <div id="action_menu" class="hidden">
-	<?php echo boomTemplate('element/actions'); ?>
+	<?php echo waliTemplate('element/actions'); ?>
 </div>
 <div id="log_menu_content" class="hidden">
-	<?php echo boomTemplate('element/actions_logs'); ?>
+	<?php echo waliTemplate('element/actions_logs'); ?>
 </div>
 <div id="status_list" class="hidden">
-	<?php echo boomTemplate('element/status_list'); ?>
+	<?php echo waliTemplate('element/status_list'); ?>
 </div>
 <script data-cfasync="false" src="scripts/main.js"></script>
 <script data-cfasync="false" src="scripts/menu.js"></script>

@@ -1,5 +1,5 @@
 <?php 
-function boomCode($code, $custom = array()){
+function waliCode($code, $custom = array()){
 	$def = array('code'=> $code);
 	$res = array_merge($def, $custom);
 	return json_encode( $res, JSON_UNESCAPED_UNICODE);
@@ -8,18 +8,18 @@ function getFileName($file){
     return $file;
 }
 function escape($t){
-	global $conn;
-	return $conn->real_escape_string(trim(htmlspecialchars($t, ENT_QUOTES)));
+	global $mysqli;
+	return $mysqli->real_escape_string(trim(htmlspecialchars($t, ENT_QUOTES)));
 }
 function myAvatar($a){
 	return $a;
 }
 function checkToken() {
 	global $wali;
-    if (!isset($_POST['token']) || !isset($_SESSION[BOOM_PREFIX . 'token']) || empty($_SESSION[BOOM_PREFIX . 'token'])) {
+    if (!isset($_POST['token']) || !isset($_SESSION[WALI_PREFIX . 'token']) || empty($_SESSION[WALI_PREFIX . 'token'])) {
         return false;
     }
-	if($_POST['token'] == $_SESSION[BOOM_PREFIX . 'token']){
+	if($_POST['token'] == $_SESSION[WALI_PREFIX . 'token']){
 		return true;
 	}
     return false;
@@ -64,11 +64,11 @@ function createIgnore(){
 	while($ignore = $get_ignore->fetch_assoc()){
 		$ignore_list .= $ignore['ignored'] . '|';
 	}
-	$_SESSION[BOOM_PREFIX . 'ignore'] = '|' . $ignore_list;
+	$_SESSION[WALI_PREFIX . 'ignore'] = '|' . $ignore_list;
 }
 function getIgnore(){
 	global $wali;
-	return $_SESSION[BOOM_PREFIX . 'ignore'];
+	return $_SESSION[WALI_PREFIX . 'ignore'];
 }
 function isIgnored($ignore, $id){
 	global $wali;
@@ -76,20 +76,20 @@ function isIgnored($ignore, $id){
 		return true;
 	}
 }
-function boomRole($role){
+function waliRole($role){
 	global $data;
 	if($data['user_role'] >= $role){
 		return true;
 	}
 }
 function canDeleteRoomLog(){
-	if(boomAllow(4) && boomRole(0)){
+	if(waliAllow(4) && waliRole(0)){
 		return true;
 	}
 }
 function canDeleteSelfLog($p){
 	global $data, $wali;
-	if($p['user_id'] == $data['user_id'] && boomAllow($wali['can_delete_slogs'])){
+	if($p['user_id'] == $data['user_id'] && waliAllow($wali['can_delete_slogs'])){
 		return true;
 	}
 }
@@ -176,7 +176,7 @@ function systemReplace($text){
 }
 function processChatMsg($post) {
 	global $data;
-	if($post['user_id'] != $post['user_id'] && !preg_match('/http/',$post['post_message'])){
+	if($post['user_id'] != $data['user_id'] && !preg_match('/http/',$post['post_message'])){
 		$post['post_message'] = str_ireplace($data['user_name'], '<span class="my_notice">' . $data['user_name'] . '</span>', $post['post_message']);
 	}
 	return mb_convert_encoding(systemReplace($post['post_message']), 'UTF-8', 'auto');
@@ -198,6 +198,9 @@ function chatDate($date){
 function displayDate($date){
 	return date("j/m G:i", $date);
 }
+function longDate($date){
+	return date("Y-m-d ", $date);
+}
 function userGender($g){
 	global $lang;
 	switch($g){
@@ -210,12 +213,12 @@ function userGender($g){
 	}
 }
 function canDeleteLog(){
-	global $data;
-	if($data['user_rank'] >= $data['delete_logs']){
+	global $wali;
+	if(waliAllow(1) && waliAllow($wali['can_delete_logs'])){
 		return true;
 	}
 }
-function boomAllow($rank){
+function waliAllow($rank){
 	global $data;
 	if($data['user_rank'] >= $rank){
 		return true;
@@ -243,7 +246,7 @@ function myColor($u){
 	return $u['user_color'];
 }
 function myColorFont($u){
-	return $u['username_color'] . ' ' . $u['user_font'];
+	return $u['user_color'] . ' ' . $u['user_font'];
 }
 function myTextColor($u){
 	return $u['wccolor'] . ' ' . $u['wcbold'] . ' ' . $u['wcfont'];
@@ -255,7 +258,7 @@ function isBot($user){
 }
 function canReport(){
 	global $wali;
-	if(boomAllow($wali['can_report'])){
+	if(waliAllow($wali['can_report'])){
 		return true;
 	}
 }
@@ -264,7 +267,7 @@ function createLog($data, $post){
 	$report = 0;
 	$delete = 0;
 	$m = 0;
-	if(boomAllow($post['log_rank'])){
+	if(waliAllow($post['log_rank'])){
 		return false;
 	}
 	if(canDeleteLog() || canDeleteRoomLog() || canDeleteSelfLog($post)){
@@ -280,7 +283,7 @@ function createLog($data, $post){
 	}
 	return  '<li id="log' . $post['post_id'] . '" data="' . $post['post_id'] . '" class="ch_logs ' . $post['type'] . '">
 				<div class="avtrig chat_avatar" onclick="avMenu(this,'.$post['user_id'].',\''.$post['user_name'].'\','.$post['user_rank'].','.$post['user_bot'].',\''.$post['country'].'\',\''.$post['user_cover'].'\',\''.$post['user_age'].'\',\''.userGender($post['user_sex']).'\');">
-					<img class="cavatar avav ' . avGender($data['user_sex']) . ' ' . ownAvatar($post['user_id']) . '" src="' . myAvatar($post['user_avatar']) . '"/>
+					<img class="cavatar avav ' . avGender($post['user_sex']) . ' ' . ownAvatar($post['user_id']) . '" src="' . myAvatar($post['user_avatar']) . '"/>
 				</div>
 				<div class="my_text">
 					<div class="btable">
@@ -342,7 +345,7 @@ function muteLog($user){
 		systemPostChat($user['user_roomid'], $content, array('type'=> 'system__action'));
 	}
 }
-function boomNotify($type, $custom = array()){
+function waliNotify($type, $custom = array()){
 	global $mysqli, $data;
 	$def = array(
 		'hunter'=> $data['system_id'],
@@ -364,7 +367,7 @@ function boomNotify($type, $custom = array()){
 	VALUE ('{$c['hunter']}', '{$c['target']}', '$type', '" . time() . "', '{$c['source']}', '{$c['sourceid']}', '{$c['rank']}', '{$c['delay']}', '{$c['reason']}', '{$c['custom']}', '{$c['custom2']}')");
 	updateNotify($c['target']); 
 }
-function boomConsole($type, $custom = array()){
+function waliConsole($type, $custom = array()){
 	global $mysqli, $data;
 	$def = array(
 		'hunter'=> $data['user_id'],
@@ -379,7 +382,7 @@ function boomConsole($type, $custom = array()){
 	$c = array_merge($def, $custom);
 	$mysqli->query("INSERT INTO wali_console (hunter, target, room, ctype, crank, delay, reason, custom, custom2, cdate) VALUES ('{$c['hunter']}', '{$c['target']}', '{$c['room']}', '$type', '{$c['rank']}', '{$c['delay']}', '{$c['reason']}', '{$c['custom']}', '{$c['custom2']}', '" . time() . "')");
 }
-function boomHistory($type, $custom = array()){
+function waliHistory($type, $custom = array()){
 	global $mysqli, $data;
 	$def = array(
 		'hunter'=> $data['user_id'],
@@ -397,7 +400,7 @@ function boomHistory($type, $custom = array()){
 }
 function updateNotify($id){
 	global $mysqli;
-	$mysqli->query("UPDATE users SET naction = naction + 1 WHERE user_id = '$id'");
+	$mysqli->query("UPDATE wali_users SET naction = naction + 1 WHERE user_id = '$id'");
 }
 function userInRoom($user){
 	if($user['user_roomid'] != '0'){
@@ -568,7 +571,7 @@ function profileAvatar($a){
 }
 function userActive($user, $c){
 	global $data, $wali;
-	if(!isVisible($user) && !boomAllow($wali['can_inv_view'])){
+	if(!isVisible($user) && !waliAllow($wali['can_inv_view'])){
 		return '<img class="' . $c . '" src="default_images/icons/innactive.svg"/>';
 	}
 	else if($user['last_action'] >= getDelay() || isBot($user)){
@@ -588,7 +591,7 @@ function postPrivate($from, $to, $content, $snum = ''){
 	$mysqli->query("INSERT INTO `wali_private` (time, target, hunter, message) VALUES ('" . time() . "', '$to', '$from', '$content')");
 	$last_id = $mysqli->insert_id;
 	if($to != $from){
-		$mysqli->query("UPDATE users SET pcount = pcount + 1 WHERE user_id = '$to'");
+		$mysqli->query("UPDATE wali_users SET pcount = pcount + 1 WHERE user_id = '$to'");
 	}
 	if($snum != ''){
 		$user_post = array(
@@ -601,6 +604,52 @@ function postPrivate($from, $to, $content, $snum = ''){
 		if(!empty($post)){
 			return privateLog($post, $post['user_id']);
 		}
+	}
+}
+function roomRanking($rank = 0){
+	global $lang;
+	$room_menu = '<option value="0" ' . selCurrent($rank, 0) . '>' . roomAccessTitle(0) . '</option>';
+	if(waliAllow(1)){
+		$room_menu .= '<option value="1" ' . selCurrent($rank, 1) . '>' . roomAccessTitle(1) . '</option>';
+	}
+	if(waliAllow(2)){ 
+		$room_menu .= '<option value="2" ' . selCurrent($rank, 2) . '>' . roomAccessTitle(2) . '</option>';
+	}
+	if(waliAllow(3)){ 
+		$room_menu .= '<option value="3" ' . selCurrent($rank, 3) . '>' . roomAccessTitle(3) . '</option>';
+	}
+	if(waliAllow(4)){ 
+		$room_menu .= '<option value="4" ' . selCurrent($rank, 4) . '>' . roomAccessTitle(4) . '</option>';
+	}
+	return $room_menu;
+}
+
+function canEditRoom(){
+	if(waliRole(5)){
+		return true;
+	}
+}
+function waliActive($feature){
+	if($feature <= 11){
+		return true;
+	}
+}
+function validGender($sex){
+	$gender = array(1,2,3);
+	if(in_array($sex, $gender)){
+		return true;
+	}
+}
+function canMood(){
+	global $data;
+	if(waliAllow($data['allow_mood'])){
+		return true;
+	}
+}
+function canAbout(){
+	global $wali;
+	if(waliAllow($wali['can_edit_about'])){
+		return true;
 	}
 }
 ?>

@@ -1,61 +1,3 @@
-system = {
-	accessRequirement: "You do not meet the requirements to access this room",
-	actionComplete: "Action completed",
-	alreadyAction: "This action is already set",
-	alreadyErase: "This post does not exist anymore",
-	alreadyReported: "This post has already been reported",
-	badActual: "Wrong actual password",
-	badLogin: "Incorrect Username or Password",
-	cannotContact: "You cannot contact this member at this time",
-	cannotUser: "You cannot perform this action on the specified user",
-	cantModifyUser: "You do not have right to modify this user",
-	cleanComplete: "Clean complete",
-	confirmedCommand: "Command successfully confirmed",
-	dataExist: "Data already exists in the database",
-	emailExist: "An account already exists with that email",
-	emailSent: "Email sent. please check your email.",
-	emptyField: "Some required field are empty",
-	error: "An error occured",
-	fileBig: "File size is too big",
-	friendSent: "Your friend request has been sent",
-	ignored: "User added to your ignore list",
-	invalidCode: "Invalid code",
-	invalidCommand: "That command does not exist.",
-	invalidEmail: "Please enter valid email address",
-	invalidUsername: "Invalid username. Please choose a new one.",
-	maxReg: "You have reached the maximum allowed registrations.  Please try again later",
-	maxRoom: "Sorry you have reached your room limit",
-	missingRecaptcha: "Please complete the reCAPTCHA form below",
-	newFriend: "Congratulations, you just made a new friend",
-	newMessage: "New message",
-	noBridge: "No bridge detected at specified location",
-	noFile: "You must select a file",
-	noResult: "No results found",
-	noUser: "Sorry no user found with those details",
-	notMatch: "New password is not matching",
-	oops: "Oops! something strange happened. Please try again later",
-	recoverySent: "Temporary password has been sent to your email",
-	registerClose: "We are sorry we do not accept new registrations at the moment",
-	reportLimit: "You have reached your report limit",
-	reported: "Report sent thank you !",
-	restrictedContent: "Posted data contains restricted content",
-	roomBlock: "Sorry you cannot enter this room at the momment",
-	roomDescription: "Room description is too short",
-	roomExist: "This room name already exist",
-	roomFull: "This room is full, please try another one",
-	roomName: "Invalid room name",
-	saved: "Saved",
-	selAge: "Please select your age",
-	selectSomething: "Please select something",
-	shortPass: "Password is too short",
-	siteConnect: "Please connect to the site to enter chat",
-	somethingWrong: "Something wrong ... please wait for an administrator to review your account.",
-	tooShort: "Search critera too short",
-	updated: "Update completed",
-	usernameExist: "Username already exists",
-	wrongFile: "Sorry, this file is not accepted.",
-	wrongPass: "Password incorrect"
-};
 resetRoom = function(troom, nroom){
 	user_room = troom;
 	$("#show_chat ul").html('');
@@ -76,31 +18,6 @@ resetRoom = function(troom, nroom){
 	}
 	else {
 		resetRightPanel();
-	}
-}
-var curCall = '';
-callSaved = function(text, type){
-	console.log(text);
-	var s = 3000;
-	if(type == 1){
-		s = 1000;
-	}
-	if(text == curCall && $('.saved_data:visible').length){
-		return false;
-	}
-	else {
-		if(type == 1){
-			$('.saved_data').removeClass('saved_warn saved_error').addClass('saved_ok');
-		}
-		if(type == 2){
-			$('.saved_data').removeClass('saved_ok saved_error').addClass('saved_warn');
-		}
-		if(type == 3){
-			$('.saved_data').removeClass('saved_warn saved_ok').addClass('saved_error');
-		}
-		$('.saved_span').text(text);
-		$('.saved_data').fadeIn(300).delay(s).fadeOut();
-		curCall = text;
 	}
 }
 listAction = function(target, act){
@@ -143,7 +60,7 @@ listAction = function(target, act){
 	}
 }
 
-boomAllow = function(rnk){
+waliAllow = function(rnk){
 	if(user_rank >= rnk){
 		return true;
 	}
@@ -160,7 +77,7 @@ function switchRoom(room, pass, rank){
 	}
 	if(waitJoin == 0){
 		waitJoin = 1;
-		if(boomAllow(rank)){
+		if(waliAllow(rank)){
 			if(pass == 1){
 				$.post('system/box/pass_room.php', {
 					room_rank: rank,
@@ -358,19 +275,120 @@ processChatPost = function(message){
 			waitReply = 0;
 	});
 }
-boomSound = function(snd){
+waliSound = function(snd){
 	if(uSound.match(snd)){
 		return true;
 	}
 }
-
-sendMain = function(event){
-	var message = $('#content').val();
-	if(message == ''){
-		event.preventDefault();
-	}else{
-
-		console.log(message);
+var waitRoom = 0;
+addRoom = function(){
+	var rrname = $('#set_room_name').val();
+	if(/^\s+$/.test(rrname) || rrname == ''){
+		callSaved(system.emptyField, 3);
 	}
-	return false;
+	else{
+		if(waitRoom == 0){
+			waitRoom = 1;
+			$.ajax({
+				url: "system/action_room.php",
+				type: "post",
+				cache: "false",
+				dataType: 'json',
+				data: {
+					set_name: $("#set_room_name").val(),
+					set_type: $("#set_room_type").val(),
+					set_pass: $("#set_room_password").val(),
+					set_description: $("#set_room_description").val(),
+					token: utk
+				},
+				success: function(response){
+					if(response.code == 1){
+						callSaved(system.error, 3);
+					}
+					else if(response.code == 2){
+						callSaved(system.roomName, 3);
+					}
+					else if(response.code == 5){
+						hideModal();
+						callSaved(system.maxRoom, 3);
+					}
+					else if(response.code == 6){
+						callSaved(system.roomExist, 3);
+					}
+					else if(response.code == 7){
+						if(curPage == 'chat'){
+							hideModal();
+							resetRoom(response.id, response.name);
+						}
+						else{
+							location.reload();
+						}
+					}
+					else{
+						waitRoom = 0;
+						return false;
+					}
+					waitRoom = 0;
+				},
+				error: function(){
+					callSaved(system.error, 3);
+				}
+			});
+		}
+		else{
+			return false;
+		}
+	}
+}
+accessRoom = function(rt, rank){
+	if(waliAllow(rank)){
+		$.ajax({
+			url: "system/action_room.php",
+			type: "post",
+			cache: false,
+			dataType: 'json',
+			data: { 
+				pass: $('#pass_input').val(),
+				room: rt,
+				get_in_room: 1,
+				token: utk
+			},
+			success: function(response){
+				if(response.code == 10){
+					if(curPage == 'chat'){
+						resetRoom(response.id, response.name);
+						hideOver();
+					}
+					else {
+						location.reload();
+					}
+				}
+				else if(response.code == 5){
+					callSaved(system.wrongPass, 3);
+					$('#pass_input').val('');
+				}
+				else if(response.code == 1){
+					callSaved(system.error, 3);
+				}
+				else if(response.code == 2){
+					callSaved(system.accessRequirement, 3);
+				}
+				else if(response.code == 4){
+					callSaved(system.error, 3);
+				}
+				else if(response.code == 99){
+					callSaved(system.roomBlock, 3);
+				}
+				else {
+					callSaved(system.error, 3);
+				}
+			},
+			error: function(){
+				callSaved(system.error, 3);	
+			}
+		});
+	}
+	else {
+		callSaved(system.accessRequirement, 3);
+	}
 }

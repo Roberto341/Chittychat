@@ -6,13 +6,13 @@ if(!isset($_POST['get_profile'], $_POST['cp'])){
 }
 $id = escape($_POST['get_profile']);
 $curpage = escape($_POST['cp']);
-$user = boomUserInfo($id);
+$user = waliUserInfo($id);
 if(empty($user)){
 	echo 2;
 	die();
 }
 $user['page'] = $curpage;
-$pro_menu = boomTemplate('element/pro_menu', $user);
+$pro_menu = waliTemplate('element/pro_menu', $user);
 $room = roomInfo($user['user_roomid']);
 ?>
 <div class="modal_wrap_top modal_top profile_background cover_size" <?php echo getCover($user); ?>>
@@ -96,13 +96,15 @@ $room = roomInfo($user['user_roomid']);
 				<div class="listing_text"><?php echo getCountry($user['country']);?></div>
 			</div>
 			<div class="listing_half_element info_pro">
-				<div class="listing_title"><?php echo 'Member since'?></div>
-				<div class="listing_text"><?php echo getAccCreate($user['acc_created']);?></div>
+				<div class="listing_title"><?php echo $lang['join_chat']?></div>
+				<div class="listing_text"><?php echo longDate($user['user_join']);?></div>
 			</div>
+			<?php if(userInRoom($user) && !empty($room)){ ?>
 			<div class="listing_half_element info_pro">
-				<div class="listing_title"><?php echo 'Current room'?></div>
-				<div class="listing_text"><?php echo getCurrentRoom($user['user_roomid']);?></div>
+				<div class="listing_title"><?php echo $lang['user_room']?></div>
+				<div class="listing_text"><?php echo $room['room_name']?></div>
 			</div>
+			<?php } ?>
 		</div>
 	</div>
 </div>

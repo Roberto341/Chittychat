@@ -63,52 +63,52 @@ isStaff = function(rnk){
 
 
 messagePlay = function(){
-	if(boomSound(1)){
+	if(waliSound(1)){
 		document.getElementById('message_sound').play();
 	}
 }
 clearPlay = function(){
-	if(boomSound(1)){
+	if(waliSound(1)){
 		document.getElementById('clear_sound').play();
 	}
 }
 joinPlay = function(){
-	if(boomSound(1)){
+	if(waliSound(1)){
 		document.getElementById('join_sound').play();
 	}
 }
 leavePlay = function(){
-	if(boomSound(1)){
+	if(waliSound(1)){
 		document.getElementById('leave_sound').play();
 	}
 }
 actionPlay = function(){
-	if(boomSound(1)){
+	if(waliSound(1)){
 		document.getElementById('action_sound').play();
 	}
 }
 whistlePlay = function(){
-	if(boomSound(1)){
+	if(waliSound(1)){
 		document.getElementById('whistle_sound').play();
 	}
 }
 privatePlay = function(){
-	if(boomSound(2)){
+	if(waliSound(2)){
 		document.getElementById('private_sound').play();
 	}
 }
 notifyPlay = function(){
-	if(boomSound(3)){
+	if(waliSound(3)){
 		document.getElementById('notify_sound').play();
 	}
 }
 usernamePlay = function(){
-	if(boomSound(4)){
+	if(waliSound(4)){
 		document.getElementById('username_sound').play();
 	}
 }
 newsPlay = function(){
-	if(boomSound(3)){
+	if(waliSound(3)){
 		document.getElementById('news_sound').play();
 	}
 }
@@ -118,6 +118,32 @@ getLanguage = function(){
 		}, function(response) {
 				showModal(response, 240);
 	});
+}
+
+var curCall = '';
+callSaved = function(text, type){
+	console.log(text);
+	var s = 3000;
+	if(type == 1){
+		s = 1000;
+	}
+	if(text == curCall && $('.saved_data:visible').length){
+		return false;
+	}
+	else {
+		if(type == 1){
+			$('.saved_data').removeClass('saved_warn saved_error').addClass('saved_ok');
+		}
+		if(type == 2){
+			$('.saved_data').removeClass('saved_ok saved_error').addClass('saved_warn');
+		}
+		if(type == 3){
+			$('.saved_data').removeClass('saved_warn saved_ok').addClass('saved_error');
+		}
+		$('.saved_span').text(text);
+		$('.saved_data').fadeIn(300).delay(s).fadeOut();
+		curCall = text;
+	}
 }
 
 $(document).ready(function(){

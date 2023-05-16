@@ -10,22 +10,22 @@ $online_count = 0;
 $onair_count = 0;
 
 if($data['last_action'] < getDelay()){
-	$mysqli->query("UPDATE users SET last_action = '". time() ."' WHERE user_id = '{$data['user_id']}'");
+	$mysqli->query("UPDATE wali_users SET last_action = '". time() ."' WHERE user_id = '{$data['user_id']}'");
 }
 
 $data_list = $mysqli->query("
-	SELECT user_name, user_mobile, username_color, user_font, user_rank, user_dj, user_onair, user_join, user_avatar, user_status, user_sex, user_age, user_cover, country,
+	SELECT user_name, user_mobile, user_color, user_font, user_rank, user_dj, user_onair, user_join, user_avatar, user_status, user_sex, user_age, user_cover, country,
 	user_id, user_mute, user_regmute, room_mute, last_action, user_bot, user_role, user_mood, country
-	FROM `users`
+	FROM `wali_users`
 	WHERE `user_roomid` = {$data["user_roomid"]} AND last_action > '$check_action' AND user_status != 4 || user_bot = 1
 	ORDER BY `user_rank` DESC, user_role DESC, `user_name` ASC
 ");
 
 if($data['max_offcount'] > 0){
 	$offline_list = $mysqli->query("
-	SELECT user_name, user_mobile, username_color, user_font, user_rank, user_dj, user_onair, user_join, user_avatar, user_status, user_sex, user_age, user_cover, country,
+	SELECT user_name, user_mobile, user_color, user_font, user_rank, user_dj, user_onair, user_join, user_avatar, user_status, user_sex, user_age, user_cover, country,
 	user_id, user_mute, user_regmute, room_mute, last_action, user_bot, user_role, user_mood, country
-	FROM `users`
+	FROM `wali_users`
 	WHERE `user_roomid` = {$data["user_roomid"]} AND last_action > '$online_delay' AND last_action < '$check_action' AND user_status != 4 AND user_rank != 0 AND user_bot = 0
 	ORDER BY last_action DESC LIMIT {$data['max_offcount']}
 	");

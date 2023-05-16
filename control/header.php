@@ -14,7 +14,7 @@
 				<i class="fa fa-home i_btm"></i>
 			</div>
 			<?php } ?>
-			<?php if(boomLogged()){?>
+			<?php if(waliLogged()){?>
 			<div onclick="showMenu('mobile_main_menu');" id="main_mob_menu" class="menutrig bclick">
 				<img class="menutrig glob_av avatar_menu" src="<?php echo myAvatar($data['user_avatar']); ?>"/>
 				<div id="mobile_main_menu" class="hideall sysmenu fmenu">
@@ -26,7 +26,7 @@
 							<?php echo $lang['my_profile']; ?>
 						</div>
 					</div>
-					<?php if($page['page'] != 'admin' && boomAllow(4)){ ?>
+					<?php if($page['page'] != 'admin' && waliAllow(4)){ ?>
 					<div class="fmenu_item" onclick="openLinkPage('admin.php');">
 						<div class="fmenu_icon">
 							<i class="fa fa-dashboard menuo"></i>

@@ -210,25 +210,7 @@ closeList = function(){
 	resetAvMenu();
 	hidePanel();
 }
-$(document).on('click', '.gprivate', function(){
-	morePriv = 0;
-	var thisPrivate = $(this).attr('data');
-	var thisUser = $(this).attr('value');
-	var thisAvatar = $(this).attr('data-av');
-	$('#private_content ul').html(largeSpinner);
-	openPrivate(thisPrivate, thisUser, thisAvatar);
-	closeList();
-	hideModal();
-	privReload = 1;
-	lastPriv = 0;
-});
-$(document).on('click', '#private_close', function(){
-	$('#private_content ul').html(largeSpinner);
-		$('#get_private').attr('value', 0);
-		$('#private_name').text('');
-		$('#private_box').toggle();
-		lastPriv = 0;
-});
+
 togglePrivate = function(type){
 	if(type == 1){
 		$('#dpriv').removeClass('privhide');
@@ -238,12 +220,6 @@ togglePrivate = function(type){
 		resetPrivate();
 	}
 }
-$(document).on('click', '.get_info', function(){
-	var profile = $(this).attr('data');
-	closeTrigger();
-	getProfile(profile);
-	resetAvMenu();
-});
 toggleLeft = function(){
     $('#chat_left').toggle();
 }
@@ -516,31 +492,114 @@ getActions = function(id){
 			}
 	});
 }
-userlist = setInterval(userReload, 10000);
-$(document).on('click', '.tab_menu_item', function(){
-	$(this).parent().find('.tab_menu_item').removeClass('tab_selected');
-	$(this).addClass('tab_selected');
-	$('#'+$(this).attr('data')+' .tab_zone').hide();
-	$('#'+$(this).attr('data-z')).fadeIn(200);
-	selectIt();
+
+///////////////////////////////// DOCUMENT LOAD FUNCTION /////////////////////////////////////////////
+$(document).ready(function(){
+	$(document).on('click', '.gprivate', function(){
+		morePriv = 0;
+		var thisPrivate = $(this).attr('data');
+		var thisUser = $(this).attr('value');
+		var thisAvatar = $(this).attr('data-av');
+		$('#private_content ul').html(largeSpinner);
+		openPrivate(thisPrivate, thisUser, thisAvatar);
+		closeList();
+		hideModal();
+		privReload = 1;
+		lastPriv = 0;
+	});
+	$(document).on('click', '#private_close', function(){
+		$('#private_content ul').html(largeSpinner);
+			$('#get_private').attr('value', 0);
+			$('#private_name').text('');
+			$('#private_box').toggle();
+			lastPriv = 0;
+	});
+	$(document).on('click', '.get_info', function(){
+		var profile = $(this).attr('data');
+		closeTrigger();
+		getProfile(profile);
+		resetAvMenu();
+	});
+	$(document).on('click', '.name_choice, .choice', function() {	
+		var curColor = $(this).attr('data');
+		if($('.user_color').attr('data') == curColor){
+			$('.wccheck').remove();
+			$('.user_color').attr('data', 'user');
+		}
+		else {
+			$('.wccheck').remove();
+			$(this).append('<i class="wccheck fa fa-check"></i>');
+			$('.user_color').attr('data', curColor);
+		}
+		previewName();
+	});
+	$(document).on('click', '.user_choice', function() {	
+		var curColor = $(this).attr('data');
+		if($('.color_choices').attr('data') == curColor){
+			$('.wccheck').remove();
+			$('.color_choices').attr('data', '');
+		}
+		else {
+			$('.wccheck').remove();
+			$(this).append('<i class="fa fa-check wccheck"></i>');
+			$('.color_choices').attr('data', curColor);
+		}
+		previewText();
+	});
+	$(document).on('change', '#fontitname', function(){		
+		previewName();
+	});
+	
+	$(document).on('click', '.close_over, .cancel_over', function(){
+		hideOver();
+	});
+	$(document).on('click', '.close_modal, .cancel_modal', function(){
+		hideModal();
+	});
+	$(document).on('change', '#boldit', function(){		
+		previewText();
+	});
+	
+	$(document).on('change', '#fontit', function(){		
+		previewText();
+	});
+	$(document).on('click', '.tab_menu_item', function(){
+		$(this).parent().find('.tab_menu_item').removeClass('tab_selected');
+		$(this).addClass('tab_selected');
+		$('#'+$(this).attr('data')+' .tab_zone').hide();
+		$('#'+$(this).attr('data-z')).fadeIn(200);
+		selectIt();
+	});
+	
+	$(document).on('click', '.panel_option', function(){
+			$('.panel_option').removeClass('panel_selected');
+			$(this).addClass('panel_selected');
+	});
+	$(document).on('click', '.get_actions', function(){
+		var id = $(this).attr('data');
+		closeTrigger();
+		getActions(id);
+	});
+	$(document).on('click', '.reg_menu_item', function(){
+		$(this).parent().find('.reg_menu_item').removeClass('reg_selected');
+		$(this).addClass('reg_selected');
+		$('#'+$(this).attr('data')+' .reg_zone').hide();
+		$('#'+$(this).attr('data-z')).fadeIn(200);
+		selectIt();
+	});
 });
 
-$(document).on('click', '.panel_option', function(){
-		$('.panel_option').removeClass('panel_selected');
-		$(this).addClass('panel_selected');
-});
-$(document).on('click', '.get_actions', function(){
-	var id = $(this).attr('data');
-	closeTrigger();
-	getActions(id);
-});
+//////////////////////////// END DOC LOAD ///////////////////////////////////////
 $('.close_over').click(function(){
 	$('#over_modal').hide();	
 });
 
 openAddRoom = function(){
-	var rtList = $('#add_room_list').html();
-	showModal(rtList, 400);
+	$.post('system/box/create_room.php', {
+		token: utk,
+		}, function(response) {
+			showModal(response);
+	});
 }
 
 deleteAvatar = function(){
@@ -578,35 +637,10 @@ loadProMenu = function(){
 	$('#pro_menu').toggle();
 }
 
-changeColor = function(){
-	$.post('system/box/edit_color.php', function(response){
-		overModal(response, 400);
-	});
-}
-
 $("#ok_sub_item").click(function(){
 	$("#main_input_extra").toggle();
 });
 
-
-$(document).on('click', `#create_room`, function(){
-	var e = document.getElementById("roomRank");
-	var room_rank = e.options[e.selectedIndex].value;
-	var room_name = $('#rname').val();
-	var room_pass = $('#rpass').val();
-	var passBool = 0;
-	var rPass = '';
-	var room_desc = $('#rdisc').val();
-	var new_room_rank = '';
-	var room_ico = '';
-	if(room_pass == ''){
-		passBool = 0;
-		rPass = '';
-	}else{
-		passBool = 1;
-		rPass = room_pass;
-	}
-});
 selectIt = function(){
 	$("select:visible").selectBoxIt({ 
 		autoWidth: false,
@@ -614,139 +648,20 @@ selectIt = function(){
 		hideEffectSpeed: 100
 	});
 }
-$(document).on('click', '.reg_menu_item', function(){
-	$(this).parent().find('.reg_menu_item').removeClass('reg_selected');
-	$(this).addClass('reg_selected');
-	$('#'+$(this).attr('data')+' .reg_zone').hide();
-	$('#'+$(this).attr('data-z')).fadeIn(200);
-	selectIt();
-	console.log("Selected");
-});
-callSaved = function(type){
-	var s = 3000;
-	if(type == 1){
-		s = 1000;
-	}
-	if($('.saved_data:visible').length){
-		return false;
-	}
-	else {
-		if(type == 1){
-			$('.saved_data').removeClass('saved_warn saved_error').addClass('saved_ok');
-			$('.saved_span').text('Saved');
-		}
-		if(type == 2){
-			$('.saved_data').removeClass('saved_ok saved_error').addClass('saved_warn');
-			$('.saved_span').text('Warning');
-		}
-		if(type == 3){
-			$('.saved_data').removeClass('saved_warn saved_ok').addClass('saved_error');
-			$('.saved_span').text('Error');
-		}
-		$('.saved_data').fadeIn(300).delay(s).fadeOut();
-	}
+
+previewText = function(){
+	var c = $('.color_choices').attr('data');
+	var b = $('#boldit').val();
+	var f = $('#fontit').val();
+	$('#preview_text').removeClass();
+	$('#preview_text').addClass(c+' '+b+' '+f);
 }
-saveNameColor = function(newColor){
-	$.post('system/action/action_profile.php', {
-		my_username_color: $('.user_color').attr('data'),
-		my_username_font: $('#fontitname').val(),
-		}, function(response) {
-			if(response == 1){
-				callSaved(system.saved, 1);
-			}else {
-				callSaved(system.error, 3);
-			}
-	});
-}
-$(document).on('click', '.name_choice, .choice', function() {	
-	var curColor = $(this).attr('data');
-	if($('.user_color').attr('data') == curColor){
-		$('.wccheck').remove();
-		$('.user_color').attr('data', 'user');
-	}
-	else {
-		$('.wccheck').remove();
-		$(this).append('<i class="wccheck fa fa-check"></i>');
-		$('.user_color').attr('data', curColor);
-	}
-	previewName();
-});
-
-$(document).on('change', '#fontitname', function(){		
-	previewName();
-});
-
-$(document).on('click', '.close_over, .cancel_over', function(){
-	hideOver();
-});
-$(document).on('click', '.close_modal, .cancel_modal', function(){
-	hideModal();
-});
-
 previewName = function(c){
 	var n = $('.user_color').attr('data');
 	var f = $('#fontitname').val();
 	$('#preview_name').removeClass();
 	$('#preview_name').addClass(n+' '+f);
 }
-system = {
-	accessRequirement: "You do not meet the requirements to access this room",
-	actionComplete: "Action completed",
-	alreadyAction: "This action is already set",
-	alreadyErase: "This post does not exist anymore",
-	alreadyReported: "This post has already been reported",
-	badActual: "Wrong actual password",
-	badLogin: "Incorrect Username or Password",
-	cannotContact: "You cannot contact this member at this time",
-	cannotUser: "You cannot perform this action on the specified user",
-	cantModifyUser: "You do not have right to modify this user",
-	cleanComplete: "Clean complete",
-	confirmedCommand: "Command successfully confirmed",
-	dataExist: "Data already exists in the database",
-	emailExist: "An account already exists with that email",
-	emailSent: "Email sent. please check your email.",
-	emptyField: "Some required field are empty",
-	error: "An error occured",
-	fileBig: "File size is too big",
-	friendSent: "Your friend request has been sent",
-	ignored: "User added to your ignore list",
-	invalidCode: "Invalid code",
-	invalidCommand: "That command does not exist.",
-	invalidEmail: "Please enter valid email address",
-	invalidUsername: "Invalid username. Please choose a new one.",
-	maxReg: "You have reached the maximum allowed registrations.  Please try again later",
-	maxRoom: "Sorry you have reached your room limit",
-	missingRecaptcha: "Please complete the reCAPTCHA form below",
-	newFriend: "Congratulations, you just made a new friend",
-	newMessage: "New message",
-	noBridge: "No bridge detected at specified location",
-	noFile: "You must select a file",
-	noResult: "No results found",
-	noUser: "Sorry no user found with those details",
-	notMatch: "New password is not matching",
-	oops: "Oops! something strange happened. Please try again later",
-	recoverySent: "Temporary password has been sent to your email",
-	registerClose: "We are sorry we do not accept new registrations at the moment",
-	reportLimit: "You have reached your report limit",
-	reported: "Report sent thank you !",
-	restrictedContent: "Posted data contains restricted content",
-	roomBlock: "Sorry you cannot enter this room at the momment",
-	roomDescription: "Room description is too short",
-	roomExist: "This room name already exist",
-	roomFull: "This room is full, please try another one",
-	roomName: "Invalid room name",
-	saved: "Saved",
-	selAge: "Please select your age",
-	selectSomething: "Please select something",
-	shortPass: "Password is too short",
-	siteConnect: "Please connect to the site to enter chat",
-	somethingWrong: "Something wrong ... please wait for an administrator to review your account.",
-	tooShort: "Search critera too short",
-	updated: "Update completed",
-	usernameExist: "Username already exists",
-	wrongFile: "Sorry, this file is not accepted.",
-	wrongPass: "Password incorrect"
-};
 // resetRoom = function(troom, nroom){
 // 	user_room = troom;
 // 	$("#show_chat ul").html('');
@@ -781,30 +696,6 @@ setUserTheme = function(item){
 			$('#main_logo').attr('src', response.logo);
 		}
 	});
-}
-var curCall = '';
-callSaved = function(text, type){
-	var s = 3000;
-	if(type == 1){
-		s = 1000;
-	}
-	if(text == curCall && $('.saved_data:visible').length){
-		return false;
-	}
-	else {
-		if(type == 1){
-			$('.saved_data').removeClass('saved_warn saved_error').addClass('saved_ok');
-		}
-		if(type == 2){
-			$('.saved_data').removeClass('saved_ok saved_error').addClass('saved_warn');
-		}
-		if(type == 3){
-			$('.saved_data').removeClass('saved_warn saved_ok').addClass('saved_error');
-		}
-		$('.saved_span').text(text);
-		$('.saved_data').fadeIn(300).delay(s).fadeOut();
-		curCall = text;
-	}
 }
 listAction = function(target, act){
 	closeTrigger();

@@ -130,11 +130,49 @@ forceHidePanel = function(){
 		$("#chat_right").hide();
 	}
 }
-	$( window ).resize(function() {
-		adjustHeight();
-		resizeScroll();
-	});
-	$(document).ready(function(){
+
+saveRoom = function(){
+	$.post('system/action_room.php', { 
+		save_room: '1',
+		set_room_name: $('#set_room_name').val(),
+		set_room_description: $('#set_room_description').val(),
+		set_room_password: $('#set_room_password').val(),
+		set_room_player: $('#set_room_player').val(),
+		token: utk
+		}, function(response) {
+			if(response == 1){
+				callSaved(system.saved, 1);
+			}
+			if(response == 2){
+				callSaved(system.roomExist, 3);
+			}
+			if(response == 3){
+				location.reload();
+			}
+			if(response == 4){
+				callSaved(system.roomName, 3);
+			}
+			if(response == 0){
+				callSaved(system.error, 3);
+			}
+	});	
+}
+
+$( window ).resize(function() {
+	adjustHeight();
+	resizeScroll();
+});
+
+backHome = function(){
+	$.post('system/action_room.php', { 
+		leave_room: '1',
+		token: utk,
+		}, function(response) {
+			location.reload();
+	});	
+}
+//////////////////////////////////////////////////////////// DOCUMENT READY FUNCTION //////////////////////////////////////////////
+$(document).ready(function(){
 		$(function() {
 			if($(window).width() > 1024){
 				$("#private_box").draggable()({
@@ -144,11 +182,11 @@ forceHidePanel = function(){
 				);
 			}
 		});
-		$("#lobby_container").hide();
 		
 		$('body').css('overflow', 'hidden');
-		userlist = setInterval(userReload, 3000);
+		userlist = setInterval(userReload, 30000);
 		chatLog = setInterval(chatReload, speed);
+		userReload();
 		chatReload();
 		adjustSide();
 		adjustPanelWidth();
@@ -221,12 +259,21 @@ forceHidePanel = function(){
 			}
 			return false;
 		});
-});
 
+		$(document).on('click', '#save_room', function(){
+			saveRoom();
+		});
+		
+		$(document).on('click', '#back_home', function(){
+			backHome();
+		});
+});
+////////////////////////////////////////////////// END DOC ////////////////////////////
 $( window ).resize(function() {
 	adjustSubMenu();
 	adjustSide();
 });
+
 privDown = function(v){
 	if(v > 0){
 		if($('#dpriv:visible').length){
@@ -264,7 +311,7 @@ updateStatus = function(id){
 	$.ajax({
 		url: "system/action/action_profile.php",
 		type: "post",
-		cache: "false",
+		cache: false,
 		dataType: 'json',
 		data: {
 			update_status: id,
@@ -286,11 +333,45 @@ updateStatus = function(id){
 	});
 }
 saveInfo = function(){
-	var e = document.getElementById("set_profile_gender");
-	var strUser = e.options[e.selectedIndex].value;
-	$.post(`system/chat.php?action=changeGender&newgend=${strUser}` ,function(response){
+	$.ajax({
+		url: "system/action/action_profile.php",
+		type: "post",
+		cache: false,
+		dataType: 'json',
+		data: { 
+			save_info: 1,
+			age: $('#set_profile_age').val(),
+			gender: $('#set_profile_gender').val(),
+			token: utk
+		},
+		success: function(response) {
+			if(response.code == 1){
+				$('.avatar_profile').attr('src', response.av);
+				$('.avatar_profile').attr('href', response.av);
+				$('.glob_av').attr('src', response.av);
+				callSaved(system.saved, 1);
+				hideOver();
+			}
+			else {
+				callSaved(system.error, 3);	
+			}
+		},
+		error: function(){
+			callSaved(system.error, 3);
+		}
 	});
-	closeOverModal();
+}
+saveNameColor = function(newColor){
+	$.post('system/action/action_profile.php', {
+		my_username_color: $('.user_color').attr('data'),
+		my_username_font: $('#fontitname').val(),
+		}, function(response) {
+			if(response == 1){
+				callSaved(system.saved, 1);
+			}else {
+				callSaved(system.error, 3);
+			}
+	});
 }
 overModal = function(r,s){
 	if(!s){
@@ -320,25 +401,45 @@ getDisplaySetting = function(){
 	});
 }
 changeUsername = function(){
-	$.post('system/box/userchange.php', function(response){
-		if(response == 0){
-			return false;
-		}else{
-			overModal(response, 460);
-		}
+	$.post('system/box/edit_name.php', {
+		token: utk,
+	}, function(response){
+		overModal(response);
 	});
 }
-
+changeColor = function(){
+	$.post('system/box/edit_color.php', { 
+		token: utk,
+		}, function(response) {
+			if(response == 0){
+				return false;
+			}
+			else {
+				overModal(response);
+			}
+	});
+}
 changeInfo = function(){
-	$.post('system/box/edit_info.php', function(response){
-		if(response == 0){
-			return false;
-		}else{
-			overModal(response, 460);
-		}
+	$.post('system/box/edit_info.php', {
+		token: utk,
+	}, function(response){
+		overModal(response);
 	});
 }
-
+changeAbout = function(){
+	$.post('system/box/edit_about.php', {
+		token: utk,
+	}, function(response){
+		overModal(response, 500);
+	});
+}
+changeMood = function(){
+	$.post('system/box/edit_mood.php', { 
+		token: utk,
+		}, function(response) {
+			overModal(response);
+	});
+}
 newUsername = function(){
 	var myNewName = $('#new_username_text').val();
 	$.post('system/action/action_profile.php', {
@@ -366,11 +467,6 @@ newUsername = function(){
 		}
 	});
 }
-
-
-Lobby = function(){
-	location.reload();
-}
 grantRoom = function(){
 	$('.room_granted').removeClass('nogranted');	
 }
@@ -386,7 +482,7 @@ innactiveControl = function(cPost){
 	sp = parseInt(speed);
 	nsp = sp + ((curActive - inactiveStart) * inIncrement);
 	msp = sp * inMaxUser;
-	if(boomAllow(4)){
+	if(waliAllow(4)){
 		msp = sp * inMaxStaff;
 	}
 	if(nsp > msp){

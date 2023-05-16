@@ -1,11 +1,5 @@
 <?php
-// require_once("variable.php");
-// function boomCode($code, $custom = array()){
-// 	$def = array('code'=> $code);
-// 	$res = array_merge($def, $custom);
-// 	return json_encode( $res, JSON_UNESCAPED_UNICODE);
-// }
-function validStatus($val){
+function validStatus($val){ 
 	$valid = array(1,2,3,4);
 	if(in_array($val, $valid)){
 		return true;
@@ -50,17 +44,17 @@ function roomMuted(){
 function roomAccessTitle($room){
 	switch($room){
 		case 0:
-			return 'public';
+			return 'Public';
 		case 1:
-			return 'members';
+			return 'Members';
 		case 2:
-			return 'vip';
+			return 'Vip';
 		case 3:
-			return 'staff';
+			return 'Staff';
 		case 4:
-			return 'admin';
+			return 'Admin';
 		default:
-			return 'public';
+			return 'Public';
 	}
 }
 function roomAccessIcon($room){
@@ -168,19 +162,13 @@ function selCurrent($cur, $val){
 }
 
 function getDefTheme(){
-	global $conn;
-	$sql = "SELECT * FROM settings";
-	$result = mysqli_query($conn, $sql);
-	if(mysqli_num_rows($result) > 0){
-		$data = mysqli_fetch_assoc($result);
-		
+	global $data;
 		return $data['default_theme'];
-	}
 }
 
-function boomTemplate($getpage, $boom = '') {
+function waliTemplate($getpage, $walie = '') {
 	global $data, $lang, $mysqli, $wali;
-    $page =  $getpage . '.php';
+    $page = WALI_PATH . '/system/' . $getpage . '.php';
     $structure = '';
     ob_start();
     require($page);
@@ -188,23 +176,22 @@ function boomTemplate($getpage, $boom = '') {
     ob_end_clean();
     return $structure;
 }
-
 function getRoomList($type){
 	global $mysqli, $data, $lang;
 	$check_action = getDelay();
 	$rooms = $mysqli->query(" SELECT *, 
-	( SELECT Count(users.user_id) FROM users  Where users.user_roomid = rooms.room_id AND last_action > '$check_action' AND user_status != 4 ) as room_count
-	FROM  rooms 
+	( SELECT Count(wali_users.user_id) FROM wali_users  Where wali_users.user_roomid = room_id AND last_action > '$check_action' AND user_status != 4 ) as room_count
+	FROM wali_rooms 
 	ORDER BY room_count DESC, room_action DESC");
 	$sroom = 0;
 	$room_list = '';
 	while ($room = $rooms->fetch_assoc()){
 		switch($type){
 			case 'list':
-				$room_list .= boomTemplate('element/room_item', $room);
+				$room_list .= waliTemplate('element/room_item', $room);
 				break;
 			case 'box':
-				$room_list .= boomTemplate('element/room_box', $room);
+				$room_list .= waliTemplate('element/room_box', $room);
 				break;
 		}
 	}
@@ -212,61 +199,86 @@ function getRoomList($type){
 }
 
 function canAddroom(){
-	global $conn;
-	global $row;
-	$sql = "SELECT * FROM settings";
-	$result = mysqli_query($conn, $sql);
-	if(mysqli_num_rows($result) > 0){
-		$data = mysqli_fetch_assoc($result);
-		$room_rank = $data['room_rank'];
-		
-		if($row['user_rank'] >= $room_rank){
-			return true;	
-		}
+	global $data;
+	if($data['user_rank'] >= $data['allow_room']){
+		return true;	
 	}
 }
 function useFont(){
 	global $data;
-	if($data['allow_font']){
+	if(waliActive($data['allow_font']) || waliActive($data['allow_name_font'])){
 		return true;
 	}
 }
 function canFont(){
 	global $data;
-		if($data['user_rank'] >= $data['font']){
-			return true;
-		}
+	if(useFont() && waliAllow($data['allow_font'])){
+		return true;
+	}
 }
-
 function canColor(){
 	global $data;
-		if($data['user_rank'] >= $data['font']){
+		if(waliAllow($data['allow_colors'])){
 			return true;
 		}
 }
-
 function canGrad(){
 	global $data;
-	if($data['user_rank'] >= $data['grad_color']){
+	if($data['user_rank'] >= $data['allow_grad']){
 		return true;
 	}
 }
 
 function canNeon(){
 	global $data;
-	if($data['user_rank'] >= $data['neon_color']){
+	if($data['user_rank'] >= $data['allow_neon']){
+		return true;
+	}
+}
+
+function canNameFont(){
+	global $data;
+		if(useFont() && waliAllow($data['allow_name_font'])){
+			return true;
+		}
+}
+function canNameColor(){
+	global $data;
+	if(waliAllow($data['allow_name_color'])){
+		return true;
+	}
+}
+function canNameGrad(){
+	global $data;
+	if(waliAllow($data['allow_name_grad'])){
+		return true;
+	}
+}
+	
+function canNameNeon(){
+	global $data;
+	if(waliAllow($data['allow_name_neon'])){
 		return true;
 	}
 }
 function validNameColor($color){
 	global $data;
-	if(canColor() && $color == 'user'){
+	if(canNameColor() && $color == 'user'){
 		return true;
 	}
-	if(canColor() && preg_match('/^bcolor[0-9]{1,2}$/', $color)){
+	if(canNameGrad() && preg_match('/^bcolor[0-9]{1,2}$/', $color)){
 		return true;
 	}
-	if(canGrad() && preg_match('/^bgrad[0-9]{1,2}$/', $color)){
+	if(canNameGrad() && preg_match('/^bgrad[0-9]{1,2}$/', $color)){
+		return true;
+	}
+}
+function validNameFont($font){
+	global $data;
+	if($font == ''){
+		return true;
+	}
+	if(canNameFont() && preg_match('/^bnfont[0-9]{1,2}$/', $font)){
 		return true;
 	}
 }
@@ -457,7 +469,7 @@ function getGender($s){
 function roomInfo($id){
 	global $data, $mysqli;
 	$room = array();
-	$get_room = $mysqli->query("SELECT * FROM rooms WHERE room_id = '$id'");
+	$get_room = $mysqli->query("SELECT * FROM wali_rooms WHERE room_id = '$id'");
 	if($get_room->num_rows > 0){
 		$room = $get_room->fetch_assoc();
 	}
@@ -479,17 +491,6 @@ function getStatus($status, $c){
 			return '';
 	}
 }
-function getCurrentRoom($user){
-	global $db;
-	$query = $db->prepare("SELECT * FROM rooms WHERE room_id = '$user'");
-                $query->execute();
-                $link = '';
-                $rs = $query->fetchAll(PDO::FETCH_OBJ);
-                foreach($rs as $r){
-                    $link .= $r->room_name;
-                }
-                echo $link;
-}
 function allowLogs(){
 	global $data;
 	if($data['allow_logs'] == 1){
@@ -503,7 +504,7 @@ function isVisible($user){
 }
 function chatAction($room){
 	global $mysqli, $data;
-	$mysqli->query("UPDATE rooms SET rcaction = rcaction + 1, room_action = '" . time() . "' WHERE room_id = '$room'");
+	$mysqli->query("UPDATE wali_rooms SET rcaction = rcaction + 1, room_action = '" . time() . "' WHERE room_id = '$room'");
 }
 function userPostChat($content, $custom = array()){
 	global $mysqli, $data;
@@ -516,7 +517,7 @@ function userPostChat($content, $custom = array()){
 		'snum'=> '',
 	);
 	$c = array_merge($def, $data, $custom);
-	$mysqli->query("INSERT INTO `chatlogs` (post_date, user_id, post_message, post_roomid, type, log_rank, snum, tcolor) VALUES ('" . time() . "', '{$c['hunter']}', '$content', '{$c['room']}', '{$c['type']}', '{$c['rank']}', '{$c['snum']}', '{$c['color']}')");
+	$mysqli->query("INSERT INTO `wali_chat` (post_date, user_id, post_message, post_roomid, type, log_rank, snum, tcolor) VALUES ('" . time() . "', '{$c['hunter']}', '$content', '{$c['room']}', '{$c['type']}', '{$c['rank']}', '{$c['snum']}', '{$c['color']}')");
 	$last_id = $mysqli->insert_id;
 	chatAction($data['user_roomid']);
 	if(!empty($c['snum'])){
@@ -542,7 +543,7 @@ function systemPostChat($room, $content, $custom = array()){
 		'rank'=> 99,
 	);
 	$post = array_merge($def, $custom);
-	$mysqli->query("INSERT INTO `chatlogs` (post_date, user_id, post_message, post_roomid, type, log_rank, tcolor) VALUES ('" . time() . "', '{$data['system_id']}', '$content', '$room', '{$post['type']}', '{$post['rank']}', '{$post['color']}')");
+	$mysqli->query("INSERT INTO `wali_chat` (post_date, user_id, post_message, post_roomid, type, log_rank, tcolor) VALUES ('" . time() . "', '{$data['system_id']}', '$content', '$room', '{$post['type']}', '{$post['rank']}', '{$post['color']}')");
 	chatAction($room);
 	return true;
 }
@@ -574,40 +575,40 @@ function registration(){
 function sessionCleanup(){
 	global $wali;
 	unset($_SESSION['facebook_access_token']);
-	unset($_SESSION[BOOM_PREFIX . 'token']);
-	unset($_SESSION[BOOM_PREFIX . 'last']);
-	unset($_SESSION[BOOM_PREFIX . 'flood']);
+	unset($_SESSION[WALI_PREFIX . 'token']);
+	unset($_SESSION[WALI_PREFIX . 'last']);
+	unset($_SESSION[WALI_PREFIX . 'flood']);
 	unset($_SESSION['HA::STORE']);
 	unset($_SESSION['HA::CONFIG']);
 	unset($_SESSION['FBRLH_state']);
 	unset($_SESSION['token']);
 }
-function boomLogged(){
-	global $boom_access;
-	if($boom_access == 1){
+function waliLogged(){
+	global $wali_access;
+	if($wali_access == 1){
 		return true;
 	}
 }
-function boomSanitize($t){
+function waliSanitize($t){
 	global $mysqli;
 	$t = str_replace(array('\\', '/', '.', '<', '>', '%', '#'), '', $t);
 	return $mysqli->real_escape_string(trim(htmlspecialchars($t, ENT_QUOTES)));
 }
 function getLanguage(){
-	global $mysqli, $data, $cody;
+	global $mysqli, $data, $wali;
 	$l = $data['language'];
-	if(boomLogged()){
-		if(file_exists('/system/language/' . $data['user_lang'] . '/language.php')){
-			$l = $data['user_lang'];
+	if(waliLogged()){
+		if(file_exists(WALI_PATH . '/system/language/' . $data['user_language'] . '/language.php')){
+			$l = $data['user_language'];
 		}
 		else {
-			$mysqli->query("UPDATE users SET user_lang = '{$data['language']}' WHERE user_id = '{$data['user_id']}'");
+			$mysqli->query("UPDATE wali_users SET user_language = '{$data['language']}' WHERE user_id = '{$data['user_id']}'");
 		}
 	}
 	else {
 		if(isset($_COOKIE['lang'])){
 			$lang = 'English';
-			if(file_exists('/chat/system/language/' . $lang . '/language.php')){
+			if(file_exists(WALI_PATH . '/system/language/' . $lang . '/language.php')){
 				$l = $lang;
 			}
 		}
@@ -618,7 +619,7 @@ function getLanguage(){
 function userDetails($id){
 	global $mysqli;
 	$user = array();
-	$getuser = $mysqli->query("SELECT * FROM users WHERE user_id = '$id'");
+	$getuser = $mysqli->query("SELECT * FROM wali_users WHERE user_id = '$id'");
 	if($getuser->num_rows > 0){
 		$user = $getuser->fetch_assoc();
 	}
@@ -627,7 +628,7 @@ function userDetails($id){
 
 function listCountry($c){
 	global $lang;
-	require BOOM_PATH . '/system/location/country_list.php';
+	require WALI_PATH . '/system/location/country_list.php';
 	$list_country = '';
 	$list_country .= '<option value="ZZ" ' . selCurrent($c, 'ZZ') . '>' . $lang['not_shared'] . '</option>';
 	foreach ($country_list as $country => $key) {
@@ -636,33 +637,33 @@ function listCountry($c){
 	return $list_country;
 }
 
-function getTimezone($zone){
-	$list_zone = '';
-	require BOOM_PATH . '/system/element/timezone.php';
-	foreach ($timezone as $line) {
-		$list_zone .= '<option value="' . $line . '" ' . selCurrent($zone, $line) . '>' . $line . '</option>';
-	}
-	return $list_zone;
-}
-
 function introLanguage(){
 	$language_list = '';
-	$dir = glob('system/language/*', GLOB_ONLYDIR);
+	$dir = glob(WALI_PATH . '/system/language/*', GLOB_ONLYDIR);
 	foreach($dir as $dirnew){
-		$language = str_replace('system/language/', '', $dirnew);
-		$language_list .= boomTemplate('system\element\language', $language);
+		$language = str_replace( WALI_PATH . '/system/language/', '', $dirnew);
+		$language_list .= waliTemplate('element/language', $language);
 	}
 	return $language;
 }
 
 function listLanguage($lang){
 	$language_list = '';
-	$dir = glob('/system/language/*', GLOB_ONLYDIR);
+	$dir = glob(WALI_PATH . '/system/language/*', GLOB_ONLYDIR);
 	foreach($dir as $dirnew){
-		$language = str_replace('/system/language/', '', $dirnew);
+		$language = str_replace(WALI_PATH . '/system/language/', '', $dirnew);
 		$language_list .= '<option ' . selCurrent($lang, $language) . ' value="' . $language . '">' . $language . '</option>';
 	}
 	return $language_list;
+}
+
+function getTimezone($zone){
+	$list_zone = '';
+	require WALI_PATH . '/system/element/timezone.php';
+	foreach ($timezone as $line) {
+		$list_zone .= '<option value="' . $line . '" ' . selCurrent($zone, $line) . '>' . $line . '</option>';
+	}
+	return $list_zone;
 }
 
 function listTheme($th){
@@ -674,44 +675,6 @@ function listTheme($th){
 	}
 	return $theme_list;
 }
-// function boomInsertUser($pro){
-// 	global $mysqli, $data, $wali;
-// 	$user = array();
-// 	if(!isset($pro['name'], $pro['user_password'], $pro['email'])){
-// 		return $user;
-// 	}
-// 	$def = array(
-// 		'gender' => 3,
-// 		'age' => 0,
-// 		'ip' => '0.0.0.0',
-// 		'language' => $data['user_lang'],
-// 		'avatar' => 'default_avatar.png',
-// 		'color' => 'user',
-// 		'rank' => 1,
-// 		'verified' => 0,
-// 		'verify' => 0,
-// 		'cookie' => 1,
-// 		'email' => '',
-// 	);
-// 	$u = array_merge($def, $pro);
-// 	$mysqli->query("INSERT INTO `users` 
-// 	( user_name, user_password, user_ip, user_email, user_rank, user_roomid, user_theme,
-// 	user_join, last_action, user_lang, user_timezone, verified, user_verify, username_color,
-// 	user_sex, user_age, user_news, user_tumb )
-// 	VALUES 
-// 	('{$u['name']}', '{$u['password']}', '{$u['ip']}', '{$u['rank']}', '0', 'system',
-// 	'" . time() . "', '" . time() . "', '{$u['language']}', '{$data['timezone']}', '{$u['verified']}', '{$u['verify']}', '{$u['color']}',
-// 	'{$u['gender']}', '{$u['age']}', '" . time() . "', '{$u['avatar']}')");
-	
-// 	$user = userDetails($mysqli->insert_id);
-// 	if($u['cookie'] == 1 && !empty($user)){
-// 		setBoomCookie($user['uid'], $user['user_password']);
-// 	}
-// 	// if($u['verify'] == 1 && !empty($user)){
-// 	// 	$send_mail = sendActivation($user);
-// 	// }
-// 	return $user;
-// }
 function getActiveStatus($user){
 	$stat = '';
 	if($user['user_status'] == 1){
@@ -739,7 +702,7 @@ function createUserData($user){
 function getTopStatus($user){
 	global $conn;
 	$username = $_COOKIE['username'];
-	$sql = "SELECT * FROM users WHERE user_name = '$username'";
+	$sql = "SELECT * FROM wali_users WHERE user_name = '$username'";
 	$result = mysqli_query($conn, $sql);
 	if (mysqli_num_rows($result) > 0) {
 		while($row = mysqli_fetch_assoc($result)){
@@ -790,20 +753,20 @@ function addFriend($user){
 	echo $user['user_id'];
 }
 
-function boomUserInfo($id){
+function waliUserInfo($id){
 	global $mysqli, $data;
 	$user = array();
 	$getuser = $mysqli->query("SELECT *,
 	(SELECT fstatus FROM wali_friends WHERE hunter = '{$data['user_id']}' AND target = '$id') as friendship,
 	(SELECT count(ignore_id) FROM wali_ignore WHERE ignorer = '{$data['user_id']}' AND ignored = '$id' OR ignorer = '$id' AND ignored = '{$data['user_id']}') as ignored
-	FROM users WHERE `user_id` = '$id'");
+	FROM wali_users WHERE `user_id` = '$id'");
 	if($getuser->num_rows > 0){
 		$user = $getuser->fetch_assoc();
-		$user['friendship'] = boomNull($user['friendship']);
+		$user['friendship'] = waliNull($user['friendship']);
 	}
 	return $user;
 }
-function boomNull($val){
+function waliNull($val){
 	if(is_null($val)){
 		return 0;
 	}
@@ -828,19 +791,19 @@ function emptyZone($text, $icon = ''){
 	if($icon != ''){
 		$zone['icon'] = $icon;
 	}
-	return boomTemplate('element/empty_zone', $zone);	
+	return waliTemplate('element/empty_zone', $zone);	
 }
 function userRoomDetails($id){
 	global $mysqli, $data;
 	$user = array();
 	$getuser = $mysqli->query("SELECT *,
-	(SELECT room_rank FROM room_staff WHERE room_staff = '$id' AND room_id = '{$data['user_roomid']}') as room_ranking,
-	(SELECT count(*) FROM room_action WHERE action_muted = '1' AND action_user = '$id' AND action_room = '{$data['user_roomid']}') as is_muted,
-	(SELECT count(*) FROM room_action WHERE action_blocked = '1' AND action_user = '$id' AND action_room = '{$data['user_roomid']}') as is_blocked
-	FROM users WHERE user_id = '$id'");
+	(SELECT room_rank FROM wali_room_staff WHERE room_staff = '$id' AND room_id = '{$data['user_roomid']}') as room_ranking,
+	(SELECT count(*) FROM wali_room_action WHERE action_muted = '1' AND action_user = '$id' AND action_room = '{$data['user_roomid']}') as is_muted,
+	(SELECT count(*) FROM wali_room_action WHERE action_blocked = '1' AND action_user = '$id' AND action_room = '{$data['user_roomid']}') as is_blocked
+	FROM wali_users WHERE user_id = '$id'");
 	if($getuser->num_rows > 0){
 		$user = $getuser->fetch_assoc();
-		$user['room_ranking'] = boomNull($user['room_ranking']);
+		$user['room_ranking'] = waliNull($user['room_ranking']);
 	}
 	return $user;
 }
@@ -861,13 +824,13 @@ function isStaff($rank){
 }
 function betterRole($rank){
 	global $data;
-	if($data['user_role'] > $rank || boomAllow(5)){
+	if($data['user_role'] > $rank || waliAllow(5)){
 		return true;
 	}
 }
 function canRoom(){
 	global $data, $wali;
-	if($data['user_rank'] > 4){
+	if($data['user_rank'] > $data['allow_room']){
 		return true;
 	} 
 }
@@ -879,13 +842,13 @@ function canRoomAction($user, $role, $type = 1){
 	if(mySelf($user['id'])){
 		return false;
 	}
-	if(!boomRole($role) && !boomAllow(4)){
+	if(!waliRole($role) && !waliAllow(4)){
 		return false;
 	}
 	if(isStaff($user['user_rank'])){
 		return false;
 	}
-	if(!betterRole($user['room_ranking']) && !boomAllow(4)){
+	if(!betterRole($user['room_ranking']) && !waliAllow(4)){
 		return false;
 	}
 	if($type == 2 && userRoomStaff($user['room_ranking'])){
@@ -906,10 +869,10 @@ function canEditUser($user, $rank, $type = 0){
 	if(mySelf($user['user_id'])){
 		return false;
 	}
-	if(boomAllow($rank) && isGreater($user['user_rank'] && !isBot($user))){
+	if(waliAllow($rank) && isGreater($user['user_rank'] && !isBot($user))){
 		return true;
 	}
-	if(boomAllow(6) && !isOwner($user)){
+	if(waliAllow(6) && !isOwner($user)){
 		return true;
 	}
 }
@@ -925,7 +888,7 @@ function isRegmute($user){
 }
 function canMute(){
 	global $data, $wali;
-	if(boomAllow(4)){
+	if(waliAllow(4)){
 		return true;
 	}
 }
@@ -944,7 +907,7 @@ function isGreater($rank){
 }
 function canBan(){
 	global $data, $wali;
-	if(boomAllow($wali['can_ban'])){
+	if(waliAllow($wali['can_ban'])){
 		return true;
 	}
 }
@@ -965,7 +928,7 @@ function canRankUser($user){
 }
 function canRoomPassword(){
 	global $data, $wali;
-	if(boomAllow($wali['can_room_pass']) || boomRole(6)){
+	if(waliAllow($wali['can_room_pass']) || waliRole(6)){
 		return true;
 	}
 }
@@ -980,7 +943,7 @@ function canDeleteUser($user){
 }
 function canKick(){
 	global $data, $wali;
-	if(boomAllow($wali['can_kick'])){
+	if(waliAllow($wali['can_kick'])){
 		return true;
 	}
 }
@@ -1021,12 +984,12 @@ function rankTitle($rank){
 function changeRank($current){
 	global $data, $wali;
 	$rank = '';
-	if(boomAllow($wali['can_rank'])){
+	if(waliAllow($wali['can_rank'])){
 		$rank .= '<option value="1" ' . selCurrent($current, 1) . '>' . rankTitle(1) . '</option>';
 		$rank .= '<option value="2" ' . selCurrent($current, 2) . '>' . rankTitle(2) . '</option>';
 		$rank .= '<option value="3" ' . selCurrent($current, 3) . '>' . rankTitle(3) . '</option>';
 	}
-	if(boomAllow(6)){
+	if(waliAllow(6)){
 		$rank .= '<option value="4" ' . selCurrent($current, 4) . '>' . rankTitle(4) . '</option>';
 		$rank .= '<option value="5" ' . selCurrent($current, 5) . '>' . rankTitle(5) . '</option>';
 	}
@@ -1040,13 +1003,13 @@ function useLobby(){
 }
 function setToken(){
 	global $data, $wali;
-	if(!empty($_SESSION[BOOM_PREFIX . 'token'])){
-		$_SESSION[BOOM_PREFIX . 'token'] = $_SESSION[BOOM_PREFIX . 'token'];
-		return $_SESSION[BOOM_PREFIX . 'token'];
+	if(!empty($_SESSION[WALI_PREFIX . 'token'])){
+		$_SESSION[WALI_PREFIX . 'token'] = $_SESSION[WALI_PREFIX . 'token'];
+		return $_SESSION[WALI_PREFIX . 'token'];
 	}
 	else {
 		$session = md5(rand(000000,999999));
-		$_SESSION[BOOM_PREFIX . 'token'] = $session;
+		$_SESSION[WALI_PREFIX . 'token'] = $session;
 		return $session;
 	}
 }
@@ -1055,9 +1018,9 @@ function roomDetails($type = 0){
 	$muted = 0;
 	$status = 0;
 	$get_room = $mysqli->query("SELECT *,
-	(SELECT count(id) FROM room_action WHERE action_room = '{$data['user_roomid']}' AND action_user = '{$data['user_id']}' AND action_muted = 1) as is_muted,
-	(SELECT room_rank FROM room_staff WHERE room_staff = '{$data['user_id']}' AND room_id = '{$data['user_roomid']}') as room_status
-	FROM rooms
+	(SELECT count(id) FROM wali_room_action WHERE action_room = '{$data['user_roomid']}' AND action_user = '{$data['user_id']}' AND action_muted = 1) as is_muted,
+	(SELECT room_rank FROM wali_room_staff WHERE room_staff = '{$data['user_id']}' AND room_id = '{$data['user_roomid']}') as room_status
+	FROM wali_rooms
 	WHERE room_id = '{$data['user_roomid']}'");
 	if($get_room->num_rows > 0){
 		$room = $get_room->fetch_assoc();
@@ -1068,7 +1031,7 @@ function roomDetails($type = 0){
 			if(!is_null($room['room_status'])){
 				$status = $room['room_status'];
 			}
-			$mysqli->query("UPDATE users SET room_mute = '$muted', user_role = '$status' WHERE user_id = '{$data['user_id']}'");			
+			$mysqli->query("UPDATE wali_users SET room_mute = '$muted', user_role = '$status' WHERE user_id = '{$data['user_id']}'");			
 		}
 	}
 	else {
@@ -1106,8 +1069,8 @@ function kickedData($user){
 }
 function checkBan($ip){
 	global $mysqli, $data;
-	if(boomLogged()){
-		if(boomAllow(11)){
+	if(waliLogged()){
+		if(waliAllow(11)){
 			return false;
 		}
 		if(isBanned($data)){
@@ -1123,18 +1086,18 @@ function checkBan($ip){
 }
 function removeAllAction($user){
 	global $mysqli;
-	$mysqli->query("UPDATE users SET user_kick = 0, user_mute = 0, user_ban = 0, user_regmute = 0 WHERE user_id = {$user['user_id']}");
+	$mysqli->query("UPDATE wali_users SET user_kick = 0, user_mute = 0, user_ban = 0, user_regmute = 0 WHERE user_id = {$user['user_id']}");
 }
 function userUnkick($user){
 	global $mysqli;
-	$mysqli->query("UPDATE users SET user_kick = 0 WHERE user_id = '{$user['user_id']}'");
+	$mysqli->query("UPDATE wali_users SET user_kick = 0 WHERE user_id = '{$user['user_id']}'");
 }
 function checkKick(){
 	global $mysqli, $data;
-	if(boomLogged()){
+	if(waliLogged()){
 		if(kickedData($data)){
 			if(isKicked($data)){
-				if(boomAllow(11)){
+				if(waliAllow(11)){
 					removeAllAction($user);
 				}
 				else {
@@ -1167,10 +1130,10 @@ function getPageData($page_data = array()){
 }
 function getRoomId(){
 	global $mysqli, $data;
-	if(boomLogged()){
+	if(waliLogged()){
 		if($data['user_roomid'] == 0 && !isBanned($data)){
 			if(!useLobby()){
-				$mysqli->query("UPDATE users SET user_roomid = '1' WHERE user_id = '{$data['user_id']}'");
+				$mysqli->query("UPDATE wali_users SET user_roomid = '1' WHERE user_id = '{$data['user_id']}'");
 				return 1;
 			}
 		}
@@ -1196,19 +1159,13 @@ function mainRoom(){
 		return true;
 	}
 }
-function canEditRoom(){
-	if(boomRole(6) || boomAllow(5)){
-		return true;
-	}
-}
-
 function listRoomRank($current = 0){
 	global $lang, $data;
 	$rank = '';
 	$rank .= '<option value="0" ' . selCurrent($current, 0) . '>' . $lang['none'] . '</option>';
 	$rank .= '<option value="4" ' . selCurrent($current, 4) . '>' . roomRankTitle(4) . '</option>';
 	$rank .= '<option value="5" ' . selCurrent($current, 5) . '>' . roomRankTitle(5) . '</option>';
-	if(boomAllow(9)){
+	if(waliAllow(9)){
 		$rank .= '<option value="6" ' . selCurrent($current, 6) . '>' . roomRankTitle(6) . '</option>';
 	}
 	return $rank;
@@ -1217,7 +1174,7 @@ function listRoomRank($current = 0){
 function getLogo(){
 	global $mysqli, $data;
 	$logo = 'default_images/logo.png';
-	if(boomLogged()){
+	if(waliLogged()){
 		if($data['user_theme'] != 'system'){
 			if(file_exists('themes/' . $data['user_theme'] . '/images/logo.png')){
 				$logo = 'themes/' . $data['user_theme'] . '/images/logo.png';
@@ -1232,17 +1189,17 @@ function getLogo(){
 	return $logo;
 }
 
-function boomFooterMenu(){
+function waliFooterMenu(){
 	global $data, $lang;
 	include 'control/footer_menu.php';
 }
 function introActive($amount){
 	global $mysqli;
-	$find_last = $mysqli->query("SELECT user_avatar, user_name FROM users WHERE user_bot = 0 AND user_rank > 0 ORDER BY last_action DESC LIMIT $amount");
+	$find_last = $mysqli->query("SELECT user_avatar, user_name FROM wali_users WHERE user_bot = 0 AND user_rank > 0 ORDER BY last_action DESC LIMIT $amount");
 	$active = '';
 	if($find_last->num_rows > 0){
 		while ($last = $find_last->fetch_assoc()){
-			$active .= boomTemplate('element/active_intro', $last);
+			$active .= waliTemplate('element/active_intro', $last);
 		}
 	}
 	return $active;
@@ -1257,7 +1214,7 @@ function allowGuest(){
 
 function canManageReport(){
 	global $wali;
-	if(boomAllow($wali['can_manage_report'])){
+	if(waliAllow($wali['can_manage_report'])){
 		return true;
 	}
 }
@@ -1297,16 +1254,13 @@ function listStatus($status){
 function getTheme(){
 	global $mysqli, $data;
 	$t = $data['default_theme'];
-	if(boomLogged()){
+	if(waliLogged()){
 		if($data['user_theme'] != 'system'){
 			if(file_exists('themes/' . $data['user_theme'] . '/' . $data['user_theme'] . '.css')){
 				$t = $data['user_theme'];
-				// $mysqli->query("UPDATE users SET theme = '{$data['theme']}' WHERE uid = '{$data['uid']}'");
-				// echo boomCode(0, array("custom"=>"fail"));
-
 			}
 			else {
-				$mysqli->query("UPDATE users SET user_theme = 'system' WHERE uid = '{$data['user_id']}'");
+				$mysqli->query("UPDATE wali_users SET user_theme = 'system' WHERE uid = '{$data['user_id']}'");
 			}
 		}
 	}
@@ -1339,7 +1293,7 @@ function emoItem($type){
 
 function canEmo(){
 	global $data;
-	if(boomAllow($data['emo_plus'])){
+	if(waliAllow($data['emo_plus'])){
 		return true;
 	}
 }
@@ -1355,7 +1309,7 @@ function listSmilies($type){
 			$closetype = 'closesmilies_priv';
 			break;
 	}
-	$files = scandir(BOOM_PATH . '/emoticon');
+	$files = scandir(WALI_PREFIX . '/emoticon');
 	foreach ($files as $file){
 		if ($file != "." && $file != ".."){
 			$smile = preg_replace('/\.[^.]*$/', '', $file);
@@ -1369,19 +1323,19 @@ function listSmilies($type){
 }
 function canUploadChat(){
 	global $data;
-	if(boomAllow($data['allow_cupload'])){
+	if(waliAllow($data['allow_cupload'])){
 		return true;
 	}
 }
 function canUploadPrivate(){
 	global $data;
-	if(boomAllow($data['allow_pupload'])){
+	if(waliAllow($data['allow_pupload'])){
 		return true;
 	}
 }
 function canDeletePrivate(){
 	global $wali;
-	if(boomAllow($wali['can_delete_private'])){
+	if(waliAllow($wali['can_delete_private'])){
 		return true;
 	}
 }
@@ -1399,7 +1353,7 @@ function getAvatar($usr){
 function canUCol(){
 	global $data;
 	
-	if($data['user_rank'] >= $data['color']){
+	if($data['user_rank'] >= $data['allow_name_color']){
 		return true;	
 	}
 }
@@ -1407,7 +1361,7 @@ function canUCol(){
 function canUsername(){
 	global $data;
 
-	if($data['user_rank'] >= $data['username_change']){
+	if($data['user_rank'] >= $data['allow_name']){
 		return true;
 	}
 	
@@ -1430,7 +1384,7 @@ function calMinutes($min){
 function nameDetails($name){
 	global $mysqli, $data;
 	$user = array();
-	$getuser = $mysqli->query("SELECT * FROM users WHERE user_name = '$name'");
+	$getuser = $mysqli->query("SELECT * FROM wali_users WHERE user_name = '$name'");
 	if($getuser->num_rows > 0){
 		$user = $getuser->fetch_assoc();
 	}
@@ -1459,7 +1413,7 @@ function softGuestDelete($u){
 	$new_name = '@' . $u['user_name'] . '-' . $id;
 	$mysqli->query("DELETE FROM room_action WHERE action_user = '$id'");
 	$mysqli->query("DELETE FROM room_staff WHERE room_staff = '$id'");
-	$mysqli->query("UPDATE users SET user_name = '$new_name', user_password = '$new_pass' WHERE user_id = '$id'");
+	$mysqli->query("UPDATE wali_users SET user_name = '$new_name', user_password = '$new_pass' WHERE user_id = '$id'");
 }
 function waliUsername($name){
 	global $mysqli, $wali;
@@ -1500,21 +1454,38 @@ function validName($name){
 	}
 	return false;
 }
+function checkName($name){
+	if(preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $name)){
+		return true;
+	}
+}
 function isTooLong($text, $max){
 	if(mb_strlen($text, 'UTF-8') > $max){
 		return true;
 	}
 }
+function roomType($type){
+	global $data;
+	if($type >= 0 && $type <= $data['user_rank']){
+		return true;
+	}
+}
+function validRoomName($name){
+	global $data, $wali;
+	if(strlen($name) <= $wali['max_room_name'] && strlen($name) >= 4 && preg_match("/^[a-zA-Z0-9 _\-\p{Arabic}\p{Cyrillic}\p{Latin}\p{Han}\p{Katakana}\p{Hiragana}\p{Hebrew}]{4,}$/ui", $name)){
+		return true;
+	}
+}
 function checkFlood(){
 	global $wali, $data;
-	if(boomAllow($wali['can_flood'])){
+	if(waliAllow($wali['can_flood'])){
 		return false;
 	}
-	if(isset($_SESSION[BOOM_PREFIX . 'last'], $_SESSION[BOOM_PREFIX . 'flood'])){
-		if($_SESSION[BOOM_PREFIX . 'last'] >= time() - 2){
-			$_SESSION[BOOM_PREFIX . 'last'] = time();
-			$_SESSION[BOOM_PREFIX . 'flood'] = $_SESSION[BOOM_PREFIX . 'flood'] + 1;
-			if($_SESSION[BOOM_PREFIX . 'flood'] >= $wali['flood_limit']){
+	if(isset($_SESSION[WALI_PREFIX . 'last'], $_SESSION[WALI_PREFIX . 'flood'])){
+		if($_SESSION[WALI_PREFIX . 'last'] >= time() - 2){
+			$_SESSION[WALI_PREFIX . 'last'] = time();
+			$_SESSION[WALI_PREFIX . 'flood'] = $_SESSION[WALI_PREFIX . 'flood'] + 1;
+			if($_SESSION[WALI_PREFIX . 'flood'] >= $wali['flood_limit']){
 				// systemFloodMute($data);
 				return true;
 			}
@@ -1523,14 +1494,14 @@ function checkFlood(){
 			}
 		}
 		else {
-			$_SESSION[BOOM_PREFIX . 'last'] = time();
-			$_SESSION[BOOM_PREFIX . 'flood'] = 0;
+			$_SESSION[WALI_PREFIX . 'last'] = time();
+			$_SESSION[WALI_PREFIX . 'flood'] = 0;
 			return false;
 		}
 	}
 	else {
-		$_SESSION[BOOM_PREFIX . 'last'] = time();
-		$_SESSION[BOOM_PREFIX . 'flood'] = 0;
+		$_SESSION[WALI_PREFIX . 'last'] = time();
+		$_SESSION[WALI_PREFIX . 'flood'] = 0;
 		return false;
 	}
 }
@@ -1545,7 +1516,7 @@ function processFilterReason($word, $text){
 function systemMute($user, $delay, $reason = ''){
 	global $mysqli;
 	$mute_end = max($user['user_mute'], calMinutesUp($delay));
-	$mysqli->query("UPDATE users SET user_mute = '$mute_end', mute_msg = '$reason', user_regmute = 0 WHERE user_id = '{$user['user_id']}'");
+	$mysqli->query("UPDATE wali_users SET user_mute = '$mute_end', mute_msg = '$reason', user_regmute = 0 WHERE user_id = '{$user['user_id']}'");
 	clearNotifyAction($user['user_id'], 'mute');
 	muteLog($user);
 }
@@ -1556,15 +1527,15 @@ function systemWordMute($user, $custom = ''){
 	}
 	if(!isStaff($user['user_rank']) && !isBot($user)){
 		systemMute($user, $data['word_delay'], 'badword');
-		boomNotify('word_mute', array('target'=> $user['user_id'], 'source'=> 'mute', 'delay'=> $data['word_delay']));
-		boomHistory('word_mute', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['word_delay'], 'reason'=> $custom));
-		boomConsole('word_mute', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom, 'delay'=> $data['word_delay']));
+		waliNotify('word_mute', array('target'=> $user['user_id'], 'source'=> 'mute', 'delay'=> $data['word_delay']));
+		waliHistory('word_mute', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['word_delay'], 'reason'=> $custom));
+		waliConsole('word_mute', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom, 'delay'=> $data['word_delay']));
 	}
 }
 function systemKick($user, $delay, $reason = ''){
 	global $mysqli;
 	$this_delay = max($user['user_kick'], calMinutesUp($delay));
-	$mysqli->query("UPDATE users SET user_kick = '$this_delay', kick_msg = '$reason', user_action = user_action + 1 WHERE user_id = '{$user['user_id']}'");
+	$mysqli->query("UPDATE wali_users SET user_kick = '$this_delay', kick_msg = '$reason', user_action = user_action + 1 WHERE user_id = '{$user['user_id']}'");
 	kickLog($user);
 }
 function systemWordKick($user, $custom = ''){
@@ -1574,8 +1545,8 @@ function systemWordKick($user, $custom = ''){
 	}
 	if(!isStaff($user['user_rank']) && !isBot($user)){
 		systemKick($user, $data['word_delay'], 'badword');
-		boomHistory('word_kick', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['word_delay'], 'reason'=> $custom));
-		boomConsole('word_kick', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom, 'delay'=> $data['word_delay']));
+		waliHistory('word_kick', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['word_delay'], 'reason'=> $custom));
+		waliConsole('word_kick', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom, 'delay'=> $data['word_delay']));
 	}
 }
 function systemSpamMute($user, $custom = ''){
@@ -1585,9 +1556,9 @@ function systemSpamMute($user, $custom = ''){
 	}
 	if(!isStaff($user['user_rank']) && !isBot($user)){
 		systemMute($user, $data['spam_delay'], 'spam');
-		boomNotify('spam_mute', array('target'=> $user['user_id'], 'source'=> 'mute', 'delay'=> $data['spam_delay']));
-		boomHistory('spam_mute', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['spam_delay'], 'reason'=> $custom));
-		boomConsole('spam_mute', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=> $custom, 'delay'=> $data['spam_delay']));
+		waliNotify('spam_mute', array('target'=> $user['user_id'], 'source'=> 'mute', 'delay'=> $data['spam_delay']));
+		waliHistory('spam_mute', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['spam_delay'], 'reason'=> $custom));
+		waliConsole('spam_mute', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=> $custom, 'delay'=> $data['spam_delay']));
 	}
 }
 function systemSpamBan($user, $custom = ''){
@@ -1597,13 +1568,13 @@ function systemSpamBan($user, $custom = ''){
 	}
 	if(!isStaff($user['user_rank']) && !isBot($user)){
 		systemBan($user, 'spam');
-		boomHistory('spam_ban', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'reason'=> $custom));
-		boomConsole('spam_ban', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom));
+		waliHistory('spam_ban', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'reason'=> $custom));
+		waliConsole('spam_ban', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom));
 	}
 }
 function systemBan($user, $reason = ''){
 	global $mysqli;
-	$mysqli->query("UPDATE users SET user_banned = '" . time() . "', ban_msg = '$reason', user_action = user_action + 1, user_roomid = '0' WHERE user_id = '{$user['user_id']}'");
+	$mysqli->query("UPDATE wali_users SET user_banned = '" . time() . "', ban_msg = '$reason', user_action = user_action + 1, user_roomid = '0' WHERE user_id = '{$user['user_id']}'");
 	banLog($user);
 }
 function wordFilter($text, $type = 0){
@@ -1614,7 +1585,7 @@ function wordFilter($text, $type = 0){
 	$take_action = 0;
 	$spam_action = 0;
 	$reason = '';
-	if(!boomAllow($wali['can_word_filter'])){
+	if(!waliAllow($wali['can_word_filter'])){
 		$words = $mysqli->query("SELECT * FROM `wali_filter` WHERE word_type = 'word' OR word_type = 'spam'");
 		if ($words->num_rows > 0){
 			while($filter = $words->fetch_assoc()){
@@ -1644,7 +1615,7 @@ function wordFilter($text, $type = 0){
 			}
 		}
 		if($spam_action > 0){
-			$text = boomTemplate('element/spam_text');
+			$text = waliTemplate('element/spam_text');
 			switch($data['spam_action']){
 				case 1:
 					systemSpamMute($data, $text2);
@@ -1669,7 +1640,7 @@ function haveFriendship($user){
 }
 function canSendPrivate($id){
 	global $mysqli, $data;
-	$user = boomUserInfo($id);
+	$user = waliUserInfo($id);
 	if(empty($user)){
 		return false;
 	}
@@ -1695,5 +1666,96 @@ function canSendPrivate($id){
 		return false;
 	}
 	return true;
+}
+function roomExist($name, $id){
+	global $mysqli;
+	$check_room = $mysqli->query("SELECT room_name FROM wali_rooms WHERE room_name = '$name' AND room_id != '$id'");
+	if($check_room->num_rows > 0){
+		return true;
+	}
+}
+function clearBreak($text){
+	$text = preg_replace("/[\r\n]{2,}/", "\n\n", $text);
+	return $text;
+}
+function isBadText($text){
+	global $mysqli, $data;
+	$text = trimContent($text);
+	$text_trim = mb_strtolower(str_replace(array(' '), '', $text));
+	if(!waliAllow(5)){
+		$words = $mysqli->query("SELECT * FROM `wali_filter` WHERE word_type = 'word' OR word_type = 'spam'");
+		if ($words->num_rows > 0){
+			while($filter = $words->fetch_assoc()){
+				if($filter['word_type'] == 'word'){
+					if(stripos($text, $filter['word']) !== false){
+						return true;
+					}
+				}
+				else if($filter['word_type'] == 'spam'){
+					if(stripos($text_trim, $filter['word']) !== false){
+						return true;
+					}
+				}
+			}
+		}
+	}
+}
+function validAge($age){
+	global $data;
+	if($age == ''){
+		return false;
+	}
+	if($age == 0){
+		return true;
+	}
+	if($age >= $data['min_age'] && $age != "" && $age < 100){
+		return true;
+	}
+}
+function unlinkAvatar($file){
+	if(!defaultAvatar($file)){
+		$delete =  WALI_PATH. '/avatar/' . $file;
+		if(file_exists($delete)){
+			unlink($delete);
+		}
+	}
+	return true;
+}
+function genderAvatar($s){
+	switch($s){
+		case 1:
+			return 'default_male.png';
+		case 2:
+			return 'default_female.png';
+		default:
+			return 'default_avatar.png';
+	}
+}
+function resetAvatar($u){
+	global $mysqli;
+	$unlink_tumb = unlinkAvatar($u['user_tumb']);
+	if(isBot($u)){
+		switch($u['user_bot']){
+			case 1:
+				$av = 'default_bot.png';
+				break;
+			case 9:
+				$av = 'default_system.png';
+				break;
+			default:
+				$av = 'default_bot.png';
+		}
+	}
+	else {
+		switch($u['user_rank']){
+			case 0:
+				$av = 'default_guest.png';
+				break;
+			default:
+				$av = genderAvatar($u['user_sex']);
+		}
+	}
+	$mysqli->query("UPDATE wali_users SET user_avatar = '$av' WHERE user_id = '{$u['user_id']}'");
+	return $av;
 }
 ?>

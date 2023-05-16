@@ -1,37 +1,52 @@
 <?php
-// session_start();
-$boom_access = 0;
-require("db_conn.php");
+/**
+ * Walichat
+ * 
+ * @package Walichat
+ * @author  www.wali-chat.com
+ * @copyright 2023
+ * @terms any use of this script without a legal license is prohibited
+ * all the content of walichat is the propriety of Wali and Cannot be 
+ * used for another project.
+ */
+session_start();
+$wali_access = 0;
+require("database.php");
 require("variable.php");
-require("function_2.php");
 require("function.php");
-$mysqli = @new mysqli(BOOM_DHOST, BOOM_DUSER, BOOM_DPASS, BOOM_DNAME);
-if (mysqli_connect_errno()) {
-	echo "Failed to connect to database";
-	die();
+require("function_2.php");
+$mysqli = @new mysqli(WALI_DHOST, WALI_DUSER, WALI_DPASS, WALI_DNAME);
+if (mysqli_connect_errno() || $check_install != 1) {
+	if($check_install != 1){
+		$chat_install = 2;
+	}
+	else{
+		$chat_install = 3;
+	}
 }
 else{
 	$chat_install = 1;
-	if(isset($_COOKIE['user_id']) && isset($_COOKIE['utk']) || isset($_COOKIE['username'])){           
-		$ident = escape($_COOKIE['user_id']);
-		$get_data = $mysqli->query("SELECT settings.*, users.* FROM users, settings WHERE user_id = '$ident' AND settings.id = '1'");
+	if(isset($_COOKIE[WALI_PREFIX . 'userid']) && isset($_COOKIE[WALI_PREFIX . 'utk'])){
+		$ident = escape($_COOKIE[WALI_PREFIX . 'userid']);
+		$pass = escape($_COOKIE[WALI_PREFIX . 'utk']);
+		$get_data = $mysqli->query("SELECT wali_setting.*, wali_users.* FROM wali_users, wali_setting WHERE wali_users.user_id = '$ident' AND wali_users.user_password = '$pass' AND wali_setting.id = '1'");
 		if($get_data->num_rows > 0){
 			$data = $get_data->fetch_assoc();
-			$boom_access = 1;
+			$wali_access = 1;
 		}
 		else {
-			$get_data = $mysqli->query("SELECT * FROM settings WHERE settings.id = '1'");
+			$get_data = $mysqli->query("SELECT * FROM wali_setting WHERE wali_setting.id = '1'");
 			$data = $get_data->fetch_assoc();
 			sessionCleanup();
 		}
 	}
 	else {
-		$get_data = $mysqli->query("SELECT * FROM settings WHERE settings.id = '1'");
+		$get_data = $mysqli->query("SELECT * FROM wali_setting WHERE wali_setting.id = '1'");
 		$data = $get_data->fetch_assoc();
 		sessionCleanup();
 	}
 	$cur_lang = getLanguage();
-	require("language/English/language.php");
+	require("language/" . $cur_lang . "/language.php");
 }
 if($chat_install == 1){
 	date_default_timezone_set("{$data['timezone']}");

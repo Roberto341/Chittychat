@@ -48,9 +48,9 @@ if(isset($_POST['last'], $_POST['snum'], $_POST['caction'], $_POST['fload'], $_P
     // main chat logs part
     if($fload == 0){
 		$log = $mysqli->query("SELECT log.*, 
-		users.user_name, users.username_color, users.user_font, users.user_rank, users.wccolor, users.user_sex, users.user_age, users.user_avatar, users.user_cover, users.country, users.user_bot
-		FROM ( SELECT * FROM `chatlogs` WHERE `post_roomid` = {$data['user_roomid']}  AND post_id > '$last' ORDER BY `post_id` DESC LIMIT $chat_history) AS log
-		LEFT JOIN users ON log.user_id = users.user_id
+		wali_users.user_name, wali_users.user_color, wali_users.user_font, wali_users.user_rank, wali_users.wccolor, wali_users.user_sex, wali_users.user_age, wali_users.user_avatar, wali_users.user_cover, wali_users.country, wali_users.user_bot
+		FROM ( SELECT * FROM `wali_chat` WHERE `post_roomid` = {$data['user_roomid']}  AND post_id > '$last' ORDER BY `post_id` DESC LIMIT $chat_history) AS log
+		LEFT JOIN wali_users ON log.user_id = wali_users.user_id
 		ORDER BY `post_id` ASC
 		");
 		$ssnum = 1;
@@ -58,9 +58,9 @@ if(isset($_POST['last'], $_POST['snum'], $_POST['caction'], $_POST['fload'], $_P
 	else {
 		if($caction != $data['rcaction']){
 				$log = $mysqli->query("SELECT log.*,
-				users.user_name, users.username_color, users.user_font, users.user_rank, users.wccolor, users.user_sex, users.user_age, users.user_avatar, users.user_cover, users.country, users.user_bot
-				FROM ( SELECT * FROM `chatlogs` WHERE `post_roomid` = {$data['user_roomid']} AND post_id > '$last' ORDER BY `post_id` DESC LIMIT $chat_substory) AS log
-				LEFT JOIN users ON log.user_id = users.user_id
+				wali_users.user_name, wali_users.user_color, wali_users.user_font, wali_users.user_rank, wali_users.wccolor, wali_users.user_sex, wali_users.user_age, wali_users.user_avatar, wali_users.user_cover, wali_users.country, wali_users.user_bot
+				FROM ( SELECT * FROM `wali_chat` WHERE `post_roomid` = {$data['user_roomid']} AND post_id > '$last' ORDER BY `post_id` DESC LIMIT $chat_substory) AS log
+				LEFT JOIN wali_users ON log.user_id = wali_users.user_id
 				ORDER BY `post_id` ASC
 				");
 		}
@@ -68,7 +68,7 @@ if(isset($_POST['last'], $_POST['snum'], $_POST['caction'], $_POST['fload'], $_P
 			$main = 0;
 		}
 	}
-	if($main == 1){
+	if($main == 1){ 
 		if($log->num_rows > 0){
 			while ($chat = $log->fetch_assoc()){
 				$d['mlast'] = $chat['post_id'];
@@ -84,20 +84,20 @@ if(isset($_POST['last'], $_POST['snum'], $_POST['caction'], $_POST['fload'], $_P
 	if($preload == 1){
 		$privlog = $mysqli->query("
 		SELECT 
-		log.*, users.user_id, users.user_name, users.username_color, users.user_avatar, users.user_bot 
+		log.*, wali_users.user_id, wali_users.user_name, wali_users.user_color, wali_users.user_avatar, wali_users.user_bot 
 		FROM ( SELECT * FROM `wali_private` WHERE  `hunter` = '{$data['user_id']}' AND `target` = '$priv'  OR `hunter` = '$priv' AND `target` = '{$data['user_id']}' ORDER BY `id` DESC LIMIT $private_history) AS log 
 		LEFT JOIN users
-		ON log.hunter = users.user_id
+		ON log.hunter = wali_users.user_id
 		ORDER BY `time` ASC");
 	}
 	else {
 		if($pcount != $data['pcount'] && $priv != 0){
 			$privlog = $mysqli->query("
 			SELECT 
-			log.*, users.user_id, users.user_name, users.username_color, users.user_avatar, users.user_bot
+			log.*, wali_users.user_id, wali_users.user_name, wali_users.user_color, wali_users.user_avatar, wali_users.user_bot
 			FROM ( SELECT * FROM `wali_private` WHERE  `hunter` = '$priv' AND `target` = '{$data['user_id']}' AND id > '$lastp' OR hunter = '{$data['user_id']}' AND target = '$priv' AND id > '$lastp' AND file = 1 ORDER BY `id` DESC LIMIT $private_history) AS log 
-			LEFT JOIN users
-			ON log.hunter = users.user_id
+			LEFT JOIN wali_users
+			ON log.hunter = wali_users.user_id
 			ORDER BY `time` ASC");
 		}
 		else {

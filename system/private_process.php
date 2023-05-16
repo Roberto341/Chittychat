@@ -9,7 +9,7 @@
 * all the content of Codychat is the propriety of BoomCoding and Cannot be 
 * used for another project.
 */
-require_once("config_session.php");
+require_once("config_session.php"); 
 if (isset($_POST['target']) && isset($_POST['content'])){
 	if(muted()){
 		die();
