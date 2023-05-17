@@ -652,4 +652,34 @@ function canAbout(){
 		return true;
 	}
 }
+function userCountry($country){
+	global $data;
+	if($country != 'ZZ' && $country != ''){
+		return true;
+	}
+}
+function verified($user){
+	if($user['verified'] > 0){
+		return true;
+	}
+}
+function waliSex($s){
+	if($s != 0){
+		return true;
+	}
+}
+function waliAge($a){
+	if($a != 0){
+		return true;
+	}
+}
+function waliFormat($txt){
+	$count = substr_count($txt, "\n" );
+	if($count > 20){
+		return $txt;
+	}
+	else {
+		return nl2br($txt);
+	}
+}
 ?>

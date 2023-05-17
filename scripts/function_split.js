@@ -147,5 +147,18 @@ callSaved = function(text, type){
 }
 
 $(document).ready(function(){
-
+	$(document).on('click', '.bswitch', function(){
+		var cval = $(this).attr('data');
+		var callback = $(this).attr('data-c');
+		if(cval == 1){
+			$(this).attr('data', 0);
+			$(this).switchClass( "onswitch", "offswitch", 100);
+			$(this).find('.bball').switchClass( "onball", "offball", 100, function(){ window[callback](); });
+		}
+		else if(cval == 0){
+			$(this).attr('data', 1);
+			$(this).switchClass( "offswitch", "onswitch", 100);
+			$(this).find('.bball').switchClass( "offball", "onball", 100, function(){ window[callback](); });
+		}
+	});
 });

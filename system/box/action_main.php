@@ -1,6 +1,7 @@
 <?php 
 require('../config_session.php');
-if(!isset($_POST['id'])){
+
+if(!isset($_POST['id'], $_POST['cp'])){
     die();
 }
 $id = escape($_POST['id']);
@@ -9,7 +10,7 @@ $user = userRoomDetails($id);
 
 if(empty($user)){
     echo 0;
-    die();
+    die();  
 }
 if(mySelf($user['user_id'])){
     echo 1;

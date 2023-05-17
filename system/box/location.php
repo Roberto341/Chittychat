@@ -6,7 +6,7 @@ require('../config_session.php');
 	<div class="setting_element ">
 		<p class="label"><?php echo $lang['language']; ?></p>
 		<select id="set_profile_language">
-			<?php echo listLanguage($data['user_lang'], 1); ?>
+			<?php echo listLanguage($data['user_language'], 1); ?>
 		</select>
 	</div>
 	<div class="form_split">
@@ -22,7 +22,7 @@ require('../config_session.php');
 			<div class="setting_element ">
 				<p class="label"><?php echo $lang['user_timezone']; ?></p>
 				<select id="set_profile_timezone">
-					<?php echo getTimezone($data['timezone']); ?>
+					<?php echo getTimezone($data['user_timezone']); ?>
 				</select>
 			</div>
 		</div>

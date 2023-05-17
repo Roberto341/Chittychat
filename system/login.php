@@ -1,33 +1,27 @@
 <?php 
-    require("config.php");
+require("config.php");
     
-     if(isset($_POST['username'], $_POST['password'])){
-         $uname = validate($_POST['username']);
-         $pass = validate($_POST['password']);
-         
-         $get_login = $mysqli->query("SELECT * FROM wali_users WHERE user_name = '$uname' AND user_password = '$pass'");
-         if($get_login->num_rows > 0){
-            $ldata = $get_login->fetch_assoc();
-            if($ldata['user_name'] === $uname && $ldata['user_password'] === $pass){
-                $log = $mysqli->query("UPDATE wali_users SET user_roomid='0' WHERE user_name='$uname'");
-                 setcookie('username', $uname, time() + 259200, '/');
-                 setcookie('rank', $ldata['user_rank'], time() + 259200, '/');
-                 setcookie('room', $ldata['user_roomid'], time() + 259200, '/');
-                 setWaliLang($ldata['user_language']);
-                 setWaliCookie($ldata['user_id'], $ldata['user_password']);
-                 echo waliCode(3);
-                 exit();
-            }
-            else{
-                echo waliCode(1);
-                exit();
-            }
-         }
-        }
-        else{
-            echo waliCode(2);
-            exit();
-        }
+if(isset($_POST['username'], $_POST['password'])){
+    $log_username = validate($_POST['username']); 
+    $log_pass = validate($_POST['password']);
+        
+    if(empty($log_username) || empty($log_pass)){
+        echo 1;
+        die();
+    }
+    $log_user = $mysqli->query("SELECT * FROM wali_users WHERE user_name = '$log_username' OR user_email = '$log_username' AND user_password = '$log_pass'");
+    if($log_user->num_rows > 0){
+        $log = $log_user->fetch_assoc();
+        setcookie('username', $log['user_name'], time() + 259200, '/');
+        setWaliLang($log['user_language']);
+        setWaliCookie($log['user_id'], $log['user_password']);
+        echo 3;
+        die();
+    }else{
+        echo 2;
+        die();
+    }
+}
 ?>
 
 

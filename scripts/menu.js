@@ -224,13 +224,12 @@ toggleLeft = function(){
     $('#chat_left').toggle();
 }
 openLogout = function(){
-	/*
 	$.post('system/box/logout.php', { 
 		token: utk,
 		}, function(response) {
 				showModal(response);
-	});*/
-	location = ("system/logout.php");
+	});
+	// location = ("system/logout.php");
 }
 logOut = function(){
 	$.post('system/logout.php', { 
@@ -327,7 +326,9 @@ showMenu = function(id){
 }
 
 editProfile = function(){
-	$.post('system/box/edit_profile.php', function(response) {
+	$.post('system/box/edit_profile.php', {
+		token: utk,
+	}, function(response) {
 			showEmptyModal(response, 580);
 			hideMenu("chat_main_menu");
 	});
@@ -360,7 +361,9 @@ userReload = function(type){
 		if(type == 1){
 			panelIt(0);
 		}
-		$.post('system/panel/user_list.php', function(response) {
+		$.post('system/panel/user_list.php',{
+			token: utk,
+		}, function(response) {
 			chatRightIt(response);
 			firstPanel = '';
 		});
@@ -477,22 +480,6 @@ overEmptyModal = function(r,s){
 	offScroll();
 	selectIt();
 }
-getActions = function(id){
-	$.post('system/box/action_main.php', {
-		id: id,
-		cp: curPage,
-		}, function(response) {
-			if(response == 0){
-				callSaved(system.cannotUser, 3);
-			}
-			else if(response == 1){
-			}
-			else {
-				overEmptyModal(response,400);
-			}
-	});
-}
-
 ///////////////////////////////// DOCUMENT LOAD FUNCTION /////////////////////////////////////////////
 $(document).ready(function(){
 	$(document).on('click', '.gprivate', function(){
@@ -685,7 +672,7 @@ setUserTheme = function(item){
 	$.ajax({
 		url: "system/action/action_profile.php",
 		type: "post",
-		cache: "false",
+		cache: false,
 		dataType: 'json',
 		data: {
 			set_user_theme: theme,

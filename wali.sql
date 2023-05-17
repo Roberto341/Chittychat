@@ -195,20 +195,3 @@ ALTER TABLE `wali_room_action` ADD INDEX(`action_user`);
 
 ALTER TABLE `wali_room_staff` ADD INDEX(`room_id`);
 ALTER TABLE `wali_room_staff` ADD INDEX(`room_staff`);
-
-
-/***
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-  }
-  $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-
-$mysqli = @new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-// PDO  
-$conn2 = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
-try{
-    $db = new PDO("mysql:dbhost=$dbhost; dbname=$dbname", "$dbuser", "$dbpass");
-}catch(PDOException $e){
-    echo $e->getMessage();
-}
-/*

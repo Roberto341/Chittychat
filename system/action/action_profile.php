@@ -41,6 +41,30 @@ if(isset($_POST['set_user_theme'])){
 	echo waliCode(1, array("theme"=>$t));
 	die();
 }
+if(isset($_POST['save_mood'])){
+	$mood = escape($_POST['save_mood']);
+	if(!canMood()){
+		echo 0;
+		die();
+	}
+	if(isBadText($mood)){
+		echo 2;
+		die();
+	}
+	if(isTooLong($mood, 40)){
+		echo 0;
+		die();
+	}
+	if($mood == $data['user_mood']){
+		echo getMood($data);
+		die();
+	}
+	$mysqli->query("UPDATE wali_users SET user_mood = '$mood' WHERE user_id = '{$data['user_id']}'");
+	$u = userDetails($data['user_id']);
+	echo getMood($u);
+	die();
+	
+}	
 if(isset($_POST['save_info'], $_POST['age'], $_POST['gender'])){
 	$age = escape($_POST['age']);
 	$gender = escape($_POST['gender']);
@@ -86,6 +110,37 @@ if(isset($_POST['my_username_color'])){
 	}
 	$mysqli->query("UPDATE wali_users SET user_color='$color', user_font='$font' WHERE user_id='{$data['user_id']}'");
 	echo 1;
+	die();
+}
+if(isset($_POST['set_private_mode'])){
+	$pmode = escape($_POST['set_private_mode']);
+	if(isGuest($data)){
+		if($pmode != 0 && $pmode != 1){
+			echo 0;
+			die();
+		}
+	}
+	if($pmode == 0 || $pmode == 1 || $pmode == 2 || $pmode == 3){
+		$mysqli->query("UPDATE wali_users SET user_private = '$pmode' WHERE user_id = '{$data['user_id']}'");
+		echo 1;
+		die();
+	}
+	else {
+		echo 0;
+		die();
+	}
+}
+if(isset($_POST['change_sound'], $_POST['chat_sound'], $_POST['private_sound'], $_POST['notify_sound'], $_POST['name_sound'])){
+	$chat_sound = escape($_POST['chat_sound']);
+	$private_sound = escape($_POST['private_sound']);
+	$notify_sound = escape($_POST['notify_sound']);
+	$name_sound = escape($_POST['name_sound']);
+	$sound = soundCode('chat',$chat_sound) . soundCode('private',$private_sound) . soundCode('notify',$notify_sound) . soundCode('name',$name_sound);
+	if($sound == ''){
+		$sound = 0;
+	}
+	$mysqli->query("UPDATE wali_users SET user_sound = '$sound' WHERE user_id = '{$data['user_id']}'");
+	echo waliCode(1, array('data'=> $sound));
 	die();
 }
 // if(isset($_POST['text_color'])){

@@ -5,6 +5,9 @@ require("database.php");
 require("variable.php");
 require("function.php"); 
 require("function_2.php");
+if(!checkToken() || !isset($_COOKIE[WALI_PREFIX . 'userid']) || !isset($_COOKIE[WALI_PREFIX . 'utk'])){
+	die();
+}
 $mysqli = @new mysqli(WALI_DHOST, WALI_DUSER, WALI_DPASS, WALI_DNAME);
 if (mysqli_connect_errno()){
 	die();

@@ -113,7 +113,11 @@ img{border: 0px;}
 .avatar_top_mod img{display: block; margin: 0 auto; width: 100%; border-radius: 50%;}
 .avatar_top_name{display: table-cell; padding: 0 5px 0 2px; font-size: 14px; vertical-align: middle; font-weight: bold;}
 #mobile_main_menu{right: 0; top: 100%; z-index: 161; width: 200px;}
-.list_element:last-child, .listing_reg:last-child, .left_list:last-child, .user_item:last-child, .user_item_custom:last-child, .ulist_item:last-child, .panel_list:last-child, .post_element:last-child, .sub_list:last-child, .sub_menu_item:last-child, .fmenu_item:last-child, .page_drop_item:last-child, .listing_element:last-child, .listing_half_element:last-child, .reply_item:last-child, .avitem:last-child, .sub_list_item:last-child, .elem_in:last-child, .aclist:last-child, .list_hover_item:last-child {border-top: none !important;}
+.list_element:first-child, .listing_reg:first-child,  .left_list:first-child, .user_item:first-child, .user_item_custom:first-child, .ulist_item:first-child, .panel_list:first-child, .post_element:first-child, .sub_list:first-child,.sub_menu_item:first-child, .fmenu_item:first-child, .page_drop_item:first-child, .listing_element:first-child, .listing_half_element:first-child,
+.reply_item:first-child, .avitem:first-child, .sub_list_item:first-child, .elem_in:first-child, .aclist:first-child, .list_hover_item:first-child { border-top: none !important; }
+.list_element:last-child, .listing_reg:last-child, .left_list:last-child, .user_item:last-child, .user_item_custom:last-child, .ulist_item:last-child, .panel_list:last-child, .post_element:last-child , .sub_list:last-child, .sub_menu_item:last-child, .fmenu_item:last-child, .page_drop_item:last-child, .listing_element:last-child, .listing_half_element:last-child,
+.reply_item:last-child, .avitem:last-child, .sub_list_item:last-child, .elem_in:last-child, .aclist:last-child, .list_hover_item:last-child { border-bottom: none !important; }
+.listing_element{padding: 15px 10px;}
 .sub_list_item{display: table; table-layout: fixed; width: 100%; padding: 10px; cursor: pointer; margin-bottom: 3px; border-radius: 3px;}
 .sub_list_icon{display: table-cell; vertical-align: middle; width: 30px; text-align: center; font-size: 16px;}
 .sub_list_content{display: table-cell; vertical-align: middle;}
@@ -187,6 +191,7 @@ img{border: 0px;}
 .reg_button{padding: 10px; min-width: 100px;}
 .full_input, .full_textarea{padding: 12px 10px; width: 100%; min-width: 100%; max-width: 100%; border: none; border-radius: 2px;}
 .medium_textarea{height: 100px; max-height: 100px;}
+.large_textarea{height: 180px; max-height: 180px;}
 .profile_background{background-size: cover !important; background-position: 50% 50% !important;}
 .cover_size{height: 250px;}
 .avatar_spin{border-radius: 10px; overflow: hidden; position: relative; z-index: 30;}
@@ -307,3 +312,25 @@ img{border: 0px;}
 .form_spli{width: 100%; clear: both;}
 .form_left, .form_left_full{width: 50%; float: left; padding: 3px;}
 .form_right, .form_right_full{width: 50%; float: right; padding: 3px;}
+.ulist_container{max-height: 386px; overflow: hidden; overflow-y: auto; padding: 15px;}
+.ulist_item{width: 100%; height: auto; table-layout: fixed; display: table; padding: 8px; margin-bottom: 3px; border-radius: 3px;}
+.ulist_avatar{display: table-cell; vertical-align: middle; text-align: center; width: 40px;}
+.ulist_avatar img{width: 40px; height: 40px; border-radius: 50%; display: block; margin: 0 auto;}
+.ulist_name{display: table-cell; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; padding: 0 5px;}
+.ulist_option{display: table-cell; vertical-align: middle; width: 40px; text-align: center; font-size: 20px;}
+.head_notify{position: absolute; top: 12px; left: 6px; padding: 2px 3px; border-radius: 2px; font-size: 11px; font-weight: bold; display: none;}
+.pm_notify{padding: 0 5px; border-radius: 2px; font-size: 14px; font-weight: bold;}
+.ulist_notify{display: table-cell; vertical-align: middle; width: 32px; text-align: center;}
+.notification{position: absolute; top: 5px; left: 8px; padding: 2px 3px; border-radius: 2px; font-size: 11px; font-weight: bold; display: none;}
+.switch_item{display: table; table-layout: fixed; width: 100%; padding: 12px;}
+.switch_item_text{display: table-cell; vertical-align: middle;}
+.switch_item_switch{display: table-cell; vertical-align: middle; width: 60px;}
+.switch_wrap{display: block; width: 50px; margin: 0 auto;}
+.onswitch{background: #74b20e;}
+.offswitch{background: #ccc;}
+.bswitch{display: table; width: 50px; padding: 2px; border-radius: 100px;}
+.bball_wrap{display: table-cell; vertical-align: middle;}
+.onball{background: #fff; margin-left: 22px;}
+.offball{background: #fff; margin-left: 0px;}
+.bball{width: 24px; height: 24px; border-radius: 50%; display: block;}
+.text_xsmall{font-size: 11px;}

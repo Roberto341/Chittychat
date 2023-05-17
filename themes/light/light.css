@@ -21,7 +21,7 @@ input, textarea, .post_input_container {background: rgb(242, 242, 242);color: rg
 .user{color: #666;}
 .modal_back{background-color: rgba(0, 0, 0, 0.6);}
 .modal_in{background: #fff; color: #444;}
-.sub_item{background: #f3f3f3; color: #666;}
+.sub_list_item, .sub_item, .ulist_item{background: #f3f3f3; color: #666;}
 .fmenu, .add_shadow{box-shadow: 0 0 1px 1px #ddd;}
 .fmenu_item, .avitem{border-bottom: 1px solid #ededed; background: #fff; color: #666;}
 .modal_menu, .tab_menu{background: #f3f3f3; color: #555;}
@@ -33,11 +33,11 @@ input, textarea, .post_input_container {background: rgb(242, 242, 242);color: rg
 .default_color{color: #012832;}
 .default_bgcolor{background-color: #012832; color: white;}
 .theme_color{color: #03add8;}
-.user{color: #333; font-weight: 900;}
 .reg_menu{color: #444;}
 .reg_selected{background: #ededed; color: #444;}
 .success {color: #74b20e;}
 .error{color: red;}
+.bnotify{background: red; color: #fff;}
 .ok_btn{background: #74b20e; color: #fff;}
 .login_sub_text, .login_title_text, .login_register_text{text-shadow: 1px 1px 1px #666;}
 .not_member{background: #ededed; color: #666;}

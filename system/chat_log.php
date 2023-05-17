@@ -86,7 +86,7 @@ if(isset($_POST['last'], $_POST['snum'], $_POST['caction'], $_POST['fload'], $_P
 		SELECT 
 		log.*, wali_users.user_id, wali_users.user_name, wali_users.user_color, wali_users.user_avatar, wali_users.user_bot 
 		FROM ( SELECT * FROM `wali_private` WHERE  `hunter` = '{$data['user_id']}' AND `target` = '$priv'  OR `hunter` = '$priv' AND `target` = '{$data['user_id']}' ORDER BY `id` DESC LIMIT $private_history) AS log 
-		LEFT JOIN users
+		LEFT JOIN wali_users
 		ON log.hunter = wali_users.user_id
 		ORDER BY `time` ASC");
 	}

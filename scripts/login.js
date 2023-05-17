@@ -23,7 +23,7 @@ getRegistration = function(){
 }
 sendRegistration = function(){
 	var upass = $('#reg_password').val();
-	var uuser = $('#reg_uesrname').val();
+	var uuser = $('#reg_username').val();
 	var uemail = $('#reg_email').val();
 	var ugender = $('#login_select_gender').val();
 	var uage = $('#login_select_age').val();
@@ -61,6 +61,7 @@ sendRegistration = function(){
 					$('#reg_password').val("");
 					$('#reg_username').val("");
 					$('#reg_email').val("");	
+					console.log(upass);
 				}
 				else if (response == 3){
 					callSaved(system.error, 3);
@@ -79,9 +80,6 @@ sendRegistration = function(){
 				else if (response == 6){
 					callSaved(system.invalidEmail, 3);
 					$('#reg_email').val("");
-				}
-				else if (response == 7){
-					callSaved(system.missingRecaptcha, 3);
 				}
 				else if (response == 10){
 					callSaved(system.emailExist, 3);
@@ -139,19 +137,19 @@ sendLogin = function(){
 				password: upass,
 				username: uuser
 			},function(response){
-				if(response.code == 1){
+				if(response == 1){
 					callSaved(system.badLogin, 3);
 					$('#password').val("");
 				}
-				else if(response.code == 2){
+				else if(response == 2){
 					callSaved(system.badLogin, 3);
 					$('#password').val("");
 				}
-				else if(response.code == 3){
+				else if(response == 3){
 					location.reload();
 				}
-				location.reload();
-				curPage = 'chat';
+				// location.reload();
+				// curPage = 'chat';
 				waitReply = 0;
 			});
 		}

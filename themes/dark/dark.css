@@ -22,9 +22,11 @@ input, textarea, .post_input_container {background: #151515; color: #fff;border:
 .other{border: 2px solid #666;}
 .log2{background: #161616;}
 .user{color: #666;}
+.bnotify{background: red; color: #fff;}
+
 .modal_back{background-color: rgba(0, 0, 0, 0.6);}
 .element_color,#private_box,.modal_in{background: #191919; color: #fff;}
-.sub_list_item, .sub_item{background: #222; color: #fff;}
+.sub_list_item, .sub_item, .ulist_item{background: #222; color: #fff;}
 .fmenu, .add_shadow, #private_box{box-shadow: 0 0 1px 1px #000;}
 .avitem{border-bottom: 1px solid #222; background: #191919; color: #fff;}
 .modal_menu, .tab_menu{background: #333;}
@@ -64,3 +66,4 @@ input, textarea, .post_input_container {background: #151515; color: #fff;border:
 .target_private{color: #fff; background: #333;}
 
 .my_notice{color: #fff; background: #006699; padding: 3px 10px; display: inline-block; line-height: 1em; margin-top: 2px; border-radius: 20px; font-weight: normal;}
+.bustate{color: #555;}

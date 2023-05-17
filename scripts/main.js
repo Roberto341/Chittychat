@@ -391,7 +391,9 @@ closeOverModal = function(){
 	$('#over_modal').hide();
 }
 getDisplaySetting = function(){
-	$.post('system/box/display.php', function(response) {
+	$.post('system/box/display.php', {
+		token: utk,
+	}, function(response) {
 			if(response == 0){
 				return false;
 			}
@@ -417,6 +419,36 @@ changeColor = function(){
 			else {
 				overModal(response);
 			}
+	});
+}
+getLocation = function(){
+	$.post('system/box/location.php', {
+		token: utk,
+	}, function(response){
+		if(response == 0){
+			return false;
+		}else{
+			overModal(response, 460);
+		}
+	});
+}
+getPrivateSettings = function(){
+	$.post('system/box/private_settings.php', {
+		token: utk,
+		}, function(response) {
+			if(response == 0){
+				return false;
+			}
+			else {
+				overModal(response, 460);
+			}
+	});
+}
+getSoundSetting = function(){
+	$.post('system/box/sound.php', {
+		token: utk,
+		}, function(response) {
+			overModal(response, 380);
 	});
 }
 changeInfo = function(){
@@ -502,16 +534,6 @@ innactiveControl = function(cPost){
 	$('#current_latency').text(cLatency);
 	$('#logs_counter').text($('.ch_logs').length);
 }
-getLocation = function(){
-	$.post('system/box/location.php', function(response) {
-			if(response == 0){
-				return false;
-			}
-			else {
-				overModal(response, 460);
-			}
-	});
-}
 tabNotify = function(){
 	if(focused == false){
 		PageTitleNotification.On();
@@ -530,7 +552,7 @@ chatReload = function(){
 	$.ajax({
 		url: "system/chat_log.php",
 		type: "post",
-		cache: "false",
+		cache: false,
 		timeout: speed,
 		dataType: 'json',
 		data: {
@@ -739,6 +761,14 @@ chatReload = function(){
 	});
 }
 
+
+getPrivate = function(){
+	$.post('system/box/private_notify.php', {
+		token: utk,
+		}, function(response) {
+			showEmptyModal(response, 400);
+	});
+}
 
 
 var regSpinner = '<i class="fa fa-spinner fa-spin fa-fw reg_spinner"></i>';

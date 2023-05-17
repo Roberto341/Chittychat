@@ -1,5 +1,4 @@
 <?php 
-require("../config.php");
 if(canRankUser($walie)){ ?>
 <div class="bpad25">
 	<p class="label"><?php echo $lang['user_rank']; ?></p>

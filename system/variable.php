@@ -8,7 +8,7 @@
     $wali['neon_count'] = 32;
 
 
-    $wali['max_reg'] = 5; 				// max registration per day per ip
+    $wali['max_reg'] = 100; 				// max registration per day per ip
     $wali['max_room_name'] = 30; 		// max lenght of room name
     $wali['max_description'] = 150; 	// max lenght of room description
     $wali['act_time'] = 1;				// turn on off the innactivity balancer (0)off (1)on

@@ -83,18 +83,30 @@ $room = roomInfo($user['user_roomid']);
 <div id="mprofilemenu">
 	<div class="modal_zone pad25 tpad15" id="profile_info">
 		<div class="clearbox">
+			<?php if(waliAge($user['user_age'])){ ?>
 			<div class="listing_half_element info_pro">
-				<div class="listing_title"><?php echo 'Age'?></div>
+				<div class="listing_title"><?php echo $lang['age'];?></div>
 				<div class="listing_text"><?php echo getUserAge($user['user_age']);?></div>
 			</div>
+			<?php } ?>
+			<?php if(waliSex($user['user_sex'])){?>
 			<div class="listing_half_element info_pro">
-				<div class="listing_title"><?php echo 'Gender'?></div>
+				<div class="listing_title"><?php echo $lang['gender'];?></div>
 				<div class="listing_text"><?php echo getGender($user['user_sex']);?></div>
 			</div>
+			<?php } ?>
+			<?php if(verified($user)){ ?>
 			<div class="listing_half_element info_pro">
-				<div class="listing_title"><?php echo 'Country'?></div>
+				<div class="listing_title"><?php echo $lang['account_status']; ?></div>
+				<div class="listing_text"><?php echo $lang['verified']; ?></div>
+			</div>
+			<?php } ?>
+			<?php if(userCountry($user['country'])){?>
+			<div class="listing_half_element info_pro">
+				<div class="listing_title"><?php echo $lang['country']?></div>
 				<div class="listing_text"><?php echo getCountry($user['country']);?></div>
 			</div>
+			<?php }?>
 			<div class="listing_half_element info_pro">
 				<div class="listing_title"><?php echo $lang['join_chat']?></div>
 				<div class="listing_text"><?php echo longDate($user['user_join']);?></div>
@@ -106,6 +118,14 @@ $room = roomInfo($user['user_roomid']);
 			</div>
 			<?php } ?>
 		</div>
+		<?php if($user['user_about'] != ''){ ?>
+		<div>
+			<div class="listing_element info_pro">
+				<div class="listing_title"><?php echo $lang['about_me']; ?></div>
+				<div class="listing_text"><?php echo waliFormat($user['user_about']); ?></div>
+			</div>
+		</div>
+		<?php } ?>
 	</div>
 </div>
 <!-- echo getCover($user); ?> -->

@@ -659,7 +659,7 @@ function listLanguage($lang){
 
 function getTimezone($zone){
 	$list_zone = '';
-	require WALI_PATH . '/system/element/timezone.php';
+	require 'element/timezone.php';
 	foreach ($timezone as $line) {
 		$list_zone .= '<option value="' . $line . '" ' . selCurrent($zone, $line) . '>' . $line . '</option>';
 	}
@@ -748,7 +748,17 @@ function getUserId($user){
 function getUsername($user){
 	echo $user['user_name'];
 }
+function getUserTime($user){
+	echo $user['user_timezone'];
 
+}
+function getUserCountry($user){
+	echo $user['country'];
+
+}
+function getUserLang($user){
+	echo $user['user_language'];
+}
 function addFriend($user){
 	echo $user['user_id'];
 }
@@ -1454,6 +1464,36 @@ function validName($name){
 	}
 	return false;
 }
+function isEmail($email){
+	if(filter_var($email, FILTER_VALIDATE_EMAIL) && !strstr($email, '+')){
+		return true;
+	}
+}
+function validEmail($email){
+	global $data, $mysqli;
+	if(!isEmail($email)){
+		return false;
+	}
+	if($data['email_filter'] == 1){
+		$get_end = explode('@', $email);
+		$get_domain = explode('.', $get_end[1]);
+		$allowed = $get_domain[0];
+		$get_email = $mysqli->query("SELECT word FROM wali_filter WHERE word_type = 'email' AND word = '$allowed'");
+		if($get_email->num_rows < 1){
+			return false;
+		}
+	}
+	return true;
+}
+function waliValidPassword($pass){
+	if(strlen($pass) > 8){
+		return true;
+	}
+}
+function nameExist($name){
+	global $data, $mysqli;
+	$get_name = $mysqli->query("SELECT user_name FROM wali_users");
+}
 function checkName($name){
 	if(preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $name)){
 		return true;
@@ -1757,5 +1797,56 @@ function resetAvatar($u){
 	}
 	$mysqli->query("UPDATE wali_users SET user_avatar = '$av' WHERE user_id = '{$u['user_id']}'");
 	return $av;
+}
+function createSwitch($id, $val, $ccall = 'noAction'){
+	switch($val){
+		case 0:
+			return '<div id="' . $id . '" class="btable bswitch offswitch" data="0" data-c="' . $ccall . '">
+						<div class="bball_wrap"><div class="bball offball"></div></div>
+					</div>';
+		case 1:
+			return '<div id="' . $id . '" class="btable bswitch onswitch" data="1" data-c="' . $ccall . '">
+						<div class="bball_wrap"><div class="bball onball"></div></div>
+					</div>';
+		default:
+			return false;
+	}
+}
+function getMood($user){
+	global $lang;
+	if($user['user_mood'] == ''){
+		return $lang['unset_mood'];
+	}
+	else {
+		return $user['user_mood'];
+	}
+}
+function soundCode($sound, $val){
+	if($val > 0){
+		switch($sound){
+			case 'chat':
+				return '1';
+			case 'private':
+				return '2';
+			case 'notify':
+				return '3';
+			case 'name':
+				return '4';
+			default:
+				return '';
+		}
+	}
+	else {
+		return '';
+	}
+}
+function soundStatus($val){
+	global $data;
+	if(preg_match('@[' . $val . ']@i', $data['user_sound'])){
+		return 1;
+	}
+	else {
+		return 0;
+	}
 }
 ?>

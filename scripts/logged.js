@@ -92,7 +92,7 @@ function switchRoom(room, pass, rank){
 				$.ajax({
 					url: "system/action_room.php",
 					type: "post",
-					cache: "false",
+					cache: false,
 					dataType: 'json',
 					data: {
 						room: room,
@@ -292,7 +292,7 @@ addRoom = function(){
 			$.ajax({
 				url: "system/action_room.php",
 				type: "post",
-				cache: "false",
+				cache: false,
 				dataType: 'json',
 				data: {
 					set_name: $("#set_room_name").val(),
@@ -391,4 +391,123 @@ accessRoom = function(rt, rank){
 	else {
 		callSaved(system.accessRequirement, 3);
 	}
+}
+
+saveLocation = function(){
+	$.post('system/action/action_users.php', {
+		user_timezone: $('#set_profile_timezone').val(),
+		user_language: $('#set_profile_language').val(),
+		user_country: $('#set_profile_country').val(),
+		token: utk,
+		}, function(response) {
+			if(response == 1){
+				location.reload();
+			}
+			else {
+				callSaved(system.saved, 1);
+			}
+	});
+}
+
+getActions = function(id){
+	$.post('system/box/action_main.php', {
+		id: id,
+		cp: curPage,
+		token: utk,
+		}, function(response) {
+			if(response == 0){
+				callSaved(system.cannotUser, 3);
+			}
+			else if(response == 1){
+			}
+			else {
+				overEmptyModal(response,400);
+			}
+	});
+}
+var waliDelay = (function(){
+	var timer = 0;
+	return function(callback, ms){
+	  clearTimeout (timer);
+	  timer = setTimeout(callback, ms);
+	};
+  })();
+saveUserSound = function(){
+	waliDelay(function() {
+		$.ajax({
+			url: "system/action/action_profile.php",
+			type: "post",
+			cache: false,
+			dataType: 'json',
+			data: { 
+				change_sound: 1,
+				chat_sound: $('#set_chat_sound').attr('data'),
+				private_sound: $('#set_private_sound').attr('data'),
+				notify_sound: $('#set_notification_sound').attr('data'),
+				name_sound: $('#set_username_sound').attr('data'),
+				token: utk
+			},
+			success: function(response){
+				if(response.code == 1) {
+					uSound = response.data;
+				}
+				else {
+					return false;
+				}
+			},
+			error: function(){
+				return false;
+			}
+		});
+	}, 500);
+}
+
+savePrivateSettings = function(){
+	$.post('system/action/action_profile.php', {
+		set_private_mode: $('#set_private_mode').val(),
+		token: utk,
+		}, function(response) {
+			if(response == 1){
+				callSaved(system.saved, 1);
+			}
+	});
+}
+saveAbout = function(){
+	$.post('system/action/action_profile.php', { 
+		save_about: '1',
+		about: $('#set_user_about').val(),
+		token: utk
+		}, function(response) {
+			if(response == 1){
+				callSaved(system.saved, 1);
+				hideOver();
+			}
+			else if(response == 2){
+				callSaved(system.restrictedContent, 3);
+			}
+			else if(response == 0){
+				callSaved(system.error, 3);
+			}
+			else {
+				return false;
+			}
+	});	
+}
+saveMood = function(){
+	$.post('system/action/action_profile.php', { 
+		save_mood: $('#set_mood').val(),
+		token: utk
+		}, function(response) {
+			if(response == 0){
+				callSaved(system.error, 3);
+				hideOver();
+			}
+			else if(response == 2){
+				callSaved(system.restrictedContent, 3);
+			}
+			else {
+				$('#pro_mood').html(response);
+				hideOver();
+			}
+	});	
 }
