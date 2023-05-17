@@ -549,7 +549,7 @@ chatReload = function(){
 	var cPosted = Date.now();
 	var priv = $('#get_private').attr('value');
 	logsControl();
-	$.ajax({
+	$.ajax({ 
 		url: "system/chat_log.php",
 		type: "post",
 		cache: false,

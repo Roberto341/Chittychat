@@ -1764,32 +1764,32 @@ function unlinkAvatar($file){
 function genderAvatar($s){
 	switch($s){
 		case 1:
-			return 'default_male.png';
+			return 'avatar/default_male.png';
 		case 2:
-			return 'default_female.png';
+			return 'avatar/default_female.png';
 		default:
-			return 'default_avatar.png';
+			return 'avatar/default_avatar.png';
 	}
 }
 function resetAvatar($u){
 	global $mysqli;
-	$unlink_tumb = unlinkAvatar($u['user_tumb']);
+	$unlink_tumb = unlinkAvatar($u['user_avatar']);
 	if(isBot($u)){
 		switch($u['user_bot']){
 			case 1:
-				$av = 'default_bot.png';
+				$av = 'avatar/default_bot.png';
 				break;
 			case 9:
-				$av = 'default_system.png';
+				$av = 'avatar/default_system.png';
 				break;
 			default:
-				$av = 'default_bot.png';
+				$av = 'avatar/default_bot.png';
 		}
 	}
 	else {
 		switch($u['user_rank']){
 			case 0:
-				$av = 'default_guest.png';
+				$av = 'avatar/default_guest.png';
 				break;
 			default:
 				$av = genderAvatar($u['user_sex']);
