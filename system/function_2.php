@@ -491,21 +491,6 @@ function getStatus($status, $c){
 			return '';
 	}
 }
-function allowLogs(){
-	global $data;
-	if($data['allow_logs'] == 1){
-		return true;
-	}
-}
-function isVisible($user){
-	if($user['user_status'] != 6){
-		return true;
-	}
-}
-function chatAction($room){
-	global $mysqli, $data;
-	$mysqli->query("UPDATE wali_rooms SET rcaction = rcaction + 1, room_action = '" . time() . "' WHERE room_id = '$room'");
-}
 function userPostChat($content, $custom = array()){
 	global $mysqli, $data;
 	$def = array(
@@ -535,29 +520,59 @@ function userPostChat($content, $custom = array()){
 		}
 	}
 }
-function systemPostChat($room, $content, $custom = array()){
+function userPostChatFile($content, $file_name, $type, $custom = array())
+{
 	global $mysqli, $data;
 	$def = array(
-		'type'=> 'system',
-		'color'=> 'chat_system',
-		'rank'=> 99,
+		'type' => 'public__message',
+		'file2' => '',
 	);
-	$post = array_merge($def, $custom);
-	$mysqli->query("INSERT INTO `wali_chat` (post_date, user_id, post_message, post_roomid, type, log_rank, tcolor) VALUES ('" . time() . "', '{$data['system_id']}', '$content', '$room', '{$post['type']}', '{$post['rank']}', '{$post['color']}')");
-	chatAction($room);
+	$c = array_merge($def, $custom);
+	$mysqli->query("INSERT INTO `wali_chat` (post_date, user_id, post_message, post_roomid, type, file) VALUES ('" . time() . "', '{$data['user_id']}', '$content', '{$data['user_roomid']}', '{$c['type']}', '1')");
+	$rel = $mysqli->insert_id;
+	chatAction($data['user_roomid']);
+	if ($c['file2'] != '') {
+		$mysqli->query("INSERT INTO `wali_upload` (file_name, date_sent, file_user, file_zone, file_type, relative_post) VALUES
+		('$file_name', '" . time() . "', '{$data['user_id']}', 'chat', '$type', '$rel'),
+		('{$c['file2']}', '" . time() . "', '{$data['user_id']}', 'chat', '$type', '$rel')
+		");
+	} else {
+		$mysqli->query("INSERT INTO `wali_upload` (file_name, date_sent, file_user, file_zone, file_type, relative_post) VALUES ('$file_name', '" . time() . "', '{$data['user_id']}', 'chat', '$type', '$rel')");
+	}
 	return true;
 }
-function systemNameFilter($user){
-	return '<span onclick="getProfile(' . $user['user_id'] . ')"; class="sysname">' . $user['user_name'] . '</span>';
+function badWord($content)
+{
+	$regex = '\w/_\.\%\+#\-\?:\=\&\;\(\)';
+	if (preg_match('@https?:\/\/(www\.)?([' . $regex . ']*)?([\*]{4}){1,}([' . $regex . ']*)?@ui', $content)) {
+		return true;
+	}
 }
-function leaveRoom(){
-	global $data, $lang, $wali;
-	if(allowLogs() && $wali['leave_room'] == 1){
-		if(isVisible($data) && $data['user_roomid'] != 0 && $data['last_action'] > time() - 30 ){
-			$content = str_replace('%user%', systemNameFilter($data), $lang['quit_room']);
-			systemPostChat($data['user_roomid'], $content, array('type'=> 'system__leave'));
+function normalise($text, $a)
+{
+	$count = substr_count($text, "http");
+	if ($count > $a) {
+		return false;
+	}
+	return true;
+}
+function linking($content)
+{
+	if (!badWord($content)) {
+		$source = $content;
+		$regex = '\w/_\.\%\+#\-\?:\=\&\;\(\)';
+		if (normalise($content, 1)) {
+			$content = str_replace('youtu.be/', 'youtube.com/watch?v=', $content);
+			$content = preg_replace('@https?:\/\/(www\.)?youtube.com/watch\?v=([\w_-]*)([' . $regex . ']*)?@ui', '<div class="chat_video_container"><div class="chat_video"><iframe src="https://www.youtube.com/embed/$2" frameborder="0" allowfullscreen></iframe></div><div data="https://www.youtube.com/embed/$2" value="youtube" class="boom_youtube open_player hide_mobile"><i class="fa fa-external-link-square"></i></div></div>', $content);
+			$content = preg_replace('@https?:\/\/([-\w\.]+[-\w])+(:\d+)?\/[' . $regex . ']+\.(png|gif|jpg|jpeg|webp)((\?\S+)?[^\.\s])?@ui', ' <a href="$0" class="fancybox"><img class="chat_image"src="$0"/></a> ', $content);
+			if (preg_last_error()) {
+				$content = $source;
+			}
+			$content = preg_replace('@([^=][^"])(https?://([-\w\.]+[-\w])+(:\d+)?(/([' . $regex . ']*(\?\S+)?[^\.\s])?)?)@ui', '$1<a href="$2" target="_blank">$2</a>', $content);
+			$content = preg_replace('@^(https?://([-\w\.]+[-\w])+(:\d+)?(/([' . $regex . ']*(\?\S+)?[^\.\s])?)?)@ui', '<a href="$1" target="_blank">$1</a>', $content);
 		}
 	}
+	return $content;
 }
 function getAccCreate($user){
 	return $user;
@@ -598,7 +613,7 @@ function getLanguage(){
 	global $mysqli, $data, $wali;
 	$l = $data['language'];
 	if(waliLogged()){
-		if(file_exists(WALI_PATH . '/system/language/' . $data['user_language'] . '/language.php')){
+		if(file_exists(WALI_PATH . 'system/language/' . $data['user_language'] . '/language.php')){
 			$l = $data['user_language'];
 		}
 		else {
@@ -608,7 +623,7 @@ function getLanguage(){
 	else {
 		if(isset($_COOKIE['lang'])){
 			$lang = 'English';
-			if(file_exists(WALI_PATH . '/system/language/' . $lang . '/language.php')){
+			if(file_exists(WALI_PATH . 'system/language/' . $lang . '/language.php')){
 				$l = $lang;
 			}
 		}
@@ -625,7 +640,12 @@ function userDetails($id){
 	}
 	return $user;
 }
-
+function canInfo(){
+	global $wali;
+	if(waliAllow($wali['can_edit_info'])){
+		return true;
+	}
+}
 function listCountry($c){
 	global $lang;
 	require WALI_PATH . '/system/location/country_list.php';
@@ -818,7 +838,7 @@ function userRoomDetails($id){
 	return $user;
 }
 function userRoomStaff($rank){
-	if($rank >= 4){
+	if($rank >= 3){
 		return true;
 	}
 }
@@ -828,13 +848,13 @@ function isOwner($user){
 	}
 }
 function isStaff($rank){
-	if($rank >= 4){
+	if($rank >= 3){
 		return true;
 	}
 }
 function betterRole($rank){
 	global $data;
-	if($data['user_role'] > $rank || waliAllow(5)){
+	if($data['user_role'] > $rank || waliAllow(4)){
 		return true;
 	}
 }
@@ -849,16 +869,16 @@ function canRoomAction($user, $role, $type = 1){
 	if(empty($user)){
 		return false;
 	}
-	if(mySelf($user['id'])){
+	if(mySelf($user['user_id'])){
 		return false;
 	}
-	if(!waliRole($role) && !waliAllow(4)){
+	if(!waliRole($role) && !waliAllow(3)){
 		return false;
 	}
-	if(isStaff($user['user_rank'])){
+	if(isStaff($user['user_rank']) || isBot($user)){
 		return false;
 	}
-	if(!betterRole($user['room_ranking']) && !waliAllow(4)){
+	if(!betterRole($user['room_ranking']) && !waliAllow(3)){
 		return false;
 	}
 	if($type == 2 && userRoomStaff($user['room_ranking'])){
@@ -871,18 +891,19 @@ function systemBot($user){
 		return true;
 	}
 }
-function canEditUser($user, $rank, $type = 0){
+function canEditUser($user, $rank, $type = 0)
+{
 	global $data;
-	if($type == 1 && isBot($user)){
+	if ($type == 1 && isBot($user)) {
 		return false;
 	}
-	if(mySelf($user['user_id'])){
+	if (mySelf($user['user_id'])) {
 		return false;
 	}
-	if(waliAllow($rank) && isGreater($user['user_rank'] && !isBot($user))){
+	if (waliAllow($rank) && isGreater($user['user_rank']) && !isBot($user)) {
 		return true;
 	}
-	if(waliAllow(6) && !isOwner($user)){
+	if (waliAllow(6) && !isOwner($user)) {
 		return true;
 	}
 }
@@ -904,10 +925,9 @@ function canMute(){
 }
 function canMuteUser($user){
 	global $data, $wali;
-	if(!empty($user) && canEditUser($user, 8, 1)){ 
+	if(!empty($user) && canEditUser($user, 3, 1)){ 
 		return true;
 	}
-	echo $user;
 }
 function isGreater($rank){
 	global $data;
@@ -929,10 +949,10 @@ function canBanUser($user){
 }
 function canRankUser($user){
 	global $data, $wali;
-	if(isOwner($user)){
+	if (isOwner($user) || isGuest($user)) {
 		return false;
 	}
-	if(!empty($user) && canEditUser($user, $wali['can_rank'], 0)){ 
+	if (!empty($user) && canEditUser($user, $wali['can_rank'], 0)) {
 		return true;
 	}
 }
@@ -1049,25 +1069,6 @@ function roomDetails($type = 0){
 	}
 	return $room;
 }
-function getIp(){
-    $client  = @$_SERVER['HTTP_CLIENT_IP'];
-    $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-    $cloud =   @$_SERVER["HTTP_CF_CONNECTING_IP"];
-    $remote  = $_SERVER['REMOTE_ADDR'];
-    if(filter_var($cloud, FILTER_VALIDATE_IP)) {
-        $ip = $cloud;
-    }
-    else if(filter_var($client, FILTER_VALIDATE_IP)) {
-        $ip = $client;
-    }
-    elseif(filter_var($forward, FILTER_VALIDATE_IP)){
-        $ip = $forward;
-    }
-    else{
-        $ip = $remote;
-    }
-    return escape($ip);
-}
 function getLoginPage(){
 	global $data;
 	return $data['login_page'];
@@ -1173,10 +1174,10 @@ function listRoomRank($current = 0){
 	global $lang, $data;
 	$rank = '';
 	$rank .= '<option value="0" ' . selCurrent($current, 0) . '>' . $lang['none'] . '</option>';
-	$rank .= '<option value="4" ' . selCurrent($current, 4) . '>' . roomRankTitle(4) . '</option>';
-	$rank .= '<option value="5" ' . selCurrent($current, 5) . '>' . roomRankTitle(5) . '</option>';
-	if(waliAllow(9)){
-		$rank .= '<option value="6" ' . selCurrent($current, 6) . '>' . roomRankTitle(6) . '</option>';
+	$rank .= '<option value="7" ' . selCurrent($current, 7) . '>' . roomRankTitle(7) . '</option>';
+	$rank .= '<option value="8" ' . selCurrent($current, 8) . '>' . roomRankTitle(8) . '</option>';
+	if(waliAllow(4)){
+		$rank .= '<option value="9" ' . selCurrent($current, 9) . '>' . roomRankTitle(9) . '</option>';
 	}
 	return $rank;
 }
@@ -1340,6 +1341,23 @@ function canUploadChat(){
 function canUploadPrivate(){
 	global $data;
 	if(waliAllow($data['allow_pupload'])){
+		return true;
+	}
+}
+function canUploadWall()
+{
+	global $data;
+	if (waliAllow($data['allow_wupload'])) {
+		return true;
+	}
+}
+function canDeleteWall($wall)
+{
+	global $data, $wali;
+	if (mySelf($wall['post_user'])) {
+		return true;
+	}
+	if (waliAllow($wali['can_delete_wall']) && isGreater($wall['user_rank'])) {
 		return true;
 	}
 }
@@ -1590,7 +1608,7 @@ function systemWordKick($user, $custom = ''){
 	}
 }
 function systemSpamMute($user, $custom = ''){
-	global $mysqli, $data, $lang, $cody;
+	global $mysqli, $data, $lang, $wali;
 	if(isMuted($user) || isRegmute($user)){
 		return false;
 	}
@@ -1840,13 +1858,272 @@ function soundCode($sound, $val){
 		return '';
 	}
 }
-function soundStatus($val){
+
+function fileError($type = 1){
 	global $data;
-	if(preg_match('@[' . $val . ']@i', $data['user_sound'])){
-		return 1;
+	$size = 3000000;
+	if($type == 2){
+		$size = 3000000;
+	}else if($type == 3){
+		$size = 3000000;
 	}
-	else {
-		return 0;
+	if($_FILES["file"]["error"] > 0 || (($_FILES["file"]["size"] / 1024)/1024) > $size){
+		return true;
+	}
+}
+function isImage($ext)
+{
+	$ext = strtolower($ext);
+	$img = array('image/gif', 'image/jpeg', 'image/jpg', 'image/pjpeg', 'image/x-png', 'image/png', 'image/JPG', 'image/webp');
+	$img_ext = array('gif', 'jpeg', 'jpg', 'JPG', 'PNG', 'png', 'x-png', 'pjpeg', 'webp');
+	if (in_array($_FILES["file"]["type"], $img) && in_array($ext, $img_ext)) {
+		return true;
+	}
+}
+function encodeFileTumb($ext, $user)
+{
+	global $data;
+	$file_name = md5(microtime());
+	$file_name = substr($file_name, 0, 12);
+	$fname['full'] = 'user' . $user['user_id'] . '_' . $file_name . '.' . $ext;
+	$fname['tumb'] = 'user' . $user['user_id'] . '_' . $file_name . '_tumb.' . $ext;
+	return $fname;
+}
+function waliMoveFile($source)
+{
+	move_uploaded_file(preg_replace('/\s+/', '', $_FILES["file"]["tmp_name"]), WALI_PATH . '/' . $source);
+}
+function filterOrigin($origin){
+	if(strlen($origin) > 55){
+		$origin = mb_substr($origin, 0, 55);
+	}
+	return str_replace(array(' ', '.', '-'), '_', $origin);
+}
+
+function imageTumb($source, $path, $type, $size)
+{
+	$dst = '';
+	switch ($type) {
+		case 'image/png':
+			$src = @imagecreatefrompng($source);
+			break;
+		case 'image/jpeg':
+			$src = @imagecreatefromjpeg(WALI_PATH . '/' . $source);
+			break;
+		default:
+			return false;
+			break;
+	}
+	$width = imagesx($src);
+	$height = imagesy($src);
+	$new_width = floor($width * ($size / $height));
+	$new_height = $size;
+	if ($height > $size) {
+		$dst = @imagecreatetruecolor($new_width, $new_height);
+		if ($type == 'image/png') {
+			@imagecolortransparent($dst, imagecolorallocate($dst, 0, 0, 0));
+			@imagealphablending($dst, false);
+			@imagesavealpha($dst, true);
+		}
+		@imagecopyresized($dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+		switch ($type) {
+			case 'image/png':
+				@imagepng($dst, WALI_PATH . '/' . $path);
+				break;
+			case 'image/jpeg':
+				@imagejpeg($dst, WALI_PATH . '/' . $path);
+				break;
+			default:
+				return false;
+				break;
+		}
+	}
+	if ($dst != '') {
+		@imagedestroy($dst);
+	}
+	if ($src) {
+		@imagedestroy($src);
+	}
+}
+
+function validImageData($source)
+{
+	$i = getimagesize(WALI_PATH . '/' . $source);
+	if ($i !== false) {
+		return true;
+	}
+}
+function sourceExist($source)
+{
+	if (file_exists(WALI_PATH . '/' . $source)) {
+		return true;
+	}
+}
+function tumbLinking($img, $tumb)
+{
+	return '<a href="' . $img . '" class="fancybox"><img class="chat_image"src="' . $tumb . '"/></a> ';
+}
+function findFriend($user)
+{
+	global $mysqli, $lang;
+	$friend_list = '';
+	$find_friend = $mysqli->query("SELECT wali_users.user_name, wali_users.user_id, wali_users.user_avatar, wali_users.user_color, wali_users.last_action, wali_users.user_status, wali_users.user_rank, wali_friends.* FROM wali_users, wali_friends 
+	WHERE hunter = '{$user['user_id']}' AND fstatus = '3' AND target = wali_users.user_id ORDER BY last_action DESC, user_name ASC LIMIT 36");
+	if ($find_friend->num_rows > 0) {
+		while ($find = $find_friend->fetch_assoc()) {
+			if (isVisible($find)) {
+				$friend_list .= waliTemplate('element/user_square', $find);
+			}
+		}
+	}
+	if ($friend_list == '') {
+		$friend_list = emptyZone($lang['no_data']);
+	}
+	return $friend_list;
+}
+function longDateTime($date)
+{
+	return date("Y-m-d G:i ", $date);
+}
+function waliUserTheme($user)
+{
+	global $data;
+	if ($user['user_theme'] == 'system') {
+		return $data['default_theme'];
+	} else {
+		return $user['user_theme'];
+	}
+}
+function canViewTimezone($user)
+{
+	global $data, $wali;
+	if (canEditUser($user, $wali['can_view_timezone'], 1)) {
+		return true;
+	}
+}
+function canViewEmail($user)
+{
+	global $data, $wali;
+	if (userHaveEmail($user) && canEditUser($user, $wali['can_view_email'], 1)) {
+		return true;
+	}
+}
+function canViewId($user)
+{
+	global $data, $wali;
+	if (canEditUser($user, $wali['can_view_id'], 1)) {
+		return true;
+	}
+}
+function userTime($user)
+{
+	$d = new DateTime(date("d F Y H:i:s", time()));
+	$d->setTimezone(new DateTimeZone($user['user_timezone']));
+	$r = $d->format('G:i');
+	return $r;
+}
+function userHaveEmail($user)
+{
+	if (isEmail($user['user_email'])) {
+		return true;
+	}
+}
+function canViewIp($user)
+{
+	global $data, $wali;
+	if (canEditUser($user, $wali['can_view_ip'], 1)) {
+		return true;
+	}
+}
+function listThisArray($a)
+{
+	return implode(", ", $a);
+}
+function arrayThisList($l)
+{
+	return explode(',', $l);
+}
+function sameAccount($u)
+{
+	global $mysqli, $lang;
+	$getsame = $mysqli->query("SELECT user_name FROM wali_users WHERE user_ip = '{$u['user_ip']}' AND user_id != '{$u['user_id']}' AND user_bot = 0 ORDER BY user_id DESC LIMIT 50");
+	$same = array();
+	if ($getsame->num_rows > 0) {
+		while ($usame = $getsame->fetch_assoc()) {
+			array_push($same, $usame['user_name']);
+		}
+	} else {
+		array_push($same, $lang['none']);
+	}
+	return listThisArray($same);
+}
+function waliPostIt($user, $content, $type = 1)
+{
+	$content = systemReplace($content);
+	if (userCanDirect($user)) {
+		$content = postLinking($content);
+	} else {
+		$content = linkingReg($content);
+	}
+	if ($type == 1) {
+		return nl2br($content);
+	} else {
+		return $content;
+	}
+}
+function stripLinking($t)
+{
+	$list = arrayThisList(
+		'www.,https://,http://,.com,.org,.net,.us,.co,.biz,.info,.mobi,.name,.ly,
+	.tel,.email,.tech,.xyz,.codes,.bid,.expert,.ca,.cn,.fr,.ch,.au,.in,.de,
+	.jp,.nl,.uk,.mx,.no,.ru,.br,.se,.es,.bg,.png,.xpng,.jpeg,.jpg,.gif,.webp,
+	.mp3,.mp4,.html,.php,.xml,.zip,.rar,.pdf,.txt
+	'
+	);
+	$t = str_ireplace($list, '', $t);
+	return $t;
+}
+function linkingReg($content)
+{
+	global $wali;
+	if ($wali['strip_direct'] > 0) {
+		$content = stripLinking($content);
+	}
+	return $content;
+}
+function postLinking($content, $n = 2)
+{
+	if (!badWord($content)) {
+		$source = $content;
+		$regex = '\w/_\.\%\+#\-\?:\=\&\;\(\)';
+		if (normalise($content, $n)) {
+			$content = str_replace('youtu.be/', 'youtube.com/watch?v=', $content);
+			$content = preg_replace('@https?:\/\/(www\.)?youtube.com/watch\?v=([\w_-]*)([' . $regex . ']*)?@ui', '<div class="video_container"><iframe src="https://www.youtube.com/embed/$2" frameborder="0" allowfullscreen></iframe></div>', $content);
+			$content = preg_replace('@https?:\/\/([-\w\.]+[-\w])+(:\d+)?\/[' . $regex . ']+\.(png|gif|jpg|jpeg|webp)((\?\S+)?[^\.\s])?@i', '<div class="post_image"> <a href="$0" class="fancybox"><img src="$0"/></a> </div>', $content);
+			if (preg_last_error()) {
+				$content = $source;
+			}
+			$content = preg_replace('@([^=][^"])(https?://([-\w\.]+[-\w])+(:\d+)?(/([' . $regex . ']*(\?\S+)?[^\.\s])?)?)@ui', '$1<a href="$2" target="_blank">$2</a>', $content);
+			$content = preg_replace('@^(https?://([-\w\.]+[-\w])+(:\d+)?(/([' . $regex . ']*(\?\S+)?[^\.\s])?)?)@ui', '<a href="$1" target="_blank">$1</a>', $content);
+		}
+	}
+	return $content;
+}
+function waliPostFile($content)
+{
+	global $data;
+	if ($content == '') {
+		return '';
+	}
+	$content = $data['domain'] . $content;
+	return '<div class="post_image"><a href="' . $content . '" class="fancybox"><img src="' . $content . '"/></a></div>';
+}
+function checkMod($id)
+{
+	global $data, $mysqli;
+	$checkmod = $mysqli->query("SELECT * FROM wali_room_staff WHERE room_id = '{$data['user_roomid']}' AND room_staff = '$id'");
+	if ($checkmod->num_rows < 1) {
+		return true;
 	}
 }
 ?>

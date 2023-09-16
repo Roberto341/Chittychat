@@ -7,7 +7,7 @@ if(isset($_POST['logout_from_system'])){
     setcookie('rank', $row['user_rank'], time()-259200, '/');
     setcookie('room', $row['user_roomid'],time()-259200, '/');
     $mysqli->query("UPDATE `wali_users` SET `user_roomid` = '0', user_role = '0' WHERE `user_id` = '{$data["user_id"]}'");
-    leaveRoom();
+    // leaveRoom();
 	if(isGuest($data)){
 		softGuestDelete($data);
 	}

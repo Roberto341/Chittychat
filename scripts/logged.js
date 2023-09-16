@@ -1,3 +1,6 @@
+resetProMenu = function(){
+	$('#pro_menu').html('');
+}
 resetRoom = function(troom, nroom){
 	user_room = troom;
 	$("#show_chat ul").html('');
@@ -85,7 +88,7 @@ function switchRoom(room, pass, rank){
 					token: utk
 				}, function(response){
 					overModal(response);
-					waitJoin = 0;
+					waitJoin = 0; 
 				});
 			}
 			else{
@@ -510,4 +513,61 @@ saveMood = function(){
 				hideOver();
 			}
 	});	
+}
+
+addFriend = function(id){
+	$.post("system/system_action.php", {
+		add_friend: id,
+		token: utk,
+		}, function(response) {
+			if(response != 3){
+				callSaved(system.actionComplete, 1);
+			}
+			else {
+				hideModal();
+				callSaved(system.error, 3);
+			}
+			resetProMenu();
+	});
+}
+
+unFriend = function(id){
+	$.post('system/system_action.php', { 
+		unfriend: id,
+		token: utk,
+		}, function(response) {
+			callSaved(system.actionComplete, 1);
+			resetProMenu();
+	});
+}
+
+ignoreUser = function(id){
+	$.post('system/system_action.php', {
+		add_ignore: id,
+		token: utk,
+	}, function(response){
+		if(response == 0){
+			callSaved(system.cannotUser, 3);
+		}else if(response == 1){
+			callSaved(system.actionComplete, 1);
+		}else{
+			callSaved(system.error, 3);
+		}
+		resetProMenu();
+	});
+}
+
+unIgnore = function(id){
+	$.post('system/system_action.php', {
+		unignore: id,
+		token: utk,
+	}, function(response){
+		callSaved(system.actionComplete, 3);
+		resetProMenu();
+	});
+}
+
+ignoreThisUser = function(){
+	var ign = $('#get_private').attr('value');
+	ignoreUser(ign);
 }

@@ -46,7 +46,7 @@ if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email
         if(isTooLong($user_name, $data['max_username']) || !validName($user_name)){
             echo 4;
             die();
-        }
+        } 
         $check_duplicate_name = $mysqli->query("SELECT user_name FROM wali_users WHERE user_name = '$user_name'");
         if($check_duplicate_name->num_rows > 0){
             echo 5;
@@ -69,11 +69,13 @@ if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email
             echo 17;
             die();
         }
+
+        $avatar = genderAvatar($user_gender);
         // if($wali['max_reg']){
         //     echo 0;
         //     die();                   /// Implement this later
         // }
-        $mysqli->query("INSERT INTO wali_users (user_name, user_password, user_email, user_sex, user_age, user_ip, user_join) VALUES ('$user_name', '$user_pass', '$user_email', '$user_gender', '$user_age', '$user_ip', '". time() ."')");
+        $mysqli->query("INSERT INTO wali_users (user_name, user_password, user_email, user_sex, user_age, user_ip, user_join, user_avatar) VALUES ('$user_name', '$user_pass', '$user_email', '$user_gender', '$user_age', '$user_ip', '". time() ."', '$avatar')");
         $last_id = $mysqli->insert_id;
 
         $reg = $mysqli->query("SELECT * FROM wali_users WHERE user_name = '$user_name' AND user_password = '$user_pass'");

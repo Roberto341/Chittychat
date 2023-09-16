@@ -17,8 +17,8 @@ input, textarea, .post_input_container {background: #151515; color: #fff;border:
 .sub_menu_item:hover, .sub_menu_item:hover > .sub_menu_icon, .fmenu_item:hover, .avitem:hover { background:#222; color:#fff; }
 .panel_selected{background: #111;}
 .border_left, #chat_right{border-left: 1px solid #222;}
-.male{border: 2px solid #03add8;}
-.female{border: 2px solid pink;}
+.boy{border: 2px solid #03add8;}
+.girl{border: 2px solid pink;}
 .other{border: 2px solid #666;}
 .log2{background: #161616;}
 .user{color: #666;}

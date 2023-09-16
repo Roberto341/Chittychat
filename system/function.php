@@ -29,6 +29,76 @@ function canIgnore($user){
 		return true;
 	}
 }
+function getIp()
+{
+	$client  = @$_SERVER['HTTP_CLIENT_IP'];
+	$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+	$cloud =   @$_SERVER["HTTP_CF_CONNECTING_IP"];
+	$remote  = $_SERVER['REMOTE_ADDR'];
+	if (filter_var($cloud, FILTER_VALIDATE_IP)) {
+		$ip = $cloud;
+	} else if (filter_var($client, FILTER_VALIDATE_IP)) {
+		$ip = $client;
+	} elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
+		$ip = $forward;
+	} else {
+		$ip = $remote;
+	}
+	return escape($ip);
+}
+function systemPostChat($room, $content, $custom = array())
+{
+	global $mysqli, $data;
+	$def = array(
+		'type' => 'system',
+		'color' => 'chat_system',
+		'rank' => 99,
+	);
+	$post = array_merge($def, $custom);
+	$mysqli->query("INSERT INTO `wali_chat` (post_date, user_id, post_message, post_roomid, type, log_rank, tcolor) VALUES ('" . time() . "', '{$data['system_id']}', '$content', '$room', '{$post['type']}', '{$post['rank']}', '{$post['color']}')");
+	chatAction($room);
+	return true;
+}
+function systemNameFilter($user)
+{
+	return '<span onclick="getProfile(' . $user['user_id'] . ')"; class="sysname">' . $user['user_name'] . '</span>';
+}
+function allowLogs()
+{
+	global $data;
+	if ($data['allow_logs'] == 1) {
+		return true;
+	}
+}
+function isVisible($user)
+{
+	if ($user['user_status'] != 6) {
+		return true;
+	}
+}
+function chatAction($room)
+{
+	global $mysqli, $data;
+	$mysqli->query("UPDATE wali_rooms SET rcaction = rcaction + 1, room_action = '" . time() . "' WHERE room_id = '$room'");
+}
+function joinRoom()
+{
+	global $lang, $data, $wali;
+	if (allowLogs() && isVisible($data) && $wali['join_room'] == 1) {
+		$content = str_replace('%user%', systemNameFilter($data), $lang['system_join_room']);
+		systemPostChat($data['user_roomid'], $content, array('type' => 'system__join'));
+	}
+}
+function leaveRoom()
+{
+	global $data, $lang, $wali;
+	if (allowLogs() && $wali['leave_room'] == 1) {
+		if (isVisible($data) && $data['user_roomid'] != 0 && $data['last_action'] > time() - 30) {
+			$content = str_replace('%user%', systemNameFilter($data), $lang['quit_room']);
+			systemPostChat($data['user_roomid'], $content, array('type' => 'system__leave'));
+		}
+	}
+}
 function ignore($id){
 	global $mysqli, $data;
 	$count_ignore = $mysqli->query("SELECT * FROM wali_ignore WHERE ignored = '$id' AND ignorer = '{$data['user_id']}'");
@@ -441,11 +511,11 @@ function haveRole($role){
 function roomRankTitle($rank){
 	global $lang;
 	switch($rank){
-		case 6:
+		case 9:
 			return $lang['r_owner'];
-		case 5:
+		case 8:
 			return $lang['r_admin'];
-		case 4:
+		case 7:
 			return $lang['r_mod'];
 		default:
 			return $lang['user'];
@@ -453,11 +523,11 @@ function roomRankTitle($rank){
 }
 function roomRankIcon($rank){
 	switch($rank){
-		case 6:
+		case 9:
 			return 'room_owner.svg';
-		case 5:
+		case 8:
 			return 'room_admin.svg';
-		case 4:
+		case 7:
 			return 'room_mod.svg';
 		default:
 			return 'user.svg';
@@ -465,9 +535,9 @@ function roomRankIcon($rank){
 }
 function roomRank($rank, $type){
 	switch($rank){
-		case 6:
-		case 5:
-		case 4:
+		case 7:
+		case 8:
+		case 9:
 			return curRanking($type, roomRankTitle($rank), roomRankIcon($rank));
 		default:
 			return '';
@@ -531,7 +601,7 @@ function createUserlist($list){
 	$icon = '';
 	$muted = '';
 	$status = '';
-	$mood = '';
+	$mood = ''; 
 	$flag = '';
 	$offline = 'offline';
 	$rank_icon = getRankIcon($list, 'list_rank');
@@ -625,7 +695,7 @@ function roomRanking($rank = 0){
 }
 
 function canEditRoom(){
-	if(waliRole(5)){
+	if(waliRole(7) || waliAllow(4)){
 		return true;
 	}
 }
@@ -680,6 +750,204 @@ function waliFormat($txt){
 	}
 	else {
 		return nl2br($txt);
+	}
+}
+function soundStatus($val)
+{
+	global $data;
+	if (preg_match('@[' . $val . ']@i', $data['user_sound'])) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+function statusElement($val, $txt, $icon)
+{
+	return '<div class="status_option sub_item" onclick="updateStatus(' . $val . ');" data="' . $val . '">
+				<div class="zone_status"><img class="icon_status" src="default_images/status/' . $icon . '"/></div>
+				<div class="icon_text">' . $txt . '</div>
+			</div>';
+}
+function canInvisible()
+{
+	global $data, $wali;
+	if (waliAllow($wali['can_invisible'])) {
+		return true;
+	}
+}
+function listAllStatus()
+{
+	$list = '';
+	$list .= statusElement(1, statusTitle(1), statusIcon(1));
+	$list .= statusElement(2, statusTitle(2), statusIcon(2));
+	$list .= statusElement(3, statusTitle(3), statusIcon(3));
+	if (canInvisible()) {
+		$list .= statusElement(4, statusTitle(4), statusIcon(4));
+	}
+	return $list;
+}
+function myFriendList()
+{
+	global $mysqli, $lang, $data;
+	$friend_list = '';
+	$find_friend = $mysqli->query("SELECT wali_users.user_name, wali_users.user_id, wali_users.user_avatar, wali_users.user_color, wali_users.last_action, wali_users.user_rank, wali_friends.* FROM wali_users, wali_friends 
+	WHERE hunter = '{$data['user_id']}' AND fstatus > 1 AND target = wali_users.user_id ORDER BY fstatus DESC, user_name ASC");
+	if ($find_friend->num_rows > 0) {
+		while ($find = $find_friend->fetch_assoc()) {
+			$friend_list .= waliTemplate('element/friend_element', $find);
+		}
+	} else {
+		$friend_list .= emptyZone($lang['no_friend']);
+	}
+	return $friend_list;
+}
+function validTextWeight($f)
+{
+	$val = array('', 'ital', 'bold', 'boldital', 'heavybold', 'heavyital');
+	if (in_array($f, $val)) {
+		return true;
+	}
+}
+function validTextColor($color)
+{
+	global $data;
+	if ($color == '') {
+		return true;
+	}
+	if (canColor() && preg_match('/^bcolor[0-9]{1,2}$/', $color)) {
+		return true;
+	}
+	if (canGrad() && preg_match('/^bgrad[0-9]{1,2}$/', $color)) {
+		return true;
+	}
+	if (canNeon() && preg_match('/^bneon[0-9]{1,2}$/', $color)) {
+		return true;
+	}
+}
+function validTextFont($font)
+{
+	global $data;
+	if ($font == '') {
+		return true;
+	}
+	if (canFont() && preg_match('/^bfont[0-9]{1,2}$/', $font)) {
+		return true;
+	}
+}
+function userCanDirect($user)
+{
+	global $data;
+	if (userWaliAllow($user, $data['allow_direct'])) {
+		return true;
+	}
+}
+function userWaliAllow($user, $val)
+{
+	if ($user['user_rank'] >= $val) {
+		return true;
+	}
+}
+function getLikes($post, $liked, $type)
+{
+	global $mysqli, $data, $cody, $lang;
+	$result = array(
+		'like_post' => $post,
+		'like_count' => 0,
+		'dislike_count' => 0,
+		'love_count' => 0,
+		'fun_count' => 0,
+		'liked' => '',
+		'disliked' => '',
+		'loved' => '',
+		'funned' => '',
+	);
+	if ($type == 'wall') {
+		$get_like = $mysqli->query("SELECT like_type FROM boom_post_like WHERE like_post = '$post'");
+	} else if ($type == 'news') {
+		$get_like = $mysqli->query("SELECT like_type FROM boom_news_like WHERE like_post = '$post'");
+	} else {
+		return '';
+	}
+	switch ($liked) {
+		case 1:
+			$result['liked'] = ' liked';
+			break;
+		case 2:
+			$result['disliked'] = ' liked';
+			break;
+		case 3:
+			$result['loved'] = ' liked';
+			break;
+		case 4:
+			$result['funned'] = ' liked';
+			break;
+		default:
+			break;
+	}
+	if ($get_like->num_rows > 0) {
+		while ($like = $get_like->fetch_assoc()) {
+			if ($like['like_type'] == 1) {
+				$result['like_count']++;
+			} else if ($like['like_type'] == 2) {
+				$result['dislike_count']++;
+			} else if ($like['like_type'] == 3) {
+				$result['love_count']++;
+			} else if ($like['like_type'] == 4) {
+				$result['fun_count']++;
+			}
+		}
+	}
+	if ($type == 'wall') {
+		return 	waliTemplate('element/likes', $result);
+	} else if ($type == 'news') {
+		return waliTemplate('element/likes_news', $result);
+	} else {
+		return '';
+	}
+}
+function likeType($type, $c)
+{
+	switch ($type) {
+		case 1:
+			return '<img class="' . $c . '" src="default_images/reaction/like.svg">';
+		case 2:
+			return '<img class="' . $c . '" src="default_images/reaction/dislike.svg">';
+		case 3:
+			return '<img class="' . $c . '" src="default_images/reaction/love.svg">';
+		case 4:
+			return '<img class="' . $c . '" src="default_images/reaction/funny.svg">';
+		default:
+			return 'liked';
+	}
+}
+function canDeleteNews($news)
+{
+	global $data, $wali;
+	if (mySelf($news['news_poster'])) {
+		return true;
+	}
+	if (waliAllow($wali['can_delete_news']) && isGreater($news['user_rank'])) {
+		return true;
+	}
+}
+function canPostNews()
+{
+	global $data, $wali;
+	if (waliAllow($wali['can_post_news'])) {
+		return true;
+	}
+}
+function canDeleteWallReply($wall)
+{
+	global $data, $wali;
+	if (mySelf($wall['reply_user'])) {
+		return true;
+	}
+	if (mySelf($wall['reply_uid'])) {
+		return true;
+	}
+	if (waliAllow($wali['can_delete_wall']) && isGreater($wall['user_rank'])) {
+		return true;
 	}
 }
 ?>

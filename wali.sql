@@ -1,4 +1,27 @@
-CREATE TABLE `wali_rooms` (
+CREATE TABLE wali_banned(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `ip` varchar(100) NOT NULL,
+    `ban_user` int(11) NOT NULL DEFAULT '0',
+
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE wali_console (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `hunter` int(11) NOT NULL DEFAULT '0',
+    `target` int(11) NOT NULL DEFAULT '0',
+    `room` int(11) NOT NULL DEFAULT '0',
+    `ctype` varchar(200) NOT NULL,
+    `crank` int(11) NOT NULL DEFAULT '0',
+    `delay` int(11) NOT NULL DEFAULT '0',
+    `reason` varchar(200) NOT NULL,
+    `custom` varchar(2000) NOT NULL,
+    `custom2` varchar(2000) NOT NULL,
+    `cdate` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE wali_rooms (
     `room_id` int(11) NOT NULL AUTO_INCREMENT,
     `room_name` varchar(40) NOT NULL,
     `topic` varchar(1000) NOT NULL,
@@ -17,7 +40,14 @@ CREATE TABLE `wali_rooms` (
     PRIMARY KEY (`room_id`)
 );
 
-CREATE TABLE wali_room_action(
+CREATE TABLE wali_radio_stream (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `stream_url` varchar(300) NOT NULL,
+    `stream_alias` varchar(50) NOT NULL,
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE wali_room_action (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `action_room` int(11) NOT NULL DEFAULT '0',
     `action_user` int(11) NOT NULL DEFAULT '0',
@@ -27,7 +57,7 @@ CREATE TABLE wali_room_action(
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE wali_room_staff(
+CREATE TABLE wali_room_staff (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `room_id` int(11) NOT NULL DEFAULT '0',
     `room_staff` int(11) NOT NULL DEFAULT '0',
@@ -36,7 +66,7 @@ CREATE TABLE wali_room_staff(
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE wali_private(
+CREATE TABLE wali_private (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `time` int(11) NOT NULL DEFAULT '0',
     `message` varchar(1000) NOT NULL,
@@ -49,7 +79,7 @@ CREATE TABLE wali_private(
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE wali_chat(
+CREATE TABLE wali_chat ( 
     `post_id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL DEFAULT '0',
     `post_date` int(11) NOT NULL DEFAULT '0',
@@ -64,7 +94,7 @@ CREATE TABLE wali_chat(
     PRIMARY KEY (`post_id`)
 );
 
-CREATE TABLE wali_filter(
+CREATE TABLE wali_filter (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `word` varchar(100) NOT NULL,
     `word_type` varchar(12) NOT NULL DEFAULT 'word',
@@ -145,7 +175,65 @@ CREATE TABLE wali_setting (
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE wali_ignore(
+CREATE TABLE wali_users (
+    `user_id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_name` varchar(60) NOT NULL,
+    `user_password` varchar(60) NOT NULL,
+    `user_email` varchar(80) NOT NULL,
+    `sub_id` varchar(50) NOT NULL,
+    `user_ip` varchar(50) NOT NULL,
+    `user_mobile` int(1) NOT NULL DEFAULT '0',
+    `user_join` int(11) NOT NULL DEFAULT '0',
+    `join_msg` int(1) NOT NULL DEFAULT '0',
+    `last_action` int(11) NOT NULL DEFAULT '0',
+    `user_language` varchar(30) NOT NULL DEFAULT 'English',
+    `user_timezone` varchar(30) NOT NULL DEFAULT 'America/Montreal',
+    `user_status` int(3) NOT NULL DEFAULT '1',
+    `user_color` varchar(20) NOT NULL DEFAULT 'user',
+    `user_font` varchar(10) NOT NULL,
+    `wccolor` varchar(10) NOT NULL,
+    `wcbold` varchar(10) NOT NULL,
+    `wcfont` varchar(10) NOT NULL,
+    `user_rank` int(2) NOT NULL DEFAULT '1',
+    `user_dj` int(1) NOT NULL DEFAULT '0',
+    `user_onair` int(1) NOT NULL DEFAULT '0',
+    `user_roomid` int(11) NOT NULL DEFAULT '1',
+    `user_theme` varchar(20) NOT NULL DEFAULT 'system',
+    `user_sex` int(1) NOT NULL DEFAULT '1',
+    `user_age` int(3) NOT NULL,
+    `user_avatar` varchar(200) NOT NULL DEFAULT '1',
+    `user_cover` varchar(100) NOT NULL DEFAULT '1',
+    `user_sound` int(10) NOT NULL DEFAULT '1234',
+    `temp_pass` varchar(60) NOT NULL DEFAULT '1',
+    `temp_date` int(11) NOT NULL DEFAULT '0',
+    `verified` int(1) NOT NULL DEFAULT '0',
+    `user_verify` int(1) NOT NULL DEFAULT '0',
+    `country` varchar(10) NOT NULL DEFAULT 'US',
+    `session_id` int(11) NOT NULL DEFAULT '1',
+    `pcount` int(11) NOT NULL DEFAULT '0',
+    `user_news` int(11) NOT NULL DEFAULT '0',
+    `user_mute` int(11) NOT NULL DEFAULT '0',
+    `user_regmute` int(11) NOT NULL DEFAULT '0',
+    `user_banned` int(11) NOT NULL DEFAULT '0',
+    `user_kick` int(11) NOT NULL DEFAULT '0',
+    `kick_msg` varchar(300) NOT NULL,
+    `mute_msg` varchar(300) NOT NULL,
+    `ban_msg` varchar(300) NOT NULL,
+    `user_role` int(1) NOT NULL DEFAULT '0',
+    `user_action` int(11) NOT NULL DEFAULT '0',
+    `room_mute` int(1) NOT NULL DEFAULT '0',
+    `user_about` varchar(1000) NOT NULL,
+    `user_mood` varchar(100) NOT NULL,
+    `user_bot` int(1) NOT NULL DEFAULT '0',
+    `naction` int(11) NOT NULL DEFAULT '1',
+    `user_private` int(11) NOT NULL DEFAULT '1',
+    `user_delete` int(11) NOT NULL DEFAULT '0',
+    `quizscore` int(11) NOT NULL DEFAULT '0',
+
+    PRIMARY KEY(`user_id`)
+);
+
+CREATE TABLE wali_ignore (
     `ignore_id` int(11) NOT NULL AUTO_INCREMENT,
     `ignorer` int(11) NOT NULL DEFAULT '0',
     `ignored`  int(11) NOT NULL DEFAULT '0',
@@ -154,7 +242,7 @@ CREATE TABLE wali_ignore(
     PRIMARY KEY (`ignore_id`)
 );
 
-CREATE TABLE wali_friends(
+CREATE TABLE wali_friends (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `hunter` int(11) NOT NULL DEFAULT '0',
     `target` int(11) NOT NULL DEFAULT '0',
@@ -163,6 +251,132 @@ CREATE TABLE wali_friends(
 
     PRIMARY KEY (`id`)
 );
+
+CREATE TABLE wali_upload (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `file_name` varchar(300) NOT NULL,
+    `file_key` varchar(100) NOT NULL,
+    `date_sent` int(11) NOT NULL DEFAULT '0',
+    `file_user` int(11) NOT NULL DEFAULT '0',
+    `file_zone` varchar(30) NOT NULL DEFAULT '1',
+    `file_type` varchar(30) NOT NULL,
+    `file_complete` int(1) NOT NULL DEFAULT '1',
+    `relative_post` int(11) NOT NULL DEFAULT '0',
+
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE wali_report (
+    `report_id` int(11) NOT NULL AUTO_INCREMENT,
+    `report_type` int(2) NOT NULL DEFAULT '0',
+    `report_user` int(11) NOT NULL DEFAULT '0',
+    `report_target` int(11) NOT NULL DEFAULT '0',
+    `report_post` int(11) NOT NULL DEFAULT '0',
+    `report_reason` varchar(500) NOT NULL,
+    `report_room` int(11) NOT NULL DEFAULT '0',
+    `report_date` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`report_id`)
+);
+
+CREATE TABLE wali_notification (
+    `id`int(11) NOT NULL AUTO_INCREMENT,
+    `notifier` int(11) NOT NULL DEFAULT '0',
+    `notified` int(11) NOT NULL DEFAULT '0',
+    `notify_type` varchar(30) NOT NULL,
+    `notify_date` int(11) NOT NULL DEFAULT '0',
+    `notify_source` varchar(30) NOT NULL,
+    `notify_id` int(11) NOT NULL DEFAULT '0',
+    `notify_rank` int(11) NOT NULL DEFAULT '0',
+    `notify_delay` int(11) NOT NULL DEFAULT '0',
+    `notify_reason` varchar(2000) NOT NULL,
+    `notify_view` int(11) NOT NULL DEFAULT '0',
+    `notify_custom` varchar(2000) NOT NULL,
+    `notify_custom2` varchar(2000) NOT NULL,
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE wali_news (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `news_poster`int(11) NOT NULL DEFAULT '0',
+    `news_message` varchar(3000) NOT NULL,
+    `news_file` varchar(1000) NOT NULL,
+    `news_date` int(11) NOT NULL DEFAULT '1',
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE wali_post (
+    `post_id` int(11) NOT NULL AUTO_INCREMENT,
+    `post_user` int(11) NOT NULL DEFAULT '0',
+    `post_date` int(11) NOT NULL DEFAULT '0',
+    `post_comment` varchar(2000) NOT NULL,
+    `post_file` varchar(1000) NOT NULL,
+    `post_type` int(1) NOT NULL DEFAULT '1',
+    `post_actual` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY(`post_id`)
+);
+
+CREATE TABLE wali_post_reply (
+    `reply_id` int(11) NOT NULL AUTO_INCREMENT,
+    `parent_id` int(11) NOT NULL DEFAULT '0',
+    `reply_user` int(11) NOT NULL DEFAULT '0',
+    `reply_date` int(11) NOT NULL DEFAULT '0',
+    `reply_conent` varchar(1000) NOT NULL,
+    `reply_uid` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY(`reply_id`)
+);
+
+CREATE TABLE wali_post_like (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `uid` int(11) NOT NULL DEFAULT '0',
+    `liked_uid` int(11) NOT NULL DEFAULT '0',
+    `like_type` int(1) NOT NULL DEFAULT '1',
+    `like_post` int(11) NOT NULL DEFAULT '1',
+    `like_date` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE wali_news_like (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `uid` int(11) NOT NULL DEFAULT '0',
+    `liked_uid` int(11) NOT NULL DEFAULT '0',
+    `like_type` int(1) NOT NULL DEFAULT '1',
+    `like_post` int(11) NOT NULL DEFAULT '1',
+    `like_date` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE wali_news_reply (
+    `reply_id` int(11) NOT NULL AUTO_INCREMENT,
+    `parent_id` int(11) NOT NULL DEFAULT '0',
+    `reply_user` int(11) NOT NULL DEFAULT '0',
+    `reply_date` int(1) NOT NULL DEFAULT '0',
+    `reply_content` varchar(1000) NOT NULL,
+    `reply_uid` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY(`reply_id`)
+);
+
+ALTER TABLE `wali_news_reply`ADD INDEX(`parent_id`);
+ALTER TABLE `wali_news_reply`ADD INDEX(`reply_user`);
+ALTER TABLE `wali_news_reply`ADD INDEX(`reply_date`);
+ALTER TABLE `wali_news_reply`ADD INDEX(`reply_uid`);
+
+ALTER TABLE `wali_news_like`ADD INDEX(`uid`);
+ALTER TABLE `wali_news_like`ADD INDEX(`liked_uid`);
+ALTER TABLE `wali_news_like`ADD INDEX(`like_date`);
+
+
+ALTER TABLE `wali_post_like` ADD INDEX(`uid`);
+ALTER TABLE `wali_post_like` ADD INDEX(`liked_uid`);
+ALTER TABLE `wali_post_like` ADD INDEX(`like_date`);
+
+ALTER TABLE `wali_post_reply` ADD INDEX(`parent_id`);
+ALTER TABLE `wali_post_reply` ADD INDEX(`reply_user`);
+ALTER TABLE `wali_post_reply` ADD INDEX(`reply_date`);
+ALTER TABLE `wali_post_reply` ADD INDEX(`reply_uid`);
+
+
+ALTER TABLE `wali_post` ADD INDEX(`post_user`);
+ALTER TABLE `wali_post` ADD INDEX(`post_date`);
 
 ALTER TABLE `wali_users` ADD INDEX(`user_email`);
 ALTER TABLE `wali_users` ADD INDEX(`user_ip`);
@@ -195,3 +409,26 @@ ALTER TABLE `wali_room_action` ADD INDEX(`action_user`);
 
 ALTER TABLE `wali_room_staff` ADD INDEX(`room_id`);
 ALTER TABLE `wali_room_staff` ADD INDEX(`room_staff`);
+
+ALTER TABLE `wali_upload` ADD INDEX(`date_sent`);
+ALTER TABLE `wali_upload` ADD INDEX(`file_zone`);
+ALTER TABLE `wali_upload` ADD INDEX(`file_complete`);
+
+ALTER TABLE `wali_banned` ADD INDEX(`ip`);
+ALTER TABLE `wali_banned` ADD INDEX(`ban_user`);
+
+ALTER TABLE `wali_console` ADD INDEX(`hunter`);
+ALTER TABLE `wali_console` ADD INDEX(`target`);
+ALTER TABLE `wali_console` ADD INDEX(`room`);
+
+ALTER TABLE `wali_notification` ADD INDEX(`notifier`);
+ALTER TABLE `wali_notification` ADD INDEX(`notified`);
+ALTER TABLE `wali_notification` ADD INDEX(`notify_date`);
+ALTER TABLE `wali_notification` ADD INDEX(`notify_source`);
+ALTER TABLE `wali_notification` ADD INDEX(`notify_id`);
+ALTER TABLE `wali_notification` ADD INDEX(`notify_view`);
+
+ALTER TABLE `wali_report` ADD INDEX(`report_user`);
+ALTER TABLE `wali_report` ADD INDEX(`report_target`);
+
+ALTER TABLE `wali_news` ADD INDEX(`news_date`);

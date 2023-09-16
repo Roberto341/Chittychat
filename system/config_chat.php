@@ -1,11 +1,11 @@
 <?php
 /**
-* Codychat
-* @package Codychat
-* @author www.boomcoding.com
-* @copyright 2020
+* Walichat
+* @package Walichat
+* @author www.wali-chat.com
+* @copyright 2023
 * @terms any use of this script without a legal license is prohibited 
-* all the content of Codychat is the propriety of BoomCoding and Cannot be 
+* all the content of walichat is the propriety of Wali-Chat and Cannot be 
 * used for another project.
 */
 session_start();

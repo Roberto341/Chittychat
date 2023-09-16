@@ -143,10 +143,43 @@ if(isset($_POST['change_sound'], $_POST['chat_sound'], $_POST['private_sound'], 
 	echo waliCode(1, array('data'=> $sound));
 	die();
 }
-// if(isset($_POST['text_color'])){
-//     $color = escape($_POST['text_color']);
-//     $mysqli->query("UPDATE users SET wccolor='$color' WHERE id='{$data['uid']}'");
-//     echo 1;
-//     die();
-// }
+
+if (isset($_POST['save_color'], $_POST['save_bold'], $_POST['save_font'])) {
+	$c = escape($_POST['save_color']);
+	$b = escape($_POST['save_bold']);
+	$f = escape($_POST['save_font']);
+	if (!validTextColor($c)) {
+		echo 0;
+		die();
+	}
+	if (!validTextWeight($b)) {
+		echo 0;
+		die();
+	}
+	if (!validTextFont($f)) {
+		echo 0;
+		die();
+	}
+	$mysqli->query("UPDATE wali_users SET wccolor = '$c', wcbold = '$b', wcfont = '$f' WHERE user_id = '{$data['user_id']}'");
+	echo 1;
+	die();
+}
+
+if(isset($_POST['delete_avatar'])){
+	$mysqli->query("UPDATE wali_users SET user_avatar = 'avatar/default_avatar.png' WHERE user_id = '{$data['user_id']}'");
+	echo 1;
+	die();
+}
+if (isset($_POST['delete_cover'])) {
+	$mysqli->query("UPDATE wali_users SET user_cover = ' ' WHERE user_id = '{$data['user_id']}'");
+	echo 1;
+	die();
+}
+
+if(isset($_POST['text_color'])){
+    $color = escape($_POST['text_color']);
+    $mysqli->query("UPDATE users SET wccolor='$color' WHERE id='{$data['uid']}'");
+    echo 1;
+    die();
+}
 ?>

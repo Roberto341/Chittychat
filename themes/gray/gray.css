@@ -14,8 +14,8 @@ input, textarea, .post_input_container {background: rgb(242, 242, 242);color: rg
 .sub_menu_icon, .menui, .menuo, .menup{color: #03add8;}
 .panel_selected{background: #000;}
 .border_left, #chat_right{border-left: 1px solid #ededed;}
-.male{border: 2px solid #03add8;}
-.female{border: 2px solid pink;}
+.boy{border: 2px solid #03add8;}
+.girl{border: 2px solid pink;}
 .other{border: 2px solid #666;}
 .log2{background: #f8f8f8;}
 .user{color: #666;}

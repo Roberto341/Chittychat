@@ -83,11 +83,42 @@ uploadAvatar = function(event){
                 var response = JSON.parse(xhr.responseText);
                 if(xhr.status === 200){
                     $('.avatar_profile').attr('src', `${response.avatar}`);
-                    $('.pfp').attr('src', `${response.avatar}`);
+                    $('.glob_av').attr('src', `${response.avatar}`);
                 }else if(xhr.status === 400){
                     console.log("Error");
                 }
             };
         }
     }
+}
+
+
+deleteAvatar = function(){
+    $.post("system/action/action_profile.php", {
+        delete_avatar: 1,
+        token: utk,
+    }, function(response){
+        if(response == 1){
+            $('.avatar_profile').attr('src', 'avatar/default_avatar.png');
+			$('.avatar_profile').attr('href', 'avatar/default_avatar.png');
+			$('.glob_av').attr('src', 'avatar/default_avatar.png');
+            console.log("saved");
+        }else{
+            callSaved(system.error, 3);
+        }
+    });
+}
+
+deleteCover = function(){
+    $.post("system/action/action_profile.php", {
+        delete_cover: 1,
+        token: utk,
+    }, function(response){
+        if(response == 1){
+            $('.profile_background').css();
+            console.log("saved");
+        }else{
+            callSaved(system.error, 3);
+        }
+    });
 }

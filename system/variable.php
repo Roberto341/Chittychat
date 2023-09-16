@@ -35,13 +35,13 @@
 
     /* permission settings */
 
-$wali['can_flood'] = 4;				// rank that is not affected by the mute protection.
+$wali['can_flood'] = 3;				// rank that is not affected by the mute protection.
 $wali['can_word_filter'] = 5;		// rank required to not be affected by word filter
 $wali['can_post_news'] = 6;		// rank required to post news
 $wali['can_delete_news'] = 6;		// rank required to delete news post
 $wali['can_reply_news'] = 1;		// rank required to reply to news
-$wali['can_delete_wall'] = 4;		// rank required to delete wall post
-$wali['can_delete_logs'] = 4;       // rank required to delete chat post
+$wali['can_delete_wall'] = 3;		// rank required to delete wall post
+$wali['can_delete_logs'] = 3;       // rank required to delete chat post
 $wali['can_delete_slogs'] = 1;		// rank required to delete self posted chat log
 $wali['can_invisible'] = 5;			// rank required to have invisibility option
 $wali['can_inv_view'] = 5;			// rank required to view invisible in admin panel
@@ -60,10 +60,10 @@ $wali['can_view_email'] = 4;		// rank required to view users email
 $wali['can_view_timezone'] = 4;	// rank required to view users timezone
 $wali['can_view_id'] = 4;			// rank required to view users id
 $wali['can_view_ip'] = 4;			// rank required to view users ip
-$wali['can_room_pass'] = 4;			// rank required to enter room without pass
+$wali['can_room_pass'] = 3;			// rank required to enter room without pass
 $wali['can_rank'] = 4;				// rank required to change rank of members do not go bellow 11, 10 or 9
-$wali['can_ban'] = 4;				// rank required to have ban power
-$wali['can_kick'] = 4;				// rank required to have kick power
+$wali['can_ban'] = 3;				// rank required to have ban power
+$wali['can_kick'] = 3;				// rank required to have kick power
 $wali['can_delete'] = 6;			// rank required to have delete power
 $wali['can_report'] = 1;			// rank required to have report ability
 $wali['can_maintenance'] = 6;		// rank required to enter chat while in maintenance mode
@@ -77,10 +77,10 @@ $wali['can_delete_private'] = 1;	// rank required to delete private chat
 
 /* system log messages */
 
-$wali['join_room'] = 1;				// show log when entering room 0 disabled 1 enabled
-$wali['leave_room'] = 1;			// show log when leaving room 0 disabled 1 enabled
-$wali['name_change'] = 1;			// show log when change username 0 disabled 1 enabled
-$wali['action_log'] = 1;			// show log when an action is taken 0 disabled 1 enabled
+$wali['join_room'] = 0;				// show log when entering room 0 disabled 1 enabled
+$wali['leave_room'] = 0;			// show log when leaving room 0 disabled 1 enabled
+$wali['name_change'] = 0;			// show log when change username 0 disabled 1 enabled
+$wali['action_log'] = 0;			// show log when an action is taken 0 disabled 1 enabled
 
 /* misc */
 
@@ -89,7 +89,7 @@ $wali['clean_delay'] = 5;			// delay for system cleaning in minutes
 
 // cookie and session settings
 
-define('WALI_PREFIX', 'bc_');
+define('WALI_PREFIX', 'wc_');
 
 // do not edit function below they are very important for the system to work properly
 

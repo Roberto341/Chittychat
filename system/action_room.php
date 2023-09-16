@@ -91,7 +91,7 @@ if(isset($_POST['room'], $_POST['get_in_room'])){
                             $mysqli->query("UPDATE wali_users SET join_msg = 0, user_roomid = '$target',
                             last_action = '" . time() . "', user_role = '$role', room_mute = '$muted' WHERE user_id = '{$data['user_id']}'");
                             $mysqli->query("UPDATE wali_rooms SET room_action = '" . time() . "' WHERE room_id = '$target'");
-                            leaveRoom();
+                            // leaveRoom();
                             echo waliCode(10, array('name'=> $room['room_name'], 'id'=> $room['room_id']));
                             die();
                         }
@@ -108,7 +108,7 @@ if(isset($_POST['room'], $_POST['get_in_room'])){
                 else{
                     $mysqli->query("UPDATE wali_users SET join_msg = 0, user_roomid = '$target', last_action = '" . time() . "', user_role = '$role', room_mute = '$muted' WHERE user_id = '{$data['user_id']}'");
                     $mysqli->query("UPDATE wali_rooms SET room_action = '" . time() . "' WHERE room_id = '$target'");
-                    leaveRoom();
+                    // leaveRoom();
                     echo waliCode(10, array('name'=> $room['room_name'], 'id'=> $room['room_id']));
                     die();
                 }
@@ -179,5 +179,36 @@ if(isset($_POST['leave_room'])){
 	$mysqli->query("UPDATE wali_users SET user_roomid = '0' WHERE user_id = '{$data['user_id']}'");
 	echo 1;
 	die();
+}
+if (isset($_POST['target'], $_POST['room_staff_rank'])) {
+    if (!canEditRoom()) {
+        die();
+    }
+    $target = escape($_POST['target']);
+    $rank = escape($_POST['room_staff_rank']);
+    $user = userRoomDetails($target);
+    if (empty($target)) {
+        echo 2;
+        die();
+    }
+    if (!canRoomAction($user, 6)) {
+        echo 0;
+        die();
+    }
+    if ($rank > 0) {
+        if (checkMod($user['user_id'])) {
+            $mysqli->query("INSERT INTO wali_room_staff ( room_id, room_staff, room_rank) VALUES ('{$data['user_roomid']}', '{$user['user_id']}', '$rank')");
+        } else {
+            $mysqli->query("UPDATE wali_room_staff SET room_rank = '$rank' WHERE room_id = '{$data['user_roomid']}' AND room_staff = '{$user['user_id']}'");
+        }
+        $mysqli->query("DELETE FROM wali_room_action WHERE action_user = '{$user['user_id']}' AND action_room = '{$data['user_roomid']}'");
+        $mysqli->query("UPDATE wali_users SET user_role = '$rank', room_mute = '0' WHERE user_id = '{$user['user_id']}' AND user_roomid = '{$data['user_roomid']}'");
+    } else {
+        $mysqli->query("DELETE FROM wali_room_staff WHERE room_staff = '{$user['user_id']}' AND room_id = '{$data['user_roomid']}'");
+        $mysqli->query("UPDATE wali_users SET user_role = 0 WHERE user_id = '{$user['user_id']}' AND user_roomid = '{$data['user_roomid']}'");
+    }
+    waliConsole('change_room_rank', array('target' => $user['user_id'], 'rank' => $rank));
+    echo 1;
+    die();
 }
 ?>
