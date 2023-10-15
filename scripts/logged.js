@@ -23,6 +23,14 @@ resetRoom = function(troom, nroom){
 		resetRightPanel();
 	}
 }
+processAction = function (act) {
+	if (act == 'unmute') {
+		$('.im_muted').remove();
+	}
+	else if (act == 'unban') {
+		$('.im_banned').remove();
+	}
+}
 listAction = function(target, act){
 	closeTrigger();
 	if(act == 'ban'){
@@ -182,7 +190,119 @@ checkRm = function(rmval){
 		curRm = rmval;
 	}
 }
-
+banBox = function (id) {
+	$.post('system/box/ban.php', {
+		ban: id,
+		token: utk,
+	}, function (response) {
+		if (response == 0) {
+			callSaved(system.cannotUser, 3);
+		}
+		else {
+			overEmptyModal(response);
+		}
+	});
+}
+kickBox = function (id) {
+	$.post('system/box/kick.php', {
+		kick: id,
+		token: utk,
+	}, function (response) {
+		if (response == 0) {
+			callSaved(system.cannotUser, 3);
+		}
+		else {
+			overEmptyModal(response);
+		}
+	});
+}
+muteBox = function (id) {
+	$.post('system/box/mute.php', {
+		mute: id,
+		token: utk,
+	}, function (response) {
+		if (response == 0) {
+			callSaved(system.cannotUser, 3);
+		}
+		else {
+			overEmptyModal(response);
+		}
+	});
+}
+kickUser = function (target) {
+	$.post('system/action.php', {
+		kick: target,
+		delay: $('#kick_delay').val(),
+		reason: $('#kick_reason').val(),
+		token: utk,
+	}, function (response) {
+		if (response == 0) {
+			callSaved(system.cannotUser, 3);
+		}
+		else if (response == 1) {
+			callSaved(system.actionComplete, 1);
+		}
+		else if (response == 2) {
+			callSaved(system.alreadyAction, 3);
+		}
+		else if (response == 3) {
+			callSaved(system.noUser, 3);
+		}
+		else {
+			callSaved(system.error, 3);
+		}
+		hideOver();
+	});
+}
+banUser = function (target) {
+	$.post('system/action.php', {
+		ban: target,
+		reason: $('#ban_reason').val(),
+		token: utk,
+	}, function (response) {
+		if (response == 0) {
+			callSaved(system.cannotUser, 3);
+		}
+		else if (response == 1) {
+			callSaved(system.actionComplete, 1);
+		}
+		else if (response == 2) {
+			callSaved(system.alreadyAction, 3);
+		}
+		else if (response == 3) {
+			callSaved(system.noUser, 3);
+		}
+		else {
+			callSaved(system.error, 3);
+		}
+		hideOver();
+	});
+}
+muteUser = function (target) {
+	$.post('system/action.php', {
+		mute: target,
+		delay: $('#mute_delay').val(),
+		reason: $('#mute_reason').val(),
+		token: utk,
+	}, function (response) {
+		if (response == 0) {
+			callSaved(system.cannotUser, 3);
+		}
+		else if (response == 1) {
+			callSaved(system.actionComplete, 1);
+		}
+		else if (response == 2) {
+			callSaved(system.alreadyAction, 3);
+		}
+		else if (response == 3) {
+			callSaved(system.noUser, 3);
+		}
+		else {
+			callSaved(system.error, 3);
+		}
+		hideOver();
+	});
+}
 processChatCommand = function(message){
 	$.ajax({
 		url: "system/chat_command.php",

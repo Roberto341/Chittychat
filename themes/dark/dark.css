@@ -67,3 +67,4 @@ input, textarea, .post_input_container {background: #151515; color: #fff;border:
 
 .my_notice{color: #fff; background: #006699; padding: 3px 10px; display: inline-block; line-height: 1em; margin-top: 2px; border-radius: 20px; font-weight: normal;}
 .bustate{color: #555;}
+.private_box{background: url("../../imgs/christmas_theme_bg.jpg"); background-repeat: no-repeat; background-size: cover; background-position: 0%;}

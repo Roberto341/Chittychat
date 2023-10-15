@@ -60,7 +60,13 @@ isStaff = function (rnk) {
 		return false;
 	}
 }
-
+$('.fancybox').fancybox({
+	helpers: {
+		overlay: {
+			locked: false
+		}
+	}
+});
 
 messagePlay = function () {
 	if (waliSound(1)) {
@@ -200,4 +206,8 @@ changeRoomRank = function (id) {
 			hideOver();
 		}
 	});
+}
+
+openLinkPage = function (l) {
+	window.open(l, '_BLANK');
 }

@@ -36,12 +36,12 @@ if(isset($_FILES["file"])){
             $file_name = $fname['full'];
             $file_tumb = $fname['tumb'];
 
-            waliMoveFile('/upload/chat/' . $file_name);
+            waliMoveFile('upload/chat/' . $file_name);
 
-            $source = '/upload/chat/' . $file_name;
-            $tumb = '/upload/chat/' . $file_tumb;
-            $img_path = "/upload/chat/" . $file_name;
-            $tumb_path = "/upload/chat/" . $file_tumb;
+            $source = 'upload/chat/' . $file_name;
+            $tumb = 'upload/chat/' . $file_tumb;
+            $img_path = "upload/chat/" . $file_name;
+            $tumb_path = "upload/chat/" . $file_tumb;
             
             $create = imageTumb($source, $tumb, $type, 180);
             if(sourceExist($source) && sourceExist($tumb)){

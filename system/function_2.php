@@ -26,6 +26,21 @@ function statusTitle($status){
 			return $lang['online'];
 	}
 }
+function showNews($id)
+{
+	global $mysqli, $lang, $data;
+	$news_content = '';
+	$get_news = $mysqli->query("SELECT wali_news.*, wali_users.*,
+	(SELECT count( parent_id ) FROM wali_news_reply WHERE parent_id = wali_news.id ) as reply_count,
+	(SELECT like_type FROM wali_news_like WHERE uid = '{$data['user_id']}' AND like_post = wali_news.id) as liked
+	FROM wali_news, wali_users
+	WHERE wali_news.news_poster = wali_users.user_id AND wali_news.id = '$id'
+	ORDER BY news_date DESC LIMIT 1");
+	while ($news = $get_news->fetch_assoc()) {
+		$news_content .= waliTemplate('element/news', $news);
+	}
+	return $news_content;
+}
 function newStatusIcon($status){
 	return 'default_images/status/' . statusIcon($status);
 }
@@ -93,20 +108,20 @@ function roomIconTemplate($type, $txt, $icon){
 function userAccessTitle($rank){
 	switch($rank){
 		case 0:
-			return 'guest';
-		case 1:
 			return 'user';
-		case 2:
+		case 1:
 			return 'vip';
+		case 2:
+			return 'elite vip';
 		case 3:
 			return 'moderator';
 		case 4:
 			return 'admin';
 		case 5:
 			return 'super admin';
-		case 6: 
+		case 6:
 			return 'owner';
-		case 7:
+		case 7: 
 			return 'bot';
 		default:
 			return 'user';
@@ -115,11 +130,11 @@ function userAccessTitle($rank){
 function userAccessIcon($rank){
 	switch($rank){
 		case 0:
-			return 'guest.svg';
-		case 1:
 			return 'user.svg';
-		case 2:
+		case 1:
 			return 'vip.svg';
+		case 2:
+			return 'elite_vip.svg';
 		case 3:
 			return 'mod.svg';
 		case 4:
@@ -520,6 +535,28 @@ function userPostChat($content, $custom = array()){
 		}
 	}
 }
+function adminPostNews($content, $file = " "){
+	global $mysqli, $data;
+	$def = array(
+		'news_poster' => $data['user_id'],
+		'news_message' => $content,
+		'news_file' => $file,
+	);
+	$nw = array_merge($def, $data);
+    $mysqli->query("INSERT INTO `wali_news` (news_poster, news_message, news_file, news_date) VALUES ('{$nw['news_poster']}', '{$nw['news_message']}', '{$nw['news_file']}', '" . time() . "')");
+	$last_id = $mysqli->insert_id;
+	if(!empty($nw['news_poster'] || $nw['news_message'])){
+		$news_post = array(
+			'news_id' => $last_id,
+			'news_date' => time(),
+			'news_message' => $content,
+		);
+		$news = array_merge($nw, $news_post);
+		if(!empty($news)){
+			return createNewsLog($data, $news);
+		}
+	}
+}
 function userPostChatFile($content, $file_name, $type, $custom = array())
 {
 	global $mysqli, $data;
@@ -771,7 +808,7 @@ function getUsername($user){
 function getUserTime($user){
 	echo $user['user_timezone'];
 
-}
+} 
 function getUserCountry($user){
 	echo $user['country'];
 
@@ -995,10 +1032,12 @@ function isKicked($user){
 }
 function rankTitle($rank){
 	switch($rank){
-		case 1:
+		case 0:
 			return 'User';
-		case 2:
+		case 1:
 			return 'Vip';
+		case 2:
+			return 'Elite Vip';
 		case 3:
 			return 'Moderator';
 		case 4:
@@ -1015,11 +1054,12 @@ function changeRank($current){
 	global $data, $wali;
 	$rank = '';
 	if(waliAllow($wali['can_rank'])){
+		$rank .= '<option value="0" ' . selCurrent($current, 0) . '>' . rankTitle(0) . '</option>';
 		$rank .= '<option value="1" ' . selCurrent($current, 1) . '>' . rankTitle(1) . '</option>';
 		$rank .= '<option value="2" ' . selCurrent($current, 2) . '>' . rankTitle(2) . '</option>';
 		$rank .= '<option value="3" ' . selCurrent($current, 3) . '>' . rankTitle(3) . '</option>';
 	}
-	if(waliAllow(6)){
+	if(waliAllow(5)){
 		$rank .= '<option value="4" ' . selCurrent($current, 4) . '>' . rankTitle(4) . '</option>';
 		$rank .= '<option value="5" ' . selCurrent($current, 5) . '>' . rankTitle(5) . '</option>';
 	}
@@ -1081,7 +1121,7 @@ function kickedData($user){
 function checkBan($ip){
 	global $mysqli, $data;
 	if(waliLogged()){
-		if(waliAllow(11)){
+		if(waliAllow(6)){
 			return false;
 		}
 		if(isBanned($data)){
@@ -1264,7 +1304,7 @@ function listStatus($status){
 
 function getTheme(){
 	global $mysqli, $data;
-	$t = $data['default_theme'];
+	$t = $data['default_theme']; 
 	if(waliLogged()){
 		if($data['user_theme'] != 'system'){
 			if(file_exists('themes/' . $data['user_theme'] . '/' . $data['user_theme'] . '.css')){
@@ -1277,6 +1317,23 @@ function getTheme(){
 	}
 	return $t . '/' . $t . '.css';
 }
+
+function getPrivateTheme(){
+	global $mysqli, $data;
+	$pt = $data['user_private_theme'];
+	if(waliLogged()){
+		if($data['user_private_theme'] != ""){
+			if(file_exists('upload/private/bg/' . $data['user_private_theme'])){
+				$pt = $data['user_private_theme'];
+			}
+			else {
+				$mysqli->query("UPDATE wali_users SET user_private_theme = '' WHERE uid = '{$data['user_id']}'");
+			}
+		}
+	}
+	return 'upload/private/bg/' . $pt;
+}
+
 function bridgeMode($type){
 	global $data;
 	if($data['use_bridge'] == $type){
@@ -1320,7 +1377,7 @@ function listSmilies($type){
 			$closetype = 'closesmilies_priv';
 			break;
 	}
-	$files = scandir(WALI_PREFIX . '/emoticon');
+	$files = scandir(WALI_PATH . '/emoticon');
 	foreach ($files as $file){
 		if ($file != "." && $file != ".."){
 			$smile = preg_replace('/\.[^.]*$/', '', $file);
@@ -1419,7 +1476,7 @@ function nameDetails($name){
 	return $user;
 }
 function isGuest($user){
-	if($user['user_rank'] == 0){
+	if($user['user_rank'] == 8){
 		return true;
 	}
 }
@@ -1586,9 +1643,15 @@ function systemWordMute($user, $custom = ''){
 	if(!isStaff($user['user_rank']) && !isBot($user)){
 		systemMute($user, $data['word_delay'], 'badword');
 		waliNotify('word_mute', array('target'=> $user['user_id'], 'source'=> 'mute', 'delay'=> $data['word_delay']));
-		waliHistory('word_mute', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['word_delay'], 'reason'=> $custom));
+		// waliHistory('word_mute', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['word_delay'], 'reason'=> $custom));
 		waliConsole('word_mute', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom, 'delay'=> $data['word_delay']));
 	}
+}
+function systemUnmute($user)
+{
+	global $mysqli;
+	clearNotifyAction($user['user_id'], 'mute');
+	$mysqli->query("UPDATE wali_users SET user_mute = 0, mute_msg = '', user_regmute = 0 WHERE user_id = '{$user['user_id']}'");
 }
 function systemKick($user, $delay, $reason = ''){
 	global $mysqli;
@@ -1603,9 +1666,14 @@ function systemWordKick($user, $custom = ''){
 	}
 	if(!isStaff($user['user_rank']) && !isBot($user)){
 		systemKick($user, $data['word_delay'], 'badword');
-		waliHistory('word_kick', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['word_delay'], 'reason'=> $custom));
+		// waliHistory('word_kick', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['word_delay'], 'reason'=> $custom));
 		waliConsole('word_kick', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom, 'delay'=> $data['word_delay']));
 	}
+}
+function systemUnkick($user)
+{
+	global $mysqli;
+	$mysqli->query("UPDATE wali_users SET user_kick = '0', kick_msg = '', user_action = user_action + 1 WHERE user_id = '{$user['user_id']}'");
 }
 function systemSpamMute($user, $custom = ''){
 	global $mysqli, $data, $lang, $wali;
@@ -1615,7 +1683,7 @@ function systemSpamMute($user, $custom = ''){
 	if(!isStaff($user['user_rank']) && !isBot($user)){
 		systemMute($user, $data['spam_delay'], 'spam');
 		waliNotify('spam_mute', array('target'=> $user['user_id'], 'source'=> 'mute', 'delay'=> $data['spam_delay']));
-		waliHistory('spam_mute', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['spam_delay'], 'reason'=> $custom));
+		// waliHistory('spam_mute', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'delay'=> $data['spam_delay'], 'reason'=> $custom));
 		waliConsole('spam_mute', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=> $custom, 'delay'=> $data['spam_delay']));
 	}
 }
@@ -1626,13 +1694,16 @@ function systemSpamBan($user, $custom = ''){
 	}
 	if(!isStaff($user['user_rank']) && !isBot($user)){
 		systemBan($user, 'spam');
-		waliHistory('spam_ban', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'reason'=> $custom));
+		// waliHistory('spam_ban', array('hunter'=> $data['system_id'], 'target'=> $user['user_id'], 'reason'=> $custom));
 		waliConsole('spam_ban', array('hunter'=>$data['system_id'], 'target'=> $user['user_id'], 'reason'=>$custom));
 	}
 }
 function systemBan($user, $reason = ''){
 	global $mysqli;
 	$mysqli->query("UPDATE wali_users SET user_banned = '" . time() . "', ban_msg = '$reason', user_action = user_action + 1, user_roomid = '0' WHERE user_id = '{$user['user_id']}'");
+	if (!waliDuplicateIp($user['user_ip'])) {
+		$mysqli->query("INSERT INTO wali_banned (ip, ban_user) VALUES ('{$user['user_ip']}', '{$user['user_id']}')");
+	}
 	banLog($user);
 }
 function wordFilter($text, $type = 0){
@@ -1880,6 +1951,13 @@ function isImage($ext)
 		return true;
 	}
 }
+function encodeFile($ext)
+{
+	global $data;
+	$file_name = md5(microtime());
+	$file_name = substr($file_name, 0, 12);
+	return 'user' . $data['user_id'] . '_' . $file_name . "." . $ext;
+}
 function encodeFileTumb($ext, $user)
 {
 	global $data;
@@ -1905,7 +1983,7 @@ function imageTumb($source, $path, $type, $size)
 	$dst = '';
 	switch ($type) {
 		case 'image/png':
-			$src = @imagecreatefrompng($source);
+			$src = @imagecreatefrompng(WALI_PATH . '/' .$source);
 			break;
 		case 'image/jpeg':
 			$src = @imagecreatefromjpeg(WALI_PATH . '/' . $source);
@@ -2109,6 +2187,7 @@ function postLinking($content, $n = 2)
 	}
 	return $content;
 }
+
 function waliPostFile($content)
 {
 	global $data;
@@ -2118,6 +2197,21 @@ function waliPostFile($content)
 	$content = $data['domain'] . $content;
 	return '<div class="post_image"><a href="' . $content . '" class="fancybox"><img src="' . $content . '"/></a></div>';
 }
+function waliPostNewsFile($content)
+{
+	global $mysqli, $data;
+	$nwf = '';
+	if ($content == '') {
+		return '';
+	}
+	$news_file = $mysqli->query("SELECT * FROM `wali_upload` WHERE file_key = '$content'");
+	if ($news_file->num_rows > 0) {
+		$nwf = $news_file->fetch_assoc();
+	}
+
+	// $file = $data['domain'] . $nwf['file_name'];
+	return '<div class="post_image"><a href="upload/news/' . $nwf['file_name'] . '" class="fancybox"><img src="upload/news/' . $nwf['file_name'] . '"/></a></div>';
+}
 function checkMod($id)
 {
 	global $data, $mysqli;
@@ -2125,5 +2219,90 @@ function checkMod($id)
 	if ($checkmod->num_rows < 1) {
 		return true;
 	}
+}
+function optionMinutes($sel, $list = array())
+{
+	$val = '';
+	foreach ($list as $n) {
+		$val .= '<option value="' . $n . '" ' . selCurrent($sel, $n) . '>' . waliRenderMinutes($n) . '</option>';
+	}
+	return $val;
+}
+function waliRenderMinutes($val)
+{
+	global $lang;
+	$day = '';
+	$hour = '';
+	$minute = '';
+	$d = floor($val / 1440);
+	$h = floor(($val - $d * 1440) / 60);
+	$m = $val - ($d * 1440) - ($h * 60);
+	if ($d > 0) {
+		if ($d > 1) {
+			$day = $d . ' ' . $lang['days'];
+		} else {
+			$day = $d . ' ' . $lang['day'];
+		}
+	}
+	if ($h > 0) {
+		if ($h > 1) {
+			$hour = $h . ' ' . $lang['hours'];
+		} else {
+			$hour = $h . ' ' . $lang['hour'];
+		}
+	}
+	if ($m > 0) {
+		if ($m > 1) {
+			$minute = $m . ' ' . $lang['minutes'];
+		} else {
+			$minute = $m . ' ' . $lang['minute'];
+		}
+	}
+	return trim($day . ' ' . $hour  . ' ' . $minute);
+}
+function waliRenderSeconds($val)
+{
+	global $lang;
+	$day = '';
+	$hour = '';
+	$minute = '';
+	$second = '';
+	$d = floor($val / 86400);
+	$h = floor(($val - $d * 86400) / 3600);
+	$m = floor(($val - ($d * 86400) - ($h * 3600)) / 60);
+	$s = $val - ($d * 86400) - ($h * 3600) - ($m * 60);
+	if ($d > 0) {
+		if ($d > 1) {
+			$day = $d . ' ' . $lang['days'];
+		} else {
+			$day = $d . ' ' . $lang['day'];
+		}
+	}
+	if ($h > 0) {
+		if ($h > 1) {
+			$hour = $h . ' ' . $lang['hours'];
+		} else {
+			$hour = $h . ' ' . $lang['hour'];
+		}
+	}
+	if ($m > 0) {
+		if ($m > 1) {
+			$minute = $m . ' ' . $lang['minutes'];
+		} else {
+			$minute = $m . ' ' . $lang['minute'];
+		}
+	}
+	if ($s > 0) {
+		if ($s > 1) {
+			$second = $s . ' ' . $lang['seconds'];
+		} else {
+			$second = $s . ' ' . $lang['second'];
+		}
+	}
+	return trim($day . ' ' . $hour  . ' ' . $minute . ' ' . $second);
+}
+function waliTimeLeft($t)
+{
+	return waliRenderMinutes(floor(($t - time()) / 60));
 }
 ?>

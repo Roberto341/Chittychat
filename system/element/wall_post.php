@@ -28,7 +28,7 @@
 	</div>
 	<div class="post_content">
 		<?php echo waliPostIt($walie, $walie['post_content']); ?>
-		<?php echo waliPostFile($waliee['post_file']); ?>
+		<?php echo waliPostFile($walie['post_file']); ?>
 	</div>
 	<div class="post_control btauto">
 		<div class="bcell_mid like_container like<?php echo $walie['post_id']; ?>">

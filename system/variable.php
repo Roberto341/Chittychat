@@ -62,7 +62,7 @@ $wali['can_view_id'] = 4;			// rank required to view users id
 $wali['can_view_ip'] = 4;			// rank required to view users ip
 $wali['can_room_pass'] = 3;			// rank required to enter room without pass
 $wali['can_rank'] = 4;				// rank required to change rank of members do not go bellow 11, 10 or 9
-$wali['can_ban'] = 3;				// rank required to have ban power
+$wali['can_ban'] = 4;				// rank required to have ban power
 $wali['can_kick'] = 3;				// rank required to have kick power
 $wali['can_delete'] = 6;			// rank required to have delete power
 $wali['can_report'] = 1;			// rank required to have report ability
@@ -80,7 +80,7 @@ $wali['can_delete_private'] = 1;	// rank required to delete private chat
 $wali['join_room'] = 0;				// show log when entering room 0 disabled 1 enabled
 $wali['leave_room'] = 0;			// show log when leaving room 0 disabled 1 enabled
 $wali['name_change'] = 0;			// show log when change username 0 disabled 1 enabled
-$wali['action_log'] = 0;			// show log when an action is taken 0 disabled 1 enabled
+$wali['action_log'] = 1;			// show log when an action is taken 0 disabled 1 enabled
 
 /* misc */
 

@@ -172,41 +172,51 @@ function isSystem($id){
 function curRanking($type, $txt, $icon){
     return '<img src="default_images/rank/' . $icon . '" class="' . $type . '" title="'.$txt.'"/>';
 }
-function rankIcon($rank){
-    switch($rank){
-        case 1:
-            return 'user.svg';
-        case 2:
-            return 'vip.svg';
-        case 3:
-            return 'mod.svg';
-        case 4:
-            return 'admin.svg';
-        case 5:
-            return 'super.svg';
-        case 6:
-            return 'owner.svg';
-        default:
-            return 'user.svg';
-    }
+function rankIcon($rank)
+{
+	switch ($rank) {
+		case 0:
+			return 'user.svg';
+		case 1:
+			return 'vip.svg';
+		case 2:
+			return 'elite_vip.svg';
+		case 3:
+			return 'mod.svg';
+		case 4:
+			return 'admin.svg';
+		case 5:
+			return 'super.svg';
+		case 6:
+			return 'owner.svg';
+		case 7:
+			return 'bot.svg';
+		default:
+			return 'user.svg';
+	}
 }
-function rankText($rank){
-    switch($rank){
-        case 1:
-            return 'User';
-        case 2:
-            return 'VIP';
-        case 3:
-            return 'Moderator';
-        case 4:
-            return 'Admin';
-        case 5:
-            return 'Super Admin';
-        case 6:
-            return 'Owner';
-        default:
-            return 'User';
-    }
+function rankText($rank)
+{
+	switch ($rank) {
+		case 0:
+			return 'User';
+		case 1:
+			return 'VIP';
+		case 2:
+			return 'Eite VIP';
+		case 3:
+			return 'Moderator';
+		case 4:
+			return 'Admin';
+		case 5:
+			return 'Super Admin';
+		case 6:
+			return 'Owner';
+		case 7: 
+			return 'Bot';
+		default:
+			return 'User';
+	}
 }
 function systemRank($rank, $type){
     switch($rank){
@@ -216,6 +226,7 @@ function systemRank($rank, $type){
         case 4:
         case 5:
         case 6:
+		case 7:
             return curRanking($type, rankText($rank), rankIcon($rank));
         default:
             return '';
@@ -365,7 +376,24 @@ function createLog($data, $post){
 				</div>
 			</li>';
 }
-
+function createNewsLog($data, $news)
+{
+	return  '<div id="wali_news' . $news['id'] . '" data="' . $news['id'] . '" class="news_box post_element">
+				<div class="post_title">
+					<div class="post_avatar get_info" data='.$news['user_id']. '>
+						<img src="' . myAvatar($news['user_avatar']) . '"/>
+					</div>
+					<div class="bcell_mid hpad5 maxflow post_info">
+						<p class="username text_small ' . myColorFont($news) . '">'. $news['user_name'].'</p>
+						<p class="text_xsmall date">'. displayDate($news['news_date']) . '</p>
+					</div>
+				</div>
+				<div class="post_content">
+				 '. waliPostIt($news, $news['news_message']). '
+				 ' . waliPostNewsFile($news['news_file']).'
+				</div>
+			</div>';
+}
 function privateLog($post, $hunter){
 	if($hunter == $post['hunter']){
 		return '<li id="priv' . $post['id'] . '">
@@ -452,22 +480,22 @@ function waliConsole($type, $custom = array()){
 	$c = array_merge($def, $custom);
 	$mysqli->query("INSERT INTO wali_console (hunter, target, room, ctype, crank, delay, reason, custom, custom2, cdate) VALUES ('{$c['hunter']}', '{$c['target']}', '{$c['room']}', '$type', '{$c['rank']}', '{$c['delay']}', '{$c['reason']}', '{$c['custom']}', '{$c['custom2']}', '" . time() . "')");
 }
-function waliHistory($type, $custom = array()){
-	global $mysqli, $data;
-	$def = array(
-		'hunter'=> $data['user_id'],
-		'target'=> 0,
-		'rank'=> 0,
-		'delay'=> 0,
-		'reason'=> '',
-		'content'=> '',
-	);
-	$c = array_merge($def, $custom);
-	if($c['target'] == 0){
-		return false;
-	}
-	$mysqli->query("INSERT INTO wali_history (hunter, target, htype, delay, reason, history_date) VALUES ('{$c['hunter']}', '{$c['target']}', '$type',  '{$c['delay']}', '{$c['reason']}', '" . time() . "')");
-}
+// function waliHistory($type, $custom = array()){
+// 	global $mysqli, $data;
+// 	$def = array(
+// 		'hunter'=> $data['user_id'],
+// 		'target'=> 0,
+// 		'rank'=> 0,
+// 		'delay'=> 0,
+// 		'reason'=> '',
+// 		'content'=> '',
+// 	);
+// 	$c = array_merge($def, $custom);
+// 	if($c['target'] == 0){
+// 		return false;
+// 	}
+// 	$mysqli->query("INSERT INTO wali_history (hunter, target, htype, delay, reason, history_date) VALUES ('{$c['hunter']}', '{$c['target']}', '$type',  '{$c['delay']}', '{$c['reason']}', '" . time() . "')");
+// }
 function updateNotify($id){
 	global $mysqli;
 	$mysqli->query("UPDATE wali_users SET naction = naction + 1 WHERE user_id = '$id'");
@@ -849,7 +877,7 @@ function userWaliAllow($user, $val)
 }
 function getLikes($post, $liked, $type)
 {
-	global $mysqli, $data, $cody, $lang;
+	global $mysqli, $data, $wali, $lang;
 	$result = array(
 		'like_post' => $post,
 		'like_count' => 0,
@@ -862,9 +890,9 @@ function getLikes($post, $liked, $type)
 		'funned' => '',
 	);
 	if ($type == 'wall') {
-		$get_like = $mysqli->query("SELECT like_type FROM boom_post_like WHERE like_post = '$post'");
+		$get_like = $mysqli->query("SELECT like_type FROM wali_post_like WHERE like_post = '$post'");
 	} else if ($type == 'news') {
-		$get_like = $mysqli->query("SELECT like_type FROM boom_news_like WHERE like_post = '$post'");
+		$get_like = $mysqli->query("SELECT like_type FROM wali_news_like WHERE like_post = '$post'");
 	} else {
 		return '';
 	}
@@ -948,6 +976,235 @@ function canDeleteWallReply($wall)
 	}
 	if (waliAllow($wali['can_delete_wall']) && isGreater($wall['user_rank'])) {
 		return true;
+	}
+}
+function muteAccount($id, $delay, $reason = ''){
+	global $mysqli, $data, $wali;
+	$user = userDetails($id);
+	if(empty($user)){
+		return 3;
+	}
+	if(!canMuteUser($user)){
+		return 0;
+	}
+	if(isMuted($user)){
+		return 2;
+	}
+	systemMute($user, $delay, $reason);
+	waliNotify('mute', array('target' => $user['user_id'], 'source' => 'mute', 'reason'=> $reason, 'delay'=> $delay));
+	waliConsole('mute', array('target'=> $user['user_id'], 'reason'=>$reason, 'delay'=> $delay));
+	return 1;
+}
+function unmuteAccount($id)
+{
+	global $mysqli, $data, $cody;
+	$user = userDetails($id);
+	if (empty($user)) {
+		return 3;
+	}
+	if (!canMuteUser($user)) {
+		return 0;
+	}
+	if (!isMuted($user) && !isRegmute($user)) {
+		return 2;
+	}
+	systemUnmute($user);
+	waliConsole('unmute', array('target' => $user['user_id']));
+	return 1;
+}
+function kickAccount($id, $delay, $reason = ''){
+	global $mysqli, $data, $cody;
+	$user = userDetails($id);
+	if(empty($user)){
+		return 3;
+	}
+	if(!canKickUser($user)){
+		return 0;
+	}
+	if(isKicked($user)){
+		return 2;
+	}
+	if(!validKick($delay)){
+		return 0;
+	}
+	systemKick($user, $delay, $reason);
+	waliConsole('kick', array('target'=> $user['user_id'], 'reason'=>$reason, 'delay'=> $delay));
+	// waliHistory('kick', array('target'=> $user['user_id'], 'delay'=> $delay, 'reason'=> $reason));
+	return 1;
+}
+function unkickAccount($id){
+	global $mysqli, $data, $cody;
+	$user = userDetails($id);
+	if(empty($user)){
+		return 3;
+	}
+	if(!canKickUser($user)){
+		return 0;
+	}
+	if(!isKicked($user)){
+		return 2;
+	}
+	systemUnkick($user);
+	waliConsole('unkick', array('target'=> $user['user_id']));
+	return 1;
+}
+function waliDuplicateIp($val)
+{
+	global $mysqli, $data, $cody;
+	$dupli = $mysqli->query("SELECT * FROM `wali_banned` WHERE `ip` = '$val'");
+	if ($dupli->num_rows > 0) {
+		return true;
+	}
+}
+function banAccount($id, $reason = ''){
+	global $mysqli, $data, $cody;
+	$user = userDetails($id);
+	if(!canBanUser($user)){
+		return 0;
+	}
+	if(isBanned($user)){
+		return 2;
+	}
+	systemBan($user, $reason);
+	waliConsole('ban', array('target'=> $user['user_id'], 'custom'=>$user['user_ip'], 'reason'=> $reason));
+	// waliHistory('ban', array('target'=> $user['user_id'], 'reason'=> $reason));
+	return 1;
+}
+function unbanAccount($id)
+{
+	$user = userDetails($id);
+	systemUnban($user);
+	waliConsole('unban', array('target' => $user['user_id'], 'custom' => $user['user_ip']));
+	return 1;
+}
+function validKick($val)
+{
+	$valid = array(2, 5, 10, 15, 30, 60, 1440, 2880, 4320, 5760, 7200, 8640, 10080, 20160, 43200);
+	if (in_array($val, $valid)) {
+		return true;
+	}
+}
+function validMute($val)
+{
+	$valid = array(2, 5, 10, 15, 30, 60, 1440, 2880, 4320, 5760, 7200, 8640, 10080, 20160, 43200);
+	if (in_array($val, $valid)) {
+		return true;
+	}
+}
+function systemUnban($user)
+{
+	global $mysqli;
+	$mysqli->query("UPDATE wali_users SET user_banned = 0, ban_msg = '', user_action = user_action + 1 WHERE user_id = '{$user['user_id']}'");
+	$mysqli->query("DELETE FROM wali_banned WHERE ip = '{$user['user_ip']}' OR ban_user = '{$user['user_id']}'");
+	// return 1;
+}
+function blockRoom($id)
+{
+	global $mysqli, $data;
+	$user = userRoomDetails($id);
+	if (empty($user)) {
+		return 3;
+	}
+	if (mainRoom()) {
+		return 0;
+	}
+	if (!canRoomAction($user, 5, 2)) {
+		return 0;
+	} else {
+		$mysqli->query("UPDATE wali_users SET user_action = user_action + 1, user_roomid = '0' WHERE user_id = '$id' AND user_roomid = '{$data['user_roomid']}'");
+		$checkroom = $mysqli->query("SELECT * FROM wali_room_action WHERE action_room = '{$data['user_roomid']}' AND action_user = '$id'");
+		if ($checkroom->num_rows > 0) {
+			$mysqli->query("UPDATE wali_room_action SET action_blocked = '1' WHERE action_user = '$id' AND action_room = '{$data['user_roomid']}'");
+		} else {
+			$mysqli->query("INSERT INTO wali_room_action ( action_room , action_user, action_blocked ) VALUES ('{$data['user_roomid']}', '$id', '1')");
+		}
+		waliConsole('room_block', array('target' => $user['user_id']));
+		return 1;
+	}
+}
+function unblockRoom($id)
+{
+	global $mysqli, $data;
+	$user = userRoomDetails($id);
+	if (empty($user)) {
+		return 3;
+	}
+	if (!canRoomAction($user, 5, 2)) {
+		return 0;
+	} else {
+		$mysqli->query("DELETE FROM wali_room_action WHERE action_room = '{$data['user_roomid']}' AND action_user = '$id' AND action_blocked = '1' AND action_muted = '0'");
+		$mysqli->query("UPDATE wali_room_action SET action_blocked = '0' WHERE action_room = '{$data['user_roomid']}' AND action_user = '$id' AND action_blocked = '1'");
+		waliConsole('room_unblock', array('target' => $user['user_id']));
+		return 1;
+	}
+}
+function muteRoom($id)
+{
+	global $mysqli, $data;
+	$user = userRoomDetails($id);
+	if (empty($user)) {
+		return 3;
+	}
+	if (!canRoomAction($user, 4, 2)) {
+		return 0;
+	} else {
+		$mysqli->query("UPDATE wali_users SET room_mute = 1 WHERE user_id = '$id' AND user_roomid = '{$data['user_roomid']}'");
+		$checkroom = $mysqli->query("SELECT * FROM wali_room_action WHERE action_room = '{$data['user_roomid']}' AND action_user = '$id'");
+		if ($checkroom->num_rows > 0) {
+			$mysqli->query("UPDATE wali_room_action SET action_muted = '1' WHERE action_user = '$id' AND action_room = '{$data['user_roomid']}'");
+		} else {
+			$mysqli->query("INSERT INTO wali_room_action ( action_room , action_user, action_muted ) VALUES ('{$data['user_roomid']}', '$id', '1')");
+		}
+		waliConsole('room_mute', array('target' => $user['user_id']));
+		return 1;
+	}
+}
+function unmuteRoom($id)
+{
+	global $mysqli, $data;
+	$user = userRoomDetails($id);
+	if (empty($user)) {
+		return 3;
+	}
+	if (!canRoomAction($user, 4, 2)) {
+		return 0;
+	} else {
+		$mysqli->query("UPDATE wali_users SET room_mute = 0 WHERE user_id = '$id' AND user_roomid = '{$data['user_roomid']}'");
+		$mysqli->query("DELETE FROM wali_room_action WHERE action_room = '{$data['user_roomid']}' AND action_user = '$id' AND action_muted = '1' AND action_blocked = '0'");
+		$mysqli->query("UPDATE wali_room_action SET action_muted = '0' WHERE action_room = '{$data['user_roomid']}' AND action_user = '$id' AND action_muted = '1'");
+		waliConsole('room_unmute', array('target' => $user['user_id']));
+		return 1;
+	}
+}
+function removeRoomStaff($target)
+{
+	global $mysqli, $data, $lang;
+	$user = userRoomDetails($target);
+	if (!canEditRoom()) {
+		return 0;
+	}
+	if (!betterRole($user['room_ranking']) && !waliAllow(9)) {
+		return 0;
+	}
+	$mysqli->query("DELETE FROM wali_room_staff WHERE room_staff = '{$user['user_id']}' AND room_id = '{$data['user_roomid']}'");
+	$mysqli->query("UPDATE wali_users SET user_role = 0 WHERE user_id = '{$user['user_id']}' AND user_roomid = '{$data['user_roomid']}'");
+	waliConsole('change_room_rank', array('target' => $user['user_id'], 'rank' => 0));
+	return 1;
+}
+function renderReason($t)
+{
+	global $lang;
+	switch ($t) {
+		case '':
+			return $lang['no_reason'];
+		case 'badword':
+			return $lang['badword'];
+		case 'spam':
+			return $lang['spam'];
+		case 'flood':
+			return $lang['flood'];
+		default:
+			return systemReplace($t);
 	}
 }
 ?>

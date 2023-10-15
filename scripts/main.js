@@ -842,6 +842,60 @@ uploadStatus = function (target, type) {
 		$("#" + target).prop('disabled', false);
 	}
 }
+postIcon = function (type) {
+	if (type == 2) {
+		$('#post_file_data').html('').hide();
+	}
+	else {
+		$('#post_file_data').html(regSpinner).show();
+	}
+	$('#post_file_data').attr('data-key', '');
+}
+var newsWait = 0;
+uploadNews = function () {
+	var file_data = $("#news_file").prop("files")[0];
+	var filez = ($("#news_file")[0].files[0].size / 1024 / 1024).toFixed(2);
+	if (filez > fmw) {
+		callSaved(system.fileBig, 3);
+	}
+	else if ($("#news_file").val() === "") {
+		callSaved(system.noFile, 3);
+	}
+	else {
+		if (newsWait == 0) {
+			newsWait = 1;
+			postIcon(1);
+			var form_data = new FormData();
+			form_data.append("file", file_data)
+			form_data.append("token", utk)
+			$.ajax({
+				url: "system/file_news.php",
+				dataType: 'json',
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: form_data,
+				type: 'post',
+				success: function (response) {
+					if (response.code > 0) {
+						if (response.code == 1) {
+							callSaved(system.wrongFile, 3);
+						}
+						postIcon(2);
+					}
+					else {
+						$('#post_file_data').attr('data-key', response.key);
+						$('#post_file_data').html(response.file);
+					}
+					newsWait = 0;
+				}
+			})
+		}
+		else {
+			return false;
+		}
+	}
+}
 var waitUpload = 0;
 uploadChat = function () {
 	var file_data = $("#chat_file").prop("files")[0];
@@ -888,5 +942,45 @@ uploadChat = function () {
 		}
 	}
 }
+closeRight = function () {
+	$("#chat_right").toggle();
+}
+waitNews = 0;
+sendNews = function () {
+	if (waitNews == 0) {
+		var myNews = $('#news_data').val();
+		var news_file = $('#post_file_data').attr('data-key');
+		if (/^\s+$/.test(myNews) && news_file == '' || myNews == '' && news_file == '') {
+			return false;
+		}
+		if (myNews.length > 2000) {
+			return false;
+		}
+		else {
+			waitNews = 1;
+			$.post('system/action/action_news.php', {
+				add_news: myNews,
+				post_file: news_file,
+				token: utk,
+			}, function (response) {
+				if (response == 0) {
+					waitNews = 0;
+					return false;
+				}
+				else {
+					$("#container_news").prepend(response);
+					$('#container_news .empty_zone').remove();
+					$('#news_data').val('').css('height', '60px');
+					postIcon(2);
+					waitNews = 0;
+				}
+			});
+		}
+	}
+	else {
+		return false;
+	}
+}
+
 var regSpinner = '<i class="fa fa-spinner fa-spin fa-fw reg_spinner"></i>';
 var largeSpinner = '<div class="large_spinner"><i class="fa fa-spinner fa-spin fa-fw boom_spinner"></i></div>';

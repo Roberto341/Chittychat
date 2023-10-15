@@ -34,3 +34,10 @@ input, textarea, .post_input_container {background: #163308; color: #fff;border:
 .theme_color{color: #03add8;}
 .back_theme, .theme_btn{background: #007399; color: #fff;}
 .success {color: #74b20e;}
+/* select box color */
+.selectboxit-list, .selectboxit-btn {background-color: #194703;border:1px solid #236D00;color:#fff;} /* background of select box */
+.selectboxit-list .selectboxit-focus .selectboxit-option-anchor { background-color: #74b20e; color:#fff; } /* color of sub menu hover */
+.selectboxit-default-arrow { border-top: 4px solid #fff; }
+.selectboxit-btn.selectboxit-enabled:hover, .selectboxit-btn.selectboxit-enabled:focus, .selectboxit-btn.selectboxit-enabled:active { background:#74b20e; color:#fff; } /* background selected hover */
+.selectboxit-options {background: #8f1904;color:#fff;} /* background color of the options */
+.selectboxit-list .selectboxit-option-anchor { color:#fff; } /* color of sub menu item */
